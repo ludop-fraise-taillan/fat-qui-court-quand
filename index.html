@@ -965,4 +965,106 @@ function filterMembers(){
 function renderDropdownList(query){
   const sorted=[...members].sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
   const filtered=query?sorted.filter(m=>m.nom.toLowerCase().includes(query.toLowerCase())):sorted;
-  if(filtered.length===0){document.getElementById('user-dropd
+  if(filtered.length===0){document.getElementById('user-dropdown-list').innerHTML='<div class="user-dropdown-empty">Aucun résultat</div>';return;}
+  let html='';
+  let lastLetter='';
+  filtered.forEach(m=>{
+    const letter=m.nom[0].toUpperCase();
+    if(!query&&letter!==lastLetter){html+=`<div class="user-dropdown-letter">${letter}</div>`;lastLetter=letter;}
+    const isActive=m.id===currentUserId;
+    html+=`<div class="user-dropdown-item${isActive?' active':''}" onclick="selectUser('${m.id}')">
+      <div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="user-dropdown-item-name">${m.nom}</div>
+        ${m.role?`<div class="user-dropdown-item-role">${m.role}</div>`:''}
+      </div>
+      ${isActive?'<i class="ti ti-check" style="color:#1D9E75;font-size:16px"></i>':''}
+    </div>`;
+  });
+  document.getElementById('user-dropdown-list').innerHTML=html;
+}
+function selectUser(id){currentUserId=id;localStorage.setItem('cr_uid',id);closeDropdown();renderAll();}
+
+// ── Ajout course ────────────────────────────────────────────────────────────
+async function addRace(){
+  const nom=document.getElementById('f-name').value.trim();
+  const type=document.getElementById('f-type').value;
+  const date_course=document.getElementById('f-date').value;
+  const date_limite=document.getElementById('f-limit').value||null;
+  const date_ouverture=document.getElementById('f-open').value||null;
+  const url=document.getElementById('f-url').value.trim();
+  if(!nom||!date_course){alert('Merci de renseigner le nom et la date.');return;}
+  if(formDistances.length===0){alert('Merci d\'ajouter au moins une distance.');return;}
+  document.getElementById('btn-add-race').disabled=true;setSyncing('syncing');
+  const{error}=await db.from('courses').insert({nom,type,distances:JSON.stringify(formDistances),date_course,date_limite,date_ouverture,url});
+  document.getElementById('btn-add-race').disabled=false;
+  if(error){setSyncing('error');showToast('⚠️ Erreur : '+error.message);return;}
+  ['f-name','f-date','f-limit','f-open','f-url'].forEach(id=>document.getElementById(id).value='');
+  resetDistTags();
+  showToast('Course ajoutée ✓');
+  await loadAll();switchTab('courses');
+}
+
+// ── Ajout membre ────────────────────────────────────────────────────────────
+async function addMember(){
+  const prenom=document.getElementById('m-prenom').value.trim();
+  const nom=document.getElementById('m-nom').value.trim();
+  const role=document.getElementById('m-role').value;
+  if(!prenom||!nom){alert('Merci de renseigner prénom et nom.');return;}
+  const fullName=prenom+' '+nom.charAt(0).toUpperCase()+'.';
+  if(members.find(m=>m.nom===fullName)){alert('Ce membre existe déjà.');return;}
+  document.getElementById('btn-add-member').disabled=true;setSyncing('syncing');
+  const{error}=await db.from('membres').insert({nom:fullName,role});
+  document.getElementById('btn-add-member').disabled=false;
+  if(error){setSyncing('error');showToast('⚠️ Erreur');return;}
+  document.getElementById('m-prenom').value='';document.getElementById('m-nom').value='';document.getElementById('m-role').value='';
+  document.getElementById('member-preview').style.display='none';
+  showToast(`${fullName} ajouté(e) ✓`);
+  await loadAll();switchTab('membres');
+}
+
+// ── Suppression membre ──────────────────────────────────────────────────────
+async function deleteMember(id){
+  const m=members.find(x=>x.id===id);
+  if(!confirm(`Retirer ${m.nom} du club ?`))return;
+  setSyncing('syncing');
+  const{error}=await db.from('membres').delete().eq('id',id);
+  if(error){setSyncing('error');showToast('⚠️ Erreur');return;}
+  if(currentUserId===id){currentUserId=members.find(x=>x.id!==id)?.id||null;localStorage.setItem('cr_uid',currentUserId);}
+  showToast(`${m.nom} retiré(e) ✓`);
+  await loadAll();
+}
+
+// ── Preview membre ──────────────────────────────────────────────────────────
+function updatePreview(){
+  const p=document.getElementById('m-prenom').value.trim();
+  const n=document.getElementById('m-nom').value.trim();
+  const r=document.getElementById('m-role').value;
+  const prev=document.getElementById('member-preview');
+  if(p&&n){
+    const full=p+' '+n.charAt(0).toUpperCase()+'.';
+    prev.style.display='block';
+    const av=document.getElementById('prev-av');
+    av.style.cssText=avStyle(full);av.textContent=initials(full);
+    document.getElementById('prev-name').textContent=full;
+    document.getElementById('prev-role').textContent=r||'Coureur';
+  }else{prev.style.display='none';}
+}
+
+// ── PWA ─────────────────────────────────────────────────────────────────────
+function dismissInstall(){document.getElementById('install-banner').classList.remove('show');localStorage.setItem('cr_install_dismissed','1');}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();if(!localStorage.getItem('cr_install_dismissed'))document.getElementById('install-banner').classList.add('show');});
+document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
+document.addEventListener('click',e=>{
+  const chip=document.getElementById('user-chip');
+  if(chip&&!chip.contains(e.target))closeDropdown();
+});
+
+// ── SQL migration hint (à exécuter une fois dans Supabase) ──────────────────
+// ALTER TABLE courses ADD COLUMN IF NOT EXISTS distances text;
+// ALTER TABLE participations ADD COLUMN IF NOT EXISTS distance integer;
+
+loadAll();
+</script>
+</body>
+</html>
