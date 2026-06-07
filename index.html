@@ -642,7 +642,10 @@ function openParticipantsModal(raceId){
   // Section chrono — visible seulement si la course est passée et que l'utilisateur est inscrit
   const myPart=participations.find(p=>p.membre_id===currentUserId&&p.course_id===raceId);
   const chronoSection=document.getElementById('mp-chrono-section');
-  if(isPast&&myPart){
+  const raceDate=r.date_course?new Date(r.date_course).toDateString():null;
+  const today=new Date().toDateString();
+  const isRaceDay=raceDate===today;
+  if(myPart&&isRaceDay){
     chronoSection.style.display='block';
     document.getElementById('mp-chrono-input').value=myPart.chrono||'';
   } else {
