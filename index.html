@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-title" content="La Fraise Athlétique">
   <meta name="theme-color" content="#ffffff">
   <title>La Fraise Athlétique du Taillan</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/libs/pptxgen.bundle.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1061,4 +1061,4 @@ async function addMember(){
 async function deleteMember(id){
   const m=members.find(x=>x.id===id);
   if(!confirm(`Retirer ${m.nom} du club ?`))return;
-  setSy
+  setSyncing('s
