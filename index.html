@@ -242,7 +242,8 @@
   <div class="content">
 
     <!-- COURSES -->
-    <div id="s-courses" class="section active">      <div class="install-banner" id="install-banner">
+    <div id="s-courses" class="section active">
+      <div class="install-banner" id="install-banner">
         <i class="ti ti-download" style="font-size:20px;color:var(--text);flex-shrink:0"></i>
         <div style="flex:1"><strong style="color:var(--text)">Installer l'app</strong> — Ajouter à l'écran d'accueil</div>
         <span onclick="dismissInstall()" style="cursor:pointer;color:var(--text3);font-size:18px;padding:4px">×</span>
@@ -252,7 +253,7 @@
           <span><span class="legend-dot" style="background:#1D9E75"></span>Inscrit</span>
           <span><span class="legend-dot" style="background:#EF9F27"></span>Intéressé</span>
         </div>
-        <select id="month-select" onchange="onMonthChange()" style="font-size:13px;padding:6px 10px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;max-width:150px">
+        <select id="month-select" onchange="renderRaces()" style="font-size:13px;padding:6px 10px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;max-width:150px">
           <option value="all">Tous les mois</option>
           <option value="01">Janvier</option>
           <option value="02">Février</option>
@@ -269,16 +270,6 @@
         </select>
       </div>
       <div id="race-list"></div>
-    </div>
-
-    <!-- HISTORIQUE -->
-    <div id="s-historique" class="section">
-      <div class="legend">
-        <span><span class="legend-dot" style="background:#1D9E75"></span>Inscrit</span>
-        <span><span class="legend-dot" style="background:#EF9F27"></span>Intéressé</span>
-        <span><span class="legend-dot" style="background:#185FA5"></span>Chrono</span>
-      </div>
-      <div id="history-list"></div>
     </div>
 
     <!-- MEMBRES -->
@@ -370,7 +361,6 @@
 
   <nav class="bottom-nav">
     <button class="nav-item active" id="nav-courses" onclick="switchTab('courses')"><i class="ti ti-calendar-event"></i><span>Courses</span></button>
-    <button class="nav-item" id="nav-historique" onclick="switchTab('historique')"><i class="ti ti-trophy"></i><span>Historique</span></button>
     <button class="nav-item" id="nav-membres" onclick="switchTab('membres')"><i class="ti ti-users"></i><span>Membres</span></button>
     <button class="nav-item" id="nav-ajouter" onclick="switchTab('ajouter')"><i class="ti ti-plus"></i><span>Ajouter</span></button>
   </nav>
@@ -539,21 +529,12 @@ async function loadAll(){
 
 // ── Rendu courses ──────────────────────────────────────────────────────────
 let selectedMonth='all';
-let _renderingRaces=false;
-
-function onMonthChange(){
-  const msel=document.getElementById('month-select');
-  if(msel) selectedMonth=msel.value;
-  renderRaces();
-}
 
 function renderRaces(){
-  if(_renderingRaces)return;
-  _renderingRaces=true;
-  const today=new Date(new Date().toDateString());
-  // Exclure les courses passées — elles vont dans l'historique
-  const upcoming=[...races].filter(r=>!r.date_course||new Date(r.date_course)>=today).sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
-  const filtered=selectedMonth==='all'?upcoming:upcoming.filter(r=>{
+  const msel=document.getElementById('month-select');
+  if(msel)selectedMonth=msel.value;
+  const sorted=[...races].sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
+  const filtered=selectedMonth==='all'?sorted:sorted.filter(r=>{
     if(!r.date_course)return false;
     return r.date_course.substring(5,7)===selectedMonth;
   });
@@ -629,7 +610,6 @@ function renderRaces(){
     ?`<div class="empty-state"><i class="ti ti-calendar-off"></i>Aucune course ce mois-là.</div>`
     :'<div class="empty-state"><i class="ti ti-calendar-off"></i>Aucune course. Ajoutez-en une !</div>';
   document.getElementById('race-list').innerHTML=html;
-  _renderingRaces=false;
 }
 
 // ── Modale participants ─────────────────────────────────────────────────────
@@ -698,66 +678,6 @@ async function saveChrono(){
   openParticipantsModal(currentParticipantsRaceId);
 }
 
-// ── Historique ──────────────────────────────────────────────────────────────
-function renderHistory(){
-  const today=new Date(new Date().toDateString());
-  const past=[...races].filter(r=>r.date_course&&new Date(r.date_course)<today).sort((a,b)=>new Date(b.date_course)-new Date(a.date_course));
-  const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-  let html='';
-  let currentMonth=null;
-  past.forEach(r=>{
-    const d=new Date(r.date_course);
-    const monthKey=`${MOIS[d.getMonth()]} ${d.getFullYear()}`;
-    if(monthKey!==currentMonth){
-      currentMonth=monthKey;
-      html+=`<div class="month-sep"><span class="month-sep-label">${monthKey}</span><div class="month-sep-line"></div></div>`;
-    }
-    const tc=r.type==='Trail'?'badge-trail':r.type==='Ultra'?'badge-ultra':'badge-route';
-    const dists=parseDists(r.distances||r.distance);
-    const distTags=dists.length>0?dists.map(d=>`<span class="dist-tag">${d} km</span>`).join(''):'<span class="dist-tag">— km</span>';
-    const rParts=participations.filter(p=>p.course_id===r.id);
-    const conf=rParts.filter(p=>p.statut==='confirmed');
-    const inter=rParts.filter(p=>p.statut==='interested');
-    const allP=[...conf,...inter];
-    const shown=allP.slice(0,4); const extra=allP.length-4;
-    const plat=detectPlat(r.url);
-    const ptag=plat?`<span class="platform-tag"><i class="ti ti-external-link" style="font-size:10px"></i>${plat.label}</span>`:'';
-    const avs=shown.map(p=>{const mbr=members.find(x=>x.id===p.membre_id);const name=mbr?.nom||'?';const bg=p.statut==='confirmed'?'#9FE1CB':'#FAC775';const tc2=p.statut==='confirmed'?'#085041':'#633806';return`<div class="av" style="background:${bg};color:${tc2}">${initials(name)}</div>`;}).join('');
-    // Chronos des inscrits
-    const chronos=conf.filter(p=>p.chrono).sort((a,b)=>a.chrono.localeCompare(b.chrono));
-    const chronoRows=chronos.map(p=>{const mbr=members.find(x=>x.id===p.membre_id);return`<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:0.5px solid var(--border)"><div style="display:flex;align-items:center;gap:7px"><div class="av-md" style="${avStyle(mbr?.nom||'?',22,22,8)}">${initials(mbr?.nom||'?')}</div><span style="font-size:12px;color:var(--text)">${mbr?.nom||'?'}</span></div><span class="chrono-badge"><i class="ti ti-stopwatch" style="font-size:11px"></i>${p.chrono}</span></div>`;}).join('');
-    const chronoSection=chronos.length>0?`<div style="padding:8px 14px 10px;border-top:0.5px solid var(--border)"><div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:6px"><i class="ti ti-stopwatch" style="font-size:11px;margin-right:3px"></i>Chronos</div>${chronoRows}</div>`:'';
-    const myPart=rParts.find(p=>p.membre_id===currentUserId);
-    const myS=myPart?.statut;
-    const myChronoBadge=myPart?.chrono?`<span class="chrono-badge" style="margin-left:6px"><i class="ti ti-stopwatch" style="font-size:11px"></i>${myPart.chrono}</span>`:'';
-    html+=`<div class="race-card past">
-      <div class="race-card-header">
-        <div>
-          <div class="race-name">${r.nom}${ptag}${myChronoBadge}</div>
-          <div class="race-dist">${distTags}</div>
-        </div>
-        <span class="badge ${tc}">${r.type}</span>
-      </div>
-      <div class="race-meta">
-        <div class="meta-item"><span class="meta-label">Course</span><span class="meta-val">${dateStr(r.date_course)}</span></div>
-        <div class="meta-item"><span class="meta-label">Inscrits</span><span class="meta-val">${conf.length}</span></div>
-        <div class="meta-item"><span class="meta-label">Chronos</span><span class="meta-val" style="color:var(--green-text)">${chronos.length}</span></div>
-      </div>
-      <hr class="divider">
-      <div class="card-bottom">
-        <div class="avatars-zone" onclick="openParticipantsModal('${r.id}')">
-          <div class="avatars">${avs}${extra>0?`<div class="av-more">+${extra}</div>`:''}</div>
-          <div class="part-label">${conf.length} inscrit${conf.length>1?'s':''} · ${inter.length} intéressé${inter.length>1?'s':''} · voir la liste</div>
-        </div>
-        ${r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="btn-link"><i class="ti ti-external-link" style="font-size:12px"></i>${plat?plat.label:'Site'}</a>`:''}
-      </div>
-      ${chronoSection}
-    </div>`;
-  });
-  if(!html) html='<div class="empty-state"><i class="ti ti-trophy"></i>Aucune course passée pour l\'instant.</div>';
-  document.getElementById('history-list').innerHTML=html;
-}
-
 // ── Rendu membres ───────────────────────────────────────────────────────────
 function renderMembers(){
   const totalConf=participations.filter(p=>p.statut==='confirmed').length;
@@ -821,8 +741,7 @@ function renderAll(){updateHeader();renderRaces();renderMembers();}
 
 // ── Navigation ──────────────────────────────────────────────────────────────
 function switchTab(tab){
-  ['courses','historique','membres','ajouter'].forEach(t=>{document.getElementById('s-'+t).classList.toggle('active',t===tab);document.getElementById('nav-'+t).classList.toggle('active',t===tab);});
-  if(tab==='historique')renderHistory();
+  ['courses','membres','ajouter'].forEach(t=>{document.getElementById('s-'+t).classList.toggle('active',t===tab);document.getElementById('nav-'+t).classList.toggle('active',t===tab);});
 }
 function switchSub(sub){
   document.getElementById('sub-s-course').style.display=sub==='course'?'block':'none';
@@ -1069,4 +988,10 @@ document.addEventListener('click',e=>{
 });
 
 // ── SQL migration hint (à exécuter une fois dans Supabase) ──────────────────
-// ALTER TABLE course
+// ALTER TABLE courses ADD COLUMN IF NOT EXISTS distances text;
+// ALTER TABLE participations ADD COLUMN IF NOT EXISTS distance integer;
+
+loadAll();
+</script>
+</body>
+</html>
