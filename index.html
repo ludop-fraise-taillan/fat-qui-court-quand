@@ -1196,92 +1196,95 @@ function openBilanModal(){
 
 function genererBilan(){
   const s = getSaisonData();
-  const html = `<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<title>Bilan FAT ${s.saisonLabel}</title>
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:Arial,sans-serif;font-size:11pt;color:#1a1a18;background:#fff;padding:20px}
-  h1{font-size:22pt;color:#C0001A;margin-bottom:4px}
-  h2{font-size:14pt;color:#C0001A;margin:24px 0 10px;border-bottom:2px solid #C0001A;padding-bottom:4px}
-  h3{font-size:11pt;color:#1a1a18;margin:12px 0 4px}
-  .subtitle{color:#6b6b67;font-size:11pt;margin-bottom:20px}
-  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-  .stat-box{border:1px solid #e0e0de;border-radius:8px;padding:12px;text-align:center}
-  .stat-val{font-size:28pt;font-weight:bold;line-height:1}
-  .stat-label{font-size:9pt;color:#6b6b67;margin-top:4px}
-  table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:10pt}
-  th{background:#1a1a18;color:#fff;padding:7px 8px;text-align:left;font-size:9pt}
-  td{padding:6px 8px;border-bottom:1px solid #e0e0de}
-  tr:nth-child(even) td{background:#f5f5f3}
-  .chrono{color:#185FA5;font-weight:bold}
-  .green{color:#085041;font-weight:bold}
-  .race-header{background:#f0faf5;border-left:4px solid #9FE1CB;padding:8px 10px;margin:10px 0 4px;font-weight:bold}
-  .race-meta{font-size:9pt;color:#6b6b67;margin-bottom:6px}
-  .chrono-list{margin-left:16px;margin-bottom:8px}
-  .chrono-item{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #e0e0de;font-size:10pt}
-  .footer{margin-top:30px;padding-top:10px;border-top:1px solid #e0e0de;font-size:9pt;color:#9e9e99;display:flex;justify-content:space-between}
-  @media print{body{padding:10px}.no-print{display:none}h2{page-break-before:auto}}
-</style>
-</head>
-<body>
-<div class="no-print" style="margin-bottom:20px;display:flex;gap:10px">
-  <button onclick="window.print()" style="padding:8px 16px;background:#C0001A;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12pt">🖨 Imprimer / Sauvegarder en PDF</button>
-  <button onclick="window.close()" style="padding:8px 16px;background:#f5f5f3;border:1px solid #ccc;border-radius:6px;cursor:pointer;font-size:12pt">✕ Fermer</button>
-</div>
+  const css = [
+    '*{box-sizing:border-box;margin:0;padding:0}',
+    'body{font-family:Arial,sans-serif;font-size:11pt;color:#1a1a18;padding:20px}',
+    'h1{font-size:20pt;color:#C0001A;margin-bottom:4px}',
+    'h2{font-size:13pt;color:#C0001A;margin:20px 0 8px;border-bottom:2px solid #C0001A;padding-bottom:4px}',
+    '.sub{color:#6b6b67;font-size:10pt;margin-bottom:18px}',
+    '.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}',
+    '.box{border:1px solid #e0e0de;border-radius:6px;padding:10px;text-align:center}',
+    '.bv{font-size:26pt;font-weight:bold;line-height:1}',
+    '.bl{font-size:9pt;color:#6b6b67;margin-top:3px}',
+    'table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:10pt}',
+    'th{background:#1a1a18;color:#fff;padding:6px 8px;text-align:left;font-size:9pt}',
+    'td{padding:5px 8px;border-bottom:1px solid #e0e0de}',
+    'tr:nth-child(even) td{background:#f5f5f3}',
+    '.rh{background:#f0faf5;border-left:4px solid #9FE1CB;padding:7px 10px;margin:10px 0 3px;font-weight:bold;font-size:10pt}',
+    '.rm{font-size:9pt;color:#6b6b67;margin-bottom:5px}',
+    '.cl{margin-left:14px;margin-bottom:6px}',
+    '.ci{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #eee;font-size:10pt}',
+    '.ch{color:#185FA5;font-weight:bold}',
+    '.gr{color:#085041;font-weight:bold}',
+    '.ft{margin-top:24px;padding-top:8px;border-top:1px solid #e0e0de;font-size:9pt;color:#9e9e99;display:flex;justify-content:space-between}',
+    '.np{margin-bottom:16px;display:flex;gap:10px}',
+    '@media print{.np{display:none}}'
+  ].join('');
 
-<h1>🍓 La Fraise Athlétique du Taillan</h1>
-<div class="subtitle">Bilan de la saison sportive ${s.saisonLabel} — Généré le ${new Date().toLocaleDateString('fr-FR')}</div>
+  var b = '';
+  b += '<div class="np">';
+  b += '<button onclick="window.print()" style="padding:7px 14px;background:#C0001A;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:11pt">Imprimer / PDF</button>';
+  b += '<button onclick="window.close()" style="padding:7px 14px;background:#f5f5f3;border:1px solid #ccc;border-radius:5px;cursor:pointer;font-size:11pt">Fermer</button>';
+  b += '</div>';
+  b += '<h1>La Fraise Athletique du Taillan</h1>';
+  b += '<div class="sub">Bilan saison ' + s.saisonLabel + ' - Genere le ' + new Date().toLocaleDateString('fr-FR') + '</div>';
+  b += '<h2>Statistiques globales</h2>';
+  b += '<div class="grid">';
+  b += '<div class="box"><div class="bv">' + s.totalCourses + '</div><div class="bl">Courses</div></div>';
+  b += '<div class="box"><div class="bv" style="color:#085041">' + s.totalInscrits + '</div><div class="bl">Inscrits</div></div>';
+  b += '<div class="box"><div class="bv" style="color:#633806">' + s.palmares.length + '</div><div class="bl">Coureurs actifs</div></div>';
+  b += '<div class="box"><div class="bv" style="color:#185FA5">' + s.totalChronos + '</div><div class="bl">Chronos</div></div>';
+  b += '</div>';
+  b += '<h2>Detail des courses</h2>';
+  if(s.courses.length === 0){
+    b += '<p style="color:#9e9e99;font-style:italic">Aucune course cette saison.</p>';
+  } else {
+    for(var ci=0; ci<s.courses.length; ci++){
+      var c = s.courses[ci];
+      b += '<div class="rh">' + c.nom + ' - ' + dateStr(c.date) + '</div>';
+      b += '<div class="rm">' + c.type + ' - ' + c.distances.join('/') + ' km - ' + c.inscrits + ' inscrit(s) - ' + c.interesses + ' interesse(s)</div>';
+      if(c.chronos.length > 0){
+        b += '<div class="cl">';
+        for(var k=0; k<c.chronos.length; k++){
+          b += '<div class="ci"><span>' + (k+1) + '. ' + c.chronos[k].nom + '</span><span class="ch">' + c.chronos[k].chrono + '</span></div>';
+        }
+        b += '</div>';
+      } else {
+        b += '<p style="font-size:9pt;color:#9e9e99;margin:0 0 8px 14px">Aucun chrono</p>';
+      }
+    }
+  }
+  b += '<h2>Palmares des coureurs</h2>';
+  if(s.palmares.length === 0){
+    b += '<p style="color:#9e9e99;font-style:italic">Aucun coureur actif.</p>';
+  } else {
+    b += '<table><tr><th>#</th><th>Coureur</th><th>Role</th><th>Courses</th><th>Chronos</th><th>Meilleur chrono</th></tr>';
+    for(var pi=0; pi<s.palmares.length; pi++){
+      var m = s.palmares[pi];
+      var sorted = m.chronos.slice().sort(function(a,b){return a.chrono.localeCompare(b.chrono);});
+      var best = sorted[0];
+      var bestTxt = best ? (best.course.length>22?best.course.slice(0,20)+'...':best.course)+' - '+best.chrono : '-';
+      var medal = pi===0?'[1] ':pi===1?'[2] ':pi===2?'[3] ':'';
+      b += '<tr>';
+      b += '<td style="color:#9e9e99">' + (pi+1) + '</td>';
+      b += '<td style="font-weight:' + (pi<3?'bold':'normal') + '">' + medal + m.nom + '</td>';
+      b += '<td style="color:#6b6b67">' + m.role + '</td>';
+      b += '<td class="gr" style="text-align:center">' + m.courses + '</td>';
+      b += '<td style="text-align:center;color:#185FA5">' + m.chronos.length + '</td>';
+      b += '<td class="ch">' + bestTxt + '</td>';
+      b += '</tr>';
+    }
+    b += '</table>';
+  }
+  b += '<div class="ft"><span>La Fraise Athletique du Taillan - Saison ' + s.saisonLabel + '</span><span>ludop-fraise-taillan.github.io/fat-qui-court-quand</span></div>';
 
-<h2>Statistiques globales</h2>
-<div class="stats-grid">
-  <div class="stat-box"><div class="stat-val">${s.totalCourses}</div><div class="stat-label">Courses disputées</div></div>
-  <div class="stat-box"><div class="stat-val" style="color:#085041">${s.totalInscrits}</div><div class="stat-label">Inscriptions confirmées</div></div>
-  <div class="stat-box"><div class="stat-val" style="color:#633806">${s.palmares.length}</div><div class="stat-label">Coureurs actifs</div></div>
-  <div class="stat-box"><div class="stat-val" style="color:#185FA5">${s.totalChronos}</div><div class="stat-label">Chronos enregistrés</div></div>
-</div>
-
-<h2>Détail des courses</h2>
-${s.courses.length===0?'<p style="color:#9e9e99;font-style:italic">Aucune course cette saison.</p>':
-  s.courses.map(c=>\`
-  <div class="race-header">\${c.nom} &nbsp;·&nbsp; \${dateStr(c.date)}</div>
-  <div class="race-meta">\${c.type} · \${c.distances.join(' / ')} km · \${c.inscrits} inscrit\${c.inscrits>1?'s':''} · \${c.interesses} intéressé\${c.interesses>1?'s':''}</div>
-  \${c.chronos.length>0?\`<div class="chrono-list">
-    \${c.chronos.map((ch,k)=>\`<div class="chrono-item"><span>\${k+1}. \${ch.nom}</span><span class="chrono">\${ch.chrono}</span></div>\`).join('')}
-  </div>\`:'<p style="font-size:9pt;color:#9e9e99;margin-bottom:8px;margin-left:16px">Aucun chrono enregistré</p>'}
-  \`).join('')
-}
-
-<h2>Palmarès des coureurs</h2>
-${s.palmares.length===0?'<p style="color:#9e9e99;font-style:italic">Aucun coureur actif cette saison.</p>':\`
-<table>
-  <tr><th>#</th><th>Coureur</th><th>Rôle</th><th>Courses</th><th>Chronos</th><th>Meilleur chrono</th></tr>
-  \${s.palmares.map((m,i)=>{
-    const best=m.chronos.sort((a,b)=>a.chrono.localeCompare(b.chrono))[0];
-    return \`<tr>
-      <td style="color:#9e9e99">\${i+1}</td>
-      <td style="font-weight:\${i<3?'bold':'normal'}">\${i===0?'🥇':i===1?'🥈':i===2?'🥉':''} \${m.nom}</td>
-      <td style="color:#6b6b67">\${m.role}</td>
-      <td class="green" style="text-align:center">\${m.courses}</td>
-      <td style="text-align:center;color:#185FA5">\${m.chronos.length}</td>
-      <td class="chrono">\${best?\`\${best.course.length>20?best.course.slice(0,18)+'…':best.course} — \${best.chrono}\`:'—'}</td>
-    </tr>\`;
-  }).join('')}
-</table>\`}
-
-<div class="footer">
-  <span>La Fraise Athlétique du Taillan — Saison ${s.saisonLabel}</span>
-  <span>ludop-fraise-taillan.github.io/fat-qui-court-quand</span>
-</div>
-</body></html>`;
-
-  const w = window.open('', '_blank', 'width=900,height=700');
+  var html = '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Bilan FAT ' + s.saisonLabel + '</title><style>' + css + '</style></head><body>' + b + '</body></html>';
+  var w = window.open('', '_blank', 'width=900,height=700');
   w.document.write(html);
   w.document.close();
-  showToast('Rapport généré ✓');
+  showToast('Rapport genere !');
 }
+
 
 // ── PWA ─────────────────────────────────────────────────────────────────────
 function dismissInstall(){document.getElementById('install-banner').classList.remove('show');localStorage.setItem('cr_install_dismissed','1');}
