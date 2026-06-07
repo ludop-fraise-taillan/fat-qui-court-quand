@@ -8,11 +8,11 @@
   <meta name="apple-mobile-web-app-title" content="La Fraise Athlétique">
   <meta name="theme-color" content="#ffffff">
   <title>La Fraise Athlétique du Taillan</title>
-  <link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.19.0/webfont/tabler-icons.min.css" crossorigin="anonymous">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍓</text></svg>">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/libs/pptxgen.bundle.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/pptxgenjs@3.12.0/libs/pptxgen.bundle.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
   <script>
     const manifestData = {
       name:"La Fraise Athlétique du Taillan",short_name:"La Fraise",start_url:".",display:"standalone",
@@ -1055,7 +1055,4 @@ async function addMember(){
   document.getElementById('m-prenom').value='';document.getElementById('m-nom').value='';document.getElementById('m-role').value='';
   document.getElementById('member-preview').style.display='none';
   showToast(`${fullName} ajouté(e) ✓`);
-  await loadAll();switchTab('membres');
-}
-
-// ── Suppression membre ───────────────────────────────────────
+  
