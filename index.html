@@ -252,7 +252,7 @@
           <span><span class="legend-dot" style="background:#1D9E75"></span>Inscrit</span>
           <span><span class="legend-dot" style="background:#EF9F27"></span>Intéressé</span>
         </div>
-        <select id="month-select" onchange="renderRaces()" style="font-size:13px;padding:6px 10px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;max-width:150px">
+        <select id="month-select" onchange="onMonthChange()" style="font-size:13px;padding:6px 10px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;max-width:150px">
           <option value="all">Tous les mois</option>
           <option value="01">Janvier</option>
           <option value="02">Février</option>
@@ -539,10 +539,17 @@ async function loadAll(){
 
 // ── Rendu courses ──────────────────────────────────────────────────────────
 let selectedMonth='all';
+let _renderingRaces=false;
+
+function onMonthChange(){
+  const msel=document.getElementById('month-select');
+  if(msel) selectedMonth=msel.value;
+  renderRaces();
+}
 
 function renderRaces(){
-  const msel=document.getElementById('month-select');
-  if(msel)selectedMonth=msel.value;
+  if(_renderingRaces)return;
+  _renderingRaces=true;
   const today=new Date(new Date().toDateString());
   // Exclure les courses passées — elles vont dans l'historique
   const upcoming=[...races].filter(r=>!r.date_course||new Date(r.date_course)>=today).sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
@@ -622,6 +629,7 @@ function renderRaces(){
     ?`<div class="empty-state"><i class="ti ti-calendar-off"></i>Aucune course ce mois-là.</div>`
     :'<div class="empty-state"><i class="ti ti-calendar-off"></i>Aucune course. Ajoutez-en une !</div>';
   document.getElementById('race-list').innerHTML=html;
+  _renderingRaces=false;
 }
 
 // ── Modale participants ─────────────────────────────────────────────────────
@@ -1061,10 +1069,4 @@ document.addEventListener('click',e=>{
 });
 
 // ── SQL migration hint (à exécuter une fois dans Supabase) ──────────────────
-// ALTER TABLE courses ADD COLUMN IF NOT EXISTS distances text;
-// ALTER TABLE participations ADD COLUMN IF NOT EXISTS distance integer;
-
-loadAll();
-</script>
-</body>
-</html>
+// ALTER TABLE course
