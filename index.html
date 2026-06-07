@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="La Fraise Athlétique">
+  <meta name="theme-color" content="#ffffff">
+  <title>La Fraise Athlétique du Taillan</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const manifestData = {
+      name:"La Fraise Athlétique du Taillan",short_name:"La Fraise",start_url:".",display:"standalone",
+      background_color:"#ffffff",theme_color:"#ffffff",
+      icons:[{src:"https://api.dicebear.com/7.x/shapes/svg?seed=running&size=192",sizes:"192x192",type:"image/svg+xml"},
+             {src:"https://api.dicebear.com/7.x/shapes/svg?seed=running&size=512",sizes:"512x512",type:"image/svg+xml"}]
+    };
+    const blob=new Blob([JSON.stringify(manifestData)],{type:'application/json'});
+    document.write('<link rel="manifest" href="'+URL.createObjectURL(blob)+'">');
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#ffffff;--bg2:#f5f5f3;--bg3:#efefec;
+      --text:#1a1a18;--text2:#6b6b67;--text3:#9e9e99;
+      --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);
+      --radius-md:8px;--radius-lg:12px;
+      --green-bg:#E1F5EE;--green-text:#085041;--green-border:#9FE1CB;
+      --amber-bg:#FAEEDA;--amber-text:#633806;--amber-border:#FAC775;
+      --red-text:#A32D2D;--orange-text:#854F0B;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{
+        --bg:#1c1c1a;--bg2:#262624;--bg3:#2e2e2b;
+        --text:#f0f0ec;--text2:#a8a8a2;--text3:#6b6b67;
+        --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
+        --green-bg:#04342C;--green-text:#9FE1CB;--green-border:#0F6E56;
+        --amber-bg:#412402;--amber-text:#FAC775;--amber-border:#854F0B;
+        --red-text:#F09595;--orange-text:#FAC775;
+      }
+    }
+    html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent}
+    .app-shell{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;background:var(--bg)}
+    .header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10}
+    .header-title{font-size:17px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+    .user-chip{display:flex;align-items:center;gap:6px;background:var(--bg2);border:0.5px solid var(--border);border-radius:99px;padding:5px 10px 5px 6px;cursor:pointer;font-size:13px;color:var(--text);position:relative;user-select:none}
+    .user-chip.open{background:var(--bg3);border-color:var(--border2)}
+    .user-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);width:240px;box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:50;overflow:hidden}
+    .user-dropdown.open{display:block}
+    .user-dropdown-search{padding:10px 12px;border-bottom:0.5px solid var(--border)}
+    .user-dropdown-search input{width:100%;font-size:13px;padding:7px 10px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);outline:none}
+    .user-dropdown-search input:focus{border-color:var(--border2);background:var(--bg)}
+    .user-dropdown-list{max-height:280px;overflow-y:auto;padding:4px 0}
+    .user-dropdown-item{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;transition:background 0.1s}
+    .user-dropdown-item:hover{background:var(--bg2)}
+    .user-dropdown-item.active{background:var(--bg2)}
+    .user-dropdown-item-name{flex:1;font-size:13px;color:var(--text);font-weight:500}
+    .user-dropdown-item-role{font-size:11px;color:var(--text3)}
+    .user-dropdown-letter{font-size:10px;font-weight:600;letter-spacing:0.08em;color:var(--text3);padding:6px 12px 2px;text-transform:uppercase}
+    .user-dropdown-empty{font-size:13px;color:var(--text3);text-align:center;padding:20px 0}
+    .av-xs{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0}
+    .content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;padding-bottom:90px}
+    .bottom-nav{display:flex;border-top:0.5px solid var(--border);background:var(--bg);position:sticky;bottom:0;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 8px;cursor:pointer;border:none;background:none;color:var(--text3);font-size:11px}
+    .nav-item i{font-size:22px}
+    .nav-item.active{color:var(--text);font-weight:500}
+    .section{display:none}.section.active{display:block}
+    .legend{display:flex;gap:14px;font-size:12px;color:var(--text2);margin-bottom:10px}
+    .month-sep{display:flex;align-items:center;gap:10px;margin:16px 0 10px}
+    .month-sep:first-child{margin-top:0}
+    .month-sep-label{font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;text-transform:uppercase;letter-spacing:0.08em}
+    .month-sep-line{flex:1;height:0.5px;background:var(--border2)}
+    .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
+
+    /* Race card */
+    .race-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);margin-bottom:12px;position:relative}
+    .race-card.past{background:#F0FAF5;border-color:#9FE1CB}
+    @media(prefers-color-scheme:dark){.race-card.past{background:#04342C;border-color:#0F6E56}}
+    .race-card.past .race-name{font-style:italic}
+    .race-card.past .race-dist .dist-tag{font-style:italic}
+    .past-badge{font-size:10px;font-weight:600;color:#085041;background:#C8EEE2;border:0.5px solid #9FE1CB;border-radius:99px;padding:2px 7px;margin-left:5px;vertical-align:middle;font-style:normal}
+    .chrono-badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500;color:#185FA5;background:#E6F1FB;border:0.5px solid #B5D4F4;border-radius:99px;padding:2px 8px}
+    .chrono-input-row{display:flex;gap:6px;align-items:center;margin-bottom:14px}
+    .chrono-input-row input{flex:1;font-size:16px;padding:9px 12px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);text-align:center;letter-spacing:0.05em}
+    .chrono-hint{font-size:11px;color:var(--text3);margin-bottom:14px;text-align:center}
+    .race-card.sold-out{opacity:0.82;background:var(--bg2);filter:grayscale(35%)}
+    .sold-out-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);pointer-events:none;z-index:5;user-select:none}
+    .race-card-header{display:flex;justify-content:space-between;align-items:flex-start;padding:14px 14px 10px}
+    .race-name{font-size:15px;font-weight:600;color:var(--text)}
+    .race-dist{font-size:12px;color:var(--text2);margin-top:4px;display:flex;gap:5px;flex-wrap:wrap}
+    .dist-tag{display:inline-flex;align-items:center;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--bg2);color:var(--text2);border:0.5px solid var(--border)}
+    .badge{font-size:11px;font-weight:500;padding:3px 9px;border-radius:99px;white-space:nowrap;flex-shrink:0}
+    .badge-trail{background:#EAF3DE;color:#3B6D11}
+    .badge-route{background:#E6F1FB;color:#185FA5}
+    .badge-ultra{background:#FAECE7;color:#993C1D}
+
+    /* Site preview thumbnail */
+
+
+    .race-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:10px 14px 12px}
+    .meta-item{display:flex;flex-direction:column;gap:2px}
+    .meta-label{font-size:10px;color:var(--text3)}
+    .meta-val{font-size:12px;font-weight:500;color:var(--text)}
+    .meta-val.urgent{color:var(--red-text)}
+    .meta-val.open-soon{color:var(--orange-text)}
+    .divider{border:none;border-top:0.5px solid var(--border);margin:0 14px 12px}
+    .card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:0 14px 14px}
+    .avatars-zone{display:flex;flex-direction:column;gap:4px;cursor:pointer}
+    .avatars-zone:active{opacity:0.7}
+    .avatars{display:flex;align-items:center}
+    .av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;border:2px solid var(--bg);margin-right:-8px}
+    .av-more{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text2);background:var(--bg2);border:0.5px solid var(--border);margin-left:12px}
+    .part-label{font-size:11px;color:var(--text2);margin-left:2px;text-decoration:underline dotted;text-underline-offset:3px}
+    .card-actions{display:flex;gap:6px;align-items:center}
+
+    /* Buttons */
+    .btn{font-size:13px;padding:7px 12px;border-radius:var(--radius-md);border:0.5px solid var(--border2);cursor:pointer;background:none;color:var(--text);display:inline-flex;align-items:center;gap:5px;white-space:nowrap;text-decoration:none}
+    .btn:active{opacity:0.7}
+    .btn-sm{font-size:12px;padding:5px 10px}
+    .btn-primary{background:var(--text);color:var(--bg);border-color:transparent}
+    .btn-link{font-size:12px;padding:5px 10px;border-radius:var(--radius-md);border:0.5px solid var(--border);cursor:pointer;background:none;color:var(--text2);display:inline-flex;align-items:center;gap:4px;text-decoration:none}
+    .platform-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 7px;border-radius:99px;border:0.5px solid var(--border);color:var(--text3);background:var(--bg2);margin-left:5px;vertical-align:middle}
+
+    /* Stats & members */
+    .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+    .stat-card{background:var(--bg2);border-radius:var(--radius-md);padding:12px 10px;text-align:center}
+    .stat-label{font-size:11px;color:var(--text2);margin-bottom:4px}
+    .stat-val{font-size:22px;font-weight:600;color:var(--text)}
+    .runner-row{display:flex;align-items:center;padding:12px 0;border-bottom:0.5px solid var(--border);gap:10px}
+    .av-md{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+    .runner-info{flex:1;min-width:0}
+    .runner-name{font-size:14px;font-weight:500;color:var(--text)}
+    .runner-sub{font-size:11px;color:var(--text2);margin-top:1px}
+    .runner-pills{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:150px}
+    .pill{font-size:10px;padding:2px 7px;border-radius:99px;background:var(--bg2);color:var(--text2);border:0.5px solid var(--border)}
+    .pill-c{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}
+    .pill-i{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border)}
+    .delete-btn{background:none;border:0.5px solid #F7C1C1;border-radius:var(--radius-md);color:#A32D2D;font-size:11px;padding:4px 8px;cursor:pointer;display:inline-flex;align-items:center;gap:3px;margin-top:4px}
+
+    /* Forms */
+    .form-section{background:var(--bg2);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px;border:0.5px solid var(--border)}
+    .form-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+    .form-field{margin-bottom:12px}
+    .form-field label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px}
+    .form-field input,.form-field select{width:100%;font-size:14px;padding:10px 12px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg);color:var(--text)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .platform-shortcuts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .platform-btn{font-size:11px;padding:5px 10px;border-radius:99px;border:0.5px solid var(--border);cursor:pointer;background:var(--bg2);color:var(--text2);display:inline-flex;align-items:center;gap:4px}
+
+    /* Distance tags input */
+    .dist-input-wrap{display:flex;gap:6px;align-items:center}
+    .dist-input-wrap input{flex:1}
+    .dist-tags-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;min-height:28px}
+    .dist-tag-edit{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:4px 10px;border-radius:99px;background:var(--bg);border:0.5px solid var(--border2);color:var(--text)}
+    .dist-tag-edit button{background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;line-height:1;padding:0;display:flex;align-items:center}
+    .dist-tag-edit button:hover{color:var(--red-text)}
+
+    .tab-sub{display:flex;gap:6px;margin-bottom:16px}
+    .tab-sub-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border);cursor:pointer;background:none;color:var(--text2);display:inline-flex;align-items:center;gap:5px}
+    .tab-sub-btn.active{background:var(--text);color:var(--bg);border-color:transparent}
+    .member-preview-box{display:none;margin-bottom:14px}
+    .member-preview-inner{display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--border);border-radius:var(--radius-md);background:var(--bg)}
+    .install-banner{display:none;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-md);padding:12px 14px;margin-bottom:14px;font-size:13px;color:var(--text2);align-items:center;gap:10px}
+    .install-banner.show{display:flex}
+    .empty-state{text-align:center;padding:40px 16px;color:var(--text2)}
+    .empty-state i{font-size:40px;display:block;margin-bottom:10px;color:var(--text3)}
+
+    /* Modals */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;align-items:flex-end;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--bg);border-radius:20px 20px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));width:100%;max-width:480px}
+    .modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px}
+    .modal-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px}
+    .modal-subtitle{font-size:12px;color:var(--text3);margin-bottom:16px}
+    .status-choice{display:flex;gap:8px;margin-bottom:12px}
+    .choice-btn{flex:1;padding:12px 8px;border-radius:var(--radius-md);border:1.5px solid var(--border);cursor:pointer;background:none;font-size:14px;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:6px}
+    .choice-btn.sel-i{border-color:#EF9F27;background:var(--amber-bg);color:var(--amber-text)}
+    .choice-btn.sel-c{border-color:#1D9E75;background:var(--green-bg);color:var(--green-text)}
+    .modal-hint{font-size:12px;color:var(--text3);margin-bottom:16px}
+    .modal-actions{display:flex;gap:8px;justify-content:flex-end}
+    .user-opt{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border);cursor:pointer}
+
+    /* Distance choice in participation modal */
+    .dist-choice-label{font-size:12px;color:var(--text2);margin-bottom:8px}
+    .dist-choice-list{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .dist-choice-btn{font-size:13px;padding:8px 14px;border-radius:99px;border:1.5px solid var(--border);cursor:pointer;background:none;color:var(--text2)}
+    .dist-choice-btn.sel{border-color:#1A5FA8;background:#E6F1FB;color:#1A5FA8;font-weight:500}
+
+    /* Participants modal */
+    .part-section-title{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);padding:14px 0 8px}
+    .part-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+    .part-row:last-child{border-bottom:none}
+    .part-row-name{flex:1;font-size:14px;color:var(--text)}
+    .part-row-sub{font-size:11px;color:var(--text3);margin-top:2px}
+    .status-pill{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500;white-space:nowrap}
+    .status-pill-c{background:var(--green-bg);color:var(--green-text);border:0.5px solid var(--green-border)}
+    .status-pill-i{background:var(--amber-bg);color:var(--amber-text);border:0.5px solid var(--amber-border)}
+    .part-empty{text-align:center;padding:24px 0;font-size:13px;color:var(--text3)}
+
+    /* Loader & toast */
+    .loader-overlay{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+    .loader-overlay.hidden{display:none}
+    .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--text);border-radius:50%;animation:spin 0.7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);font-size:13px;padding:10px 18px;border-radius:99px;opacity:0;transition:all 0.25s;z-index:300;white-space:nowrap;pointer-events:none}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .sync-dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;display:inline-block;margin-left:6px;vertical-align:middle}
+    .sync-dot.syncing{background:#EF9F27;animation:pulse 1s ease-in-out infinite}
+    .sync-dot.error{background:var(--red-text)}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  </style>
+</head>
+<body>
+
+<div class="loader-overlay" id="loader">
+  <div class="spinner"></div>
+  <div style="font-size:14px;color:var(--text2)">Chargement des données…</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<div class="app-shell">
+  <div class="header">
+    <div class="header-title">
+      <img src="data:image/jpeg;base64,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" alt="La Fraise Athlétique du Taillan" style="height:104px;width:auto;object-fit:contain">
+      <span class="sync-dot" id="sync-dot" style="margin-left:2px"></span>
+    </div>
+    <div class="user-chip" id="user-chip" onclick="toggleDropdown(event)">
+      <div class="av-xs" id="hdr-av"></div>
+      <span id="hdr-name"></span>
+      <i class="ti ti-chevron-down" id="chip-chevron" style="font-size:13px;color:var(--text3);transition:transform 0.2s"></i>
+      <div class="user-dropdown" id="user-dropdown" onclick="event.stopPropagation()">
+        <div class="user-dropdown-search">
+          <input type="text" id="member-search" placeholder="Rechercher un membre…" oninput="filterMembers()" autocomplete="off">
+        </div>
+        <div class="user-dropdown-list" id="user-dropdown-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- COURSES -->
+    <div id="s-courses" class="section active">
+      <div class="install-banner" id="install-banner">
+        <i class="ti ti-download" style="font-size:20px;color:var(--text);flex-shrink:0"></i>
+        <div style="flex:1"><strong style="color:var(--text)">Installer l'app</strong> — Ajouter à l'écran d'accueil</div>
+        <span onclick="dismissInstall()" style="cursor:pointer;color:var(--text3);font-size:18px;padding:4px">×</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div class="legend" style="margin-bottom:0">
+          <span><span class="legend-dot" style="background:#1D9E75"></span>Inscrit</span>
+          <span><span class="legend-dot" style="background:#EF9F27"></span>Intéressé</span>
+        </div>
+        <select id="month-select" onchange="renderRaces()" style="font-size:13px;padding:6px 10px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;max-width:150px">
+          <option value="all">Tous les mois</option>
+          <option value="01">Janvier</option>
+          <option value="02">Février</option>
+          <option value="03">Mars</option>
+          <option value="04">Avril</option>
+          <option value="05">Mai</option>
+          <option value="06">Juin</option>
+          <option value="07">Juillet</option>
+          <option value="08">Août</option>
+          <option value="09">Septembre</option>
+          <option value="10">Octobre</option>
+          <option value="11">Novembre</option>
+          <option value="12">Décembre</option>
+        </select>
+      </div>
+      <div id="race-list"></div>
+    </div>
+
+    <!-- MEMBRES -->
+    <div id="s-membres" class="section">
+      <div class="stats-grid" id="stats-grid"></div>
+      <div id="runner-list"></div>
+    </div>
+
+    <!-- AJOUTER -->
+    <div id="s-ajouter" class="section">
+      <div class="tab-sub">
+        <button class="tab-sub-btn active" id="sub-course" onclick="switchSub('course')"><i class="ti ti-flag" style="font-size:13px"></i>Course</button>
+        <button class="tab-sub-btn" id="sub-membre" onclick="switchSub('membre')"><i class="ti ti-user-plus" style="font-size:13px"></i>Membre</button>
+      </div>
+
+      <div id="sub-s-course">
+        <div class="form-section">
+          <div class="form-title"><i class="ti ti-flag" style="font-size:15px"></i>Nouvelle course</div>
+          <div class="form-field"><label>Nom de la course</label><input type="text" id="f-name" placeholder="ex. Trail des Landes"></div>
+          <div class="form-field">
+            <label>Type</label>
+            <select id="f-type"><option>Trail</option><option>Route</option><option>Ultra</option></select>
+          </div>
+          <div class="form-field">
+            <label>Distances disponibles (km)</label>
+            <div class="dist-input-wrap">
+              <input type="number" id="f-dist-input" placeholder="ex. 21" inputmode="numeric" onkeydown="if(event.key==='Enter'){event.preventDefault();addDistTag()}">
+              <button class="btn btn-sm btn-primary" onclick="addDistTag()" type="button"><i class="ti ti-plus" style="font-size:13px"></i>Ajouter</button>
+            </div>
+            <div class="dist-tags-list" id="f-dist-tags"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label>Date course</label><input type="date" id="f-date"></div>
+            <div class="form-field"><label>Limite inscr.</label><input type="date" id="f-limit"></div>
+          </div>
+          <div class="form-field"><label>Ouverture inscr.</label><input type="date" id="f-open"></div>
+          <div class="form-field">
+            <label>Lien officiel</label>
+            <input type="url" id="f-url" placeholder="https://..." inputmode="url">
+            <div class="platform-shortcuts">
+              <button class="platform-btn" onclick="setUrl('https://www.protiming.fr')"><i class="ti ti-external-link" style="font-size:11px"></i>Protiming</button>
+              <button class="platform-btn" onclick="setUrl('https://www.finishers.com')"><i class="ti ti-external-link" style="font-size:11px"></i>Finishers</button>
+              <button class="platform-btn" onclick="setUrl('https://www.time-to.com')"><i class="ti ti-external-link" style="font-size:11px"></i>TimeToRun</button>
+              <button class="platform-btn" onclick="setUrl('https://www.kalenji-running.com')"><i class="ti ti-external-link" style="font-size:11px"></i>Kalenji</button>
+              <button class="platform-btn" onclick="setUrl('https://www.utmb.world')"><i class="ti ti-external-link" style="font-size:11px"></i>UTMB</button>
+            </div>
+
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:4px">
+            <button class="btn btn-primary" id="btn-add-race" onclick="addRace()"><i class="ti ti-plus" style="font-size:13px"></i>Ajouter la course</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="sub-s-membre" style="display:none">
+        <div class="form-section">
+          <div class="form-title"><i class="ti ti-user-plus" style="font-size:15px"></i>Nouveau membre</div>
+          <div class="form-row">
+            <div class="form-field"><label>Prénom</label><input type="text" id="m-prenom" placeholder="ex. Lucas" oninput="updatePreview()"></div>
+            <div class="form-field"><label>Nom</label><input type="text" id="m-nom" placeholder="ex. Martin" oninput="updatePreview()"></div>
+          </div>
+          <div class="form-field">
+            <label>Rôle <span style="color:var(--text3);font-size:11px">(optionnel)</span></label>
+            <select id="m-role" onchange="updatePreview()">
+              <option value="">Coureur</option>
+              <option value="Bureau">Bureau</option>
+              <option value="Bénévole">Bénévole</option>
+              <option value="Coach">Coach</option>
+            </select>
+          </div>
+          <div class="member-preview-box" id="member-preview">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Aperçu</div>
+            <div class="member-preview-inner">
+              <div class="av-md" id="prev-av"></div>
+              <div>
+                <div id="prev-name" style="font-size:14px;font-weight:500;color:var(--text)"></div>
+                <div id="prev-role" style="font-size:12px;color:var(--text2)"></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:flex-end">
+            <button class="btn btn-primary" id="btn-add-member" onclick="addMember()"><i class="ti ti-user-plus" style="font-size:13px"></i>Ajouter au club</button>
+          </div>
+        </div>
+        <div id="member-list-preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="nav-courses" onclick="switchTab('courses')"><i class="ti ti-calendar-event"></i><span>Courses</span></button>
+    <button class="nav-item" id="nav-membres" onclick="switchTab('membres')"><i class="ti ti-users"></i><span>Membres</span></button>
+    <button class="nav-item" id="nav-ajouter" onclick="switchTab('ajouter')"><i class="ti ti-plus"></i><span>Ajouter</span></button>
+  </nav>
+</div>
+
+<!-- Modal : liste des participants -->
+<div class="modal-overlay" id="modal-participants">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="mp-race-name"></div>
+    <div class="modal-subtitle" id="mp-race-sub"></div>
+    <div id="mp-body" style="max-height:55vh;overflow-y:auto"></div>
+    <div id="mp-chrono-section" style="display:none;border-top:0.5px solid var(--border);margin-top:4px;padding-top:14px">
+      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.07em"><i class="ti ti-stopwatch" style="font-size:13px;margin-right:4px"></i>Mon chrono</div>
+      <div class="chrono-input-row">
+        <input type="text" id="mp-chrono-input" placeholder="HH:MM:SS" maxlength="8" oninput="formatChronoInput(this)">
+        <button class="btn btn-primary btn-sm" onclick="saveChrono()"><i class="ti ti-check" style="font-size:13px"></i>Enregistrer</button>
+      </div>
+      <div class="chrono-hint">Format : heures:minutes:secondes — ex. 01:45:32</div>
+    </div>
+    <div style="margin-top:16px">
+      <button class="btn" style="width:100%;justify-content:center" onclick="closeModal('modal-participants')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal : confirmation identité avant inscription -->
+<div class="modal-overlay" id="modal-confirm-identity">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Confirmer votre identité</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">
+      Vous allez indiquer une participation au nom de :
+    </div>
+    <div id="confirm-identity-member" style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg2);border-radius:var(--radius-md);border:0.5px solid var(--border);margin-bottom:20px"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn" style="flex:1;justify-content:center" onclick="openUserModal();closeModal('modal-confirm-identity')">
+        <i class="ti ti-pencil" style="font-size:13px"></i>Modifier le membre
+      </button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" id="btn-confirm-identity" onclick="confirmIdentityAndProceed()">
+        <i class="ti ti-check" style="font-size:13px"></i>C'est bien moi
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal : participation -->
+<div class="modal-overlay" id="modal-part">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-race-name"></div>
+    <div class="modal-subtitle" id="modal-race-sub"></div>
+    <div class="status-choice">
+      <button class="choice-btn" id="btn-i" onclick="selectStatus('interested')"><i class="ti ti-star" style="font-size:16px"></i>Intéressé(e)</button>
+      <button class="choice-btn" id="btn-c" onclick="selectStatus('confirmed')"><i class="ti ti-check" style="font-size:16px"></i>Inscrit(e)</button>
+    </div>
+    <p class="modal-hint">Intéressé = je pense y aller · Inscrit = dossard confirmé</p>
+    <div id="modal-dist-section" style="display:none;margin-bottom:16px">
+      <div class="dist-choice-label">Sur quelle distance ?</div>
+      <div class="dist-choice-list" id="modal-dist-list"></div>
+    </div>
+    <div id="modal-link-row" style="margin-bottom:14px"></div>
+    <!-- Toggle Sold Out -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:0.5px solid var(--border);margin-bottom:14px">
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--text)">Marquer comme complet</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">Les inscriptions sont fermées / sold out</div>
+      </div>
+      <label style="position:relative;display:inline-flex;align-items:center;cursor:pointer">
+        <input type="checkbox" id="sold-out-toggle" style="opacity:0;position:absolute;width:0;height:0" onchange="toggleSoldOut()">
+        <div id="sold-out-track" style="width:44px;height:24px;border-radius:99px;background:var(--bg3);border:0.5px solid var(--border2);transition:background 0.2s;display:flex;align-items:center;padding:2px">
+          <div id="sold-out-thumb" style="width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 3px rgba(0,0,0,0.2);transition:transform 0.2s;transform:translateX(0)"></div>
+        </div>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sm" onclick="removeStatus()"><i class="ti ti-trash" style="font-size:13px"></i>Retirer</button>
+      <button class="btn btn-sm" onclick="closeModal('modal-part')">Annuler</button>
+      <button class="btn btn-primary btn-sm" id="btn-save-status" onclick="saveStatus()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+const SUPA_URL='https://aidwojrhsusnrrbhsdoc.supabase.co';
+const SUPA_KEY='sb_publishable_ndi8m4e_0LXlbSD_tcxX4w__9e1l5wN';
+const {createClient}=supabase;
+const db=createClient(SUPA_URL,SUPA_KEY);
+
+const COLORS=['#9FE1CB','#FAC775','#B5D4F4','#F4C0D1','#C0DD97','#F5C4B3','#CECBF6','#D3D1C7','#85B7EB','#5DCAA5','#F0997B','#ED93B1'];
+const TCOLORS=['#085041','#633806','#0C447C','#72243E','#27500A','#712B13','#3C3489','#444441','#042C53','#04342C','#4A1B0C','#4B1528'];
+const PLATFORMS=[{label:'Protiming',domain:'protiming.fr'},{label:'Finishers',domain:'finishers.com'},{label:'TimeToRun',domain:'time-to.com'},{label:'Kalenji',domain:'kalenji'},{label:'UTMB',domain:'utmb.world'}];
+
+
+
+let members=[],races=[],participations=[];
+let currentUserId=localStorage.getItem('cr_uid')||null;
+let modalRaceId=null,modalStatus=null,modalDistSelected=null;
+let formDistances=[]; // distances en cours de saisie
+
+function ci(name){let h=0;for(let c of name)h=(h*31+c.charCodeAt(0))%COLORS.length;return h;}
+function initials(name){return name.split(' ').map(p=>p[0]).join('').toUpperCase().slice(0,2);}
+function dateStr(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`;}
+function daysUntil(d){if(!d)return null;return Math.ceil((new Date(d)-new Date())/86400000);}
+function detectPlat(url){if(!url)return null;return PLATFORMS.find(p=>url.includes(p.domain))||null;}
+function avStyle(name,w=36,h=36,fs=13){const i=ci(name);return`background:${COLORS[i]};color:${TCOLORS[i]};width:${w}px;height:${h}px;font-size:${fs}px;`;}
+function currentMember(){return members.find(m=>m.id===currentUserId);}
+function currentName(){return currentMember()?.nom||'?';}
+function parseDists(raw){
+  if(!raw)return[];
+  if(Array.isArray(raw))return raw.map(Number).filter(Boolean).sort((a,b)=>a-b);
+  try{const p=JSON.parse(raw);return Array.isArray(p)?p.map(Number).filter(Boolean).sort((a,b)=>a-b):[Number(raw)].filter(Boolean);}
+  catch{return[Number(raw)].filter(Boolean);}
+}
+function setSyncing(s){const d=document.getElementById('sync-dot');d.className='sync-dot'+(s==='syncing'?' syncing':s==='error'?' error':'');}
+function showToast(msg,ms=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
+
+
+
+// ── Distances — formulaire ─────────────────────────────────────────────────
+function addDistTag(){
+  const inp=document.getElementById('f-dist-input');
+  const val=parseInt(inp.value);
+  if(!val||val<=0){inp.focus();return;}
+  if(!formDistances.includes(val)){
+    formDistances.push(val);
+    formDistances.sort((a,b)=>a-b);
+  }
+  inp.value='';
+  renderDistTags();
+  inp.focus();
+}
+function removeDistTag(val){
+  formDistances=formDistances.filter(d=>d!==val);
+  renderDistTags();
+}
+function renderDistTags(){
+  document.getElementById('f-dist-tags').innerHTML=formDistances.map(d=>
+    `<span class="dist-tag-edit">${d} km<button onclick="removeDistTag(${d})" type="button">×</button></span>`
+  ).join('');
+}
+function resetDistTags(){formDistances=[];renderDistTags();}
+
+// ── URL preview ────────────────────────────────────────────────────────────
+function setUrl(u){document.getElementById('f-url').value=u;}
+
+// ── Chargement ─────────────────────────────────────────────────────────────
+async function loadAll(){
+  setSyncing('syncing');
+  try{
+    const[{data:m},{data:r},{data:p}]=await Promise.all([
+      db.from('membres').select('*').order('created_at'),
+      db.from('courses').select('*').order('date_course'),
+      db.from('participations').select('*'),
+    ]);
+    members=m||[];races=r||[];participations=p||[];
+    console.log('🍓 Courses reçues:', races.map(c=>({nom:c.nom,sold_out:c.sold_out,type:typeof c.sold_out})));
+    if(currentUserId&&!members.find(m=>m.id===currentUserId)){currentUserId=members[0]?.id||null;localStorage.setItem('cr_uid',currentUserId);}
+    if(!currentUserId&&members.length>0){currentUserId=members[0].id;localStorage.setItem('cr_uid',currentUserId);}
+    setSyncing('ok');
+  }catch(e){setSyncing('error');showToast('⚠️ Erreur de connexion');}
+  document.getElementById('loader').classList.add('hidden');
+  renderAll();
+}
+
+// ── Rendu courses ──────────────────────────────────────────────────────────
+let selectedMonth='all';
+
+function renderRaces(){
+  const msel=document.getElementById('month-select');
+  if(msel)selectedMonth=msel.value;
+  const sorted=[...races].sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
+  const filtered=selectedMonth==='all'?sorted:sorted.filter(r=>{
+    if(!r.date_course)return false;
+    return r.date_course.substring(5,7)===selectedMonth;
+  });
+  const mnames=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  let currentMonth=null;
+  let html='';
+  filtered.forEach(r=>{
+    // Séparateur de mois
+    if(r.date_course){
+      const d=new Date(r.date_course);
+      const monthKey=`${MOIS[d.getMonth()]} ${d.getFullYear()}`;
+      if(monthKey!==currentMonth){
+        currentMonth=monthKey;
+        html+=`<div class="month-sep"><span class="month-sep-label">${monthKey}</span><div class="month-sep-line"></div></div>`;
+      }
+    }
+    const tc=r.type==='Trail'?'badge-trail':r.type==='Ultra'?'badge-ultra':'badge-route';
+    const dists=parseDists(r.distances||r.distance);
+    const rParts=participations.filter(p=>p.course_id===r.id);
+    const conf=rParts.filter(p=>p.statut==='confirmed');
+    const inter=rParts.filter(p=>p.statut==='interested');
+    const allP=[...conf,...inter];
+    const shown=allP.slice(0,4);const extra=allP.length-4;
+    const dtl=daysUntil(r.date_limite),dto=daysUntil(r.date_ouverture);
+    const lc=dtl!==null&&dtl<14?'urgent':'';
+    const oc=dto!==null&&dto>0&&dto<30?'open-soon':'';
+    const myPart=rParts.find(p=>p.membre_id===currentUserId);
+    const myS=myPart?.statut;
+    const bl=myS==='confirmed'?'Inscrit ✓':myS==='interested'?'Intéressé ★':'Participer ?';
+    const bs=myS==='confirmed'?'background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)':myS==='interested'?'background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border)':'';
+    const plat=detectPlat(r.url);
+    const ptag=plat?`<span class="platform-tag"><i class="ti ti-external-link" style="font-size:10px"></i>${plat.label}</span>`:'';
+    const distTags=dists.length>0?dists.map(d=>`<span class="dist-tag">${d} km</span>`).join(''):'<span class="dist-tag">— km</span>';
+    const avs=shown.map(p=>{const mbr=members.find(x=>x.id===p.membre_id);const name=mbr?.nom||'?';const bg=p.statut==='confirmed'?'#9FE1CB':'#FAC775';const tc2=p.statut==='confirmed'?'#085041':'#633806';return`<div class="av" style="background:${bg};color:${tc2}">${initials(name)}</div>`;}).join('');
+    const lb=r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="btn-link"><i class="ti ti-external-link" style="font-size:12px"></i>${plat?plat.label:'Site'}</a>`:'';
+    const isSoldOut=!!(r.sold_out===true||r.sold_out==='true'||r.sold_out===1||r.sold_out==='t');
+    const isPast=r.date_course&&new Date(r.date_course)<new Date(new Date().toDateString());
+    const soldOutStamp=isSoldOut?`<div class="sold-out-stamp"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMjAgOTAiIHdpZHRoPSIyMjAiIGhlaWdodD0iOTAiPgogIDxyZWN0IHg9IjMiIHk9IjMiIHdpZHRoPSIyMTQiIGhlaWdodD0iODQiIHJ4PSI2IiBmaWxsPSJub25lIiBzdHJva2U9IiNDMDAwMUEiIHN0cm9rZS13aWR0aD0iNC41Ii8+CiAgPHJlY3QgeD0iMTEiIHk9IjExIiB3aWR0aD0iMTk4IiBoZWlnaHQ9IjY4IiByeD0iMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzAwMDFBIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC40NSIvPgogIDx0ZXh0IHg9IjExMCIgeT0iNTciIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjI4IiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjQzAwMDFBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iNCI+U09MRCBPVVQ8L3RleHQ+Cjwvc3ZnPg==" alt="SOLD OUT" style="width:110px;height:auto;opacity:0.9"></div>`:'';
+    const soldOutBadge=isSoldOut?`<span style="font-size:10px;font-weight:600;color:#C0001A;background:#FCEBEB;border:0.5px solid #F7C1C1;border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:middle;font-style:normal">COMPLET</span>`:'';
+    const pastBadge=isPast&&!isSoldOut?`<span class="past-badge">Passée</span>`:'';
+    // Chrono de l'utilisateur courant sur cette course
+    const myPart2=participations.find(p=>p.membre_id===currentUserId&&p.course_id===r.id);
+    const myChronoBadge=myPart2?.chrono?`<span class="chrono-badge"><i class="ti ti-stopwatch" style="font-size:11px"></i>${myPart2.chrono}</span>`:'';
+    html+=`<div class="race-card${isSoldOut?' sold-out':isPast?' past':''}">
+      ${soldOutStamp}
+      <div class="race-card-header">
+        <div>
+          <div class="race-name">${r.nom}${ptag}${soldOutBadge}${pastBadge}</div>
+          <div class="race-dist">${distTags}${myChronoBadge?`<span style="margin-left:4px">${myChronoBadge}</span>`:''}</div>
+        </div>
+        <span class="badge ${tc}">${r.type}</span>
+      </div>
+      <div class="race-meta">
+        <div class="meta-item"><span class="meta-label">Course</span><span class="meta-val">${dateStr(r.date_course)}</span></div>
+        <div class="meta-item"><span class="meta-label">Limite</span><span class="meta-val ${lc}">${dateStr(r.date_limite)}${dtl!==null&&dtl<14&&dtl>=0?' J-'+dtl:''}</span></div>
+        <div class="meta-item"><span class="meta-label">Ouverture</span><span class="meta-val ${oc}">${dto!==null&&dto>0?'J-'+dto:dateStr(r.date_ouverture)}</span></div>
+      </div>
+      <hr class="divider">
+      <div class="card-bottom">
+        <div class="avatars-zone" onclick="openParticipantsModal('${r.id}')">
+          <div class="avatars">${avs}${extra>0?`<div class="av-more">+${extra}</div>`:''}</div>
+          <div class="part-label">${conf.length} inscrit${conf.length>1?'s':''} · ${inter.length} intéressé${inter.length>1?'s':''} · voir la liste</div>
+        </div>
+        <div class="card-actions">
+          ${lb}
+          <button class="btn btn-sm" style="${bs}" onclick="openModal('${r.id}')">${bl}</button>
+        </div>
+      </div>
+    </div>`;
+  });
+  if(!html)html=selectedMonth!=='all'
+    ?`<div class="empty-state"><i class="ti ti-calendar-off"></i>Aucune course ce mois-là.</div>`
+    :'<div class="empty-state"><i class="ti ti-calendar-off"></i>Aucune course. Ajoutez-en une !</div>';
+  document.getElementById('race-list').innerHTML=html;
+}
+
+// ── Modale participants ─────────────────────────────────────────────────────
+let currentParticipantsRaceId=null;
+
+function openParticipantsModal(raceId){
+  currentParticipantsRaceId=raceId;
+  const r=races.find(x=>x.id===raceId);
+  const rParts=participations.filter(p=>p.course_id===raceId);
+  const conf=rParts.filter(p=>p.statut==='confirmed');
+  const inter=rParts.filter(p=>p.statut==='interested');
+  const isPast=r.date_course&&new Date(r.date_course)<new Date(new Date().toDateString());
+  document.getElementById('mp-race-name').textContent=r.nom;
+  const dists=parseDists(r.distances||r.distance);
+  document.getElementById('mp-race-sub').textContent=`${dists.length>0?dists.join(' · ')+' km':''} · ${r.type} · ${dateStr(r.date_course)}`;
+  let html='';
+  html+=`<div class="part-section-title"><i class="ti ti-check" style="font-size:12px;margin-right:4px;color:var(--green-text)"></i>Inscrits (${conf.length})</div>`;
+  if(conf.length===0){html+='<div class="part-empty">Aucun inscrit pour l\'instant</div>';}
+  else{conf.forEach(p=>{
+    const mbr=members.find(x=>x.id===p.membre_id);const name=mbr?.nom||'?';const role=mbr?.role||'Coureur';
+    const distLabel=p.distance?` · ${p.distance} km`:'';
+    const chronoBadge=p.chrono?`<span class="chrono-badge"><i class="ti ti-stopwatch" style="font-size:11px"></i>${p.chrono}</span>`:'';
+    html+=`<div class="part-row"><div class="av-md" style="${avStyle(name)}">${initials(name)}</div><div style="flex:1"><div class="part-row-name">${name}</div><div class="part-row-sub">${role}${distLabel}</div></div>${chronoBadge}<span class="status-pill status-pill-c" style="margin-left:6px">Inscrit ✓</span></div>`;
+  });}
+  html+=`<div class="part-section-title" style="margin-top:4px"><i class="ti ti-star" style="font-size:12px;margin-right:4px;color:var(--amber-text)"></i>Intéressés (${inter.length})</div>`;
+  if(inter.length===0){html+='<div class="part-empty">Aucun intéressé pour l\'instant</div>';}
+  else{inter.forEach(p=>{const mbr=members.find(x=>x.id===p.membre_id);const name=mbr?.nom||'?';const role=mbr?.role||'Coureur';const distLabel=p.distance?` · ${p.distance} km`:'';html+=`<div class="part-row"><div class="av-md" style="${avStyle(name)}">${initials(name)}</div><div style="flex:1"><div class="part-row-name">${name}</div><div class="part-row-sub">${role}${distLabel}</div></div><span class="status-pill status-pill-i">Intéressé ★</span></div>`;});}
+  if(conf.length===0&&inter.length===0){html='<div class="part-empty" style="padding:32px 0"><i class="ti ti-user-off" style="font-size:32px;display:block;margin-bottom:8px;color:var(--text3)"></i>Aucune participation enregistrée</div>';}
+  document.getElementById('mp-body').innerHTML=html;
+  // Section chrono — visible seulement si la course est passée et que l'utilisateur est inscrit
+  const myPart=participations.find(p=>p.membre_id===currentUserId&&p.course_id===raceId);
+  const chronoSection=document.getElementById('mp-chrono-section');
+  if(isPast&&myPart){
+    chronoSection.style.display='block';
+    document.getElementById('mp-chrono-input').value=myPart.chrono||'';
+  } else {
+    chronoSection.style.display='none';
+  }
+  document.getElementById('modal-participants').classList.add('open');
+}
+
+// ── Chrono ──────────────────────────────────────────────────────────────────
+function formatChronoInput(inp){
+  let v=inp.value.replace(/[^0-9]/g,'');
+  if(v.length>6)v=v.slice(0,6);
+  if(v.length>4) v=v.slice(0,2)+':'+v.slice(2,4)+':'+v.slice(4);
+  else if(v.length>2) v=v.slice(0,2)+':'+v.slice(2);
+  inp.value=v;
+}
+
+async function saveChrono(){
+  const val=document.getElementById('mp-chrono-input').value.trim();
+  if(!val){showToast('Saisis un chrono (ex. 01:45:32)');return;}
+  const re=/^\d{2}:\d{2}:\d{2}$/;
+  if(!re.test(val)){showToast('Format invalide — utilise HH:MM:SS');return;}
+  setSyncing('syncing');
+  const existing=participations.find(p=>p.membre_id===currentUserId&&p.course_id===currentParticipantsRaceId);
+  if(!existing){showToast('Tu dois être inscrit pour enregistrer un chrono');setSyncing('ok');return;}
+  const{error}=await db.from('participations').update({chrono:val}).eq('id',existing.id);
+  if(error){setSyncing('error');showToast('⚠️ Erreur');return;}
+  setSyncing('ok');showToast('Chrono enregistré ✓');
+  await loadAll();
+  openParticipantsModal(currentParticipantsRaceId);
+}
+
+// ── Rendu membres ───────────────────────────────────────────────────────────
+function renderMembers(){
+  const totalConf=participations.filter(p=>p.statut==='confirmed').length;
+  const totalInter=participations.filter(p=>p.statut==='interested').length;
+  document.getElementById('stats-grid').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Membres</div><div class="stat-val">${members.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Courses</div><div class="stat-val">${races.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Inscrits</div><div class="stat-val" style="color:#1D9E75">${totalConf}</div></div>
+    <div class="stat-card"><div class="stat-label">Intéressés</div><div class="stat-val" style="color:#EF9F27">${totalInter}</div></div>
+  `;
+  // Utilisateur courant en tête, reste trié alphabétiquement
+  const me = members.find(m=>m.id===currentUserId);
+  const others = members.filter(m=>m.id!==currentUserId).sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
+  const sorted = me ? [me, ...others] : others;
+
+  function memberRow(m){
+    const isMe = m.id===currentUserId;
+    const mParts=participations.filter(p=>p.membre_id===m.id);
+    const confCount=mParts.filter(p=>p.statut==='confirmed').length;
+    const pills=mParts.map(p=>{const r=races.find(x=>x.id===p.course_id);if(!r)return'';const distLabel=p.distance?` ${p.distance}km`:'';return`<span class="pill ${p.statut==='confirmed'?'pill-c':'pill-i'}">${r.nom.length>10?r.nom.slice(0,8)+'…':r.nom}${distLabel}</span>`;}).join('');
+    return `<div class="runner-row" style="${isMe?'background:var(--bg2);margin:0 -4px;padding:12px 4px;border-radius:var(--radius-md)':''}">
+      <div class="av-md" style="${avStyle(m.nom)}">${initials(m.nom)}</div>
+      <div class="runner-info">
+        <div class="runner-name">${m.nom}${isMe?` <span style="font-size:10px;font-weight:500;color:var(--text3);background:var(--bg3);border-radius:99px;padding:1px 7px;margin-left:4px">moi</span>`:''}</div>
+        <div class="runner-sub">${m.role||'Coureur'} · ${confCount} inscr.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="runner-pills">${pills||'<span style="font-size:11px;color:var(--text3)">—</span>'}</div>
+        <button class="delete-btn" onclick="deleteMember('${m.id}')"><i class="ti ti-trash" style="font-size:11px"></i>Retirer</button>
+      </div>
+    </div>`;
+  }
+
+  let html='';
+  if(me) html += memberRow(me);
+  if(me && others.length>0){
+    html+=`<div style="display:flex;align-items:center;gap:10px;margin:10px 0 6px">
+      <span style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap">Tous les membres</span>
+      <div style="flex:1;height:0.5px;background:var(--border2)"></div>
+    </div>`;
+  }
+  others.forEach(m=>{ html+=memberRow(m); });
+  if(!html) html='<div class="empty-state"><i class="ti ti-users"></i>Aucun membre.</div>';
+  document.getElementById('runner-list').innerHTML=html;
+}
+
+function renderMemberListPreview(){
+  let html=`<div style="font-size:12px;color:var(--text2);margin-bottom:8px">${members.length} membre${members.length>1?'s':''} dans le club</div>`;
+  members.forEach(m=>{html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)"><div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div><span style="font-size:13px;color:var(--text);flex:1">${m.nom}</span><span style="font-size:11px;color:var(--text3)">${m.role||'Coureur'}</span></div>`;});
+  document.getElementById('member-list-preview').innerHTML=html;
+}
+
+function updateHeader(){
+  const name=currentName();
+  const el=document.getElementById('hdr-av');
+  el.style.cssText=avStyle(name,22,22,9)+'border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;';
+  el.textContent=initials(name);
+  document.getElementById('hdr-name').textContent=name.split(' ')[0];
+}
+function renderAll(){updateHeader();renderRaces();renderMembers();}
+
+// ── Navigation ──────────────────────────────────────────────────────────────
+function switchTab(tab){
+  ['courses','membres','ajouter'].forEach(t=>{document.getElementById('s-'+t).classList.toggle('active',t===tab);document.getElementById('nav-'+t).classList.toggle('active',t===tab);});
+}
+function switchSub(sub){
+  document.getElementById('sub-s-course').style.display=sub==='course'?'block':'none';
+  document.getElementById('sub-s-membre').style.display=sub==='membre'?'block':'none';
+  document.getElementById('sub-course').classList.toggle('active',sub==='course');
+  document.getElementById('sub-membre').classList.toggle('active',sub==='membre');
+  if(sub==='membre')renderMemberListPreview();
+}
+
+// ── Modales ─────────────────────────────────────────────────────────────────
+function toggleSoldOut(){
+  const cb=document.getElementById('sold-out-toggle');
+  const track=document.getElementById('sold-out-track');
+  const thumb=document.getElementById('sold-out-thumb');
+  if(cb.checked){
+    track.style.background='#C0001A';
+    thumb.style.transform='translateX(20px)';
+  } else {
+    track.style.background='var(--bg3)';
+    thumb.style.transform='translateX(0)';
+  }
+}
+
+let pendingRaceId=null;
+
+function openModal(raceId){
+  // Afficher la confirmation d'identité avant d'ouvrir la modale de participation
+  pendingRaceId=raceId;
+  const me=currentMember();
+  if(!me) return;
+  const existing=participations.find(p=>p.membre_id===currentUserId&&p.course_id===raceId);
+  // Si déjà une participation, ouvrir directement (correction d'erreur)
+  if(existing){ _openParticipationModal(raceId); return; }
+  // Sinon afficher la confirmation
+  const race=races.find(r=>r.id===raceId);
+  document.getElementById('confirm-identity-member').innerHTML=`
+    <div class="av-md" style="${avStyle(me.nom)}">${initials(me.nom)}</div>
+    <div>
+      <div style="font-size:15px;font-weight:600;color:var(--text)">${me.nom}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:2px">${me.role||'Coureur'} · ${race.nom}</div>
+    </div>
+  `;
+  document.getElementById('modal-confirm-identity').classList.add('open');
+}
+
+function confirmIdentityAndProceed(){
+  closeModal('modal-confirm-identity');
+  _openParticipationModal(pendingRaceId);
+}
+
+function _openParticipationModal(raceId){
+  modalRaceId=raceId;
+  const r=races.find(x=>x.id===raceId);
+  const myPart=participations.find(p=>p.membre_id===currentUserId&&p.course_id===raceId);
+  modalStatus=myPart?.statut||null;
+  modalDistSelected=myPart?.distance||null;
+  document.getElementById('modal-race-name').textContent=r.nom;
+  document.getElementById('modal-race-sub').textContent=`${r.type} · ${dateStr(r.date_course)}`;
+  document.getElementById('btn-i').className='choice-btn'+(modalStatus==='interested'?' sel-i':'');
+  document.getElementById('btn-c').className='choice-btn'+(modalStatus==='confirmed'?' sel-c':'');
+  // Distances
+  const dists=parseDists(r.distances||r.distance);
+  const distSection=document.getElementById('modal-dist-section');
+  const distList=document.getElementById('modal-dist-list');
+  if(dists.length>1){
+    distSection.style.display='block';
+    distList.innerHTML=dists.map(d=>`<button class="dist-choice-btn${modalDistSelected===d?' sel':''}" onclick="selectDist(${d})">${d} km</button>`).join('');
+  } else if(dists.length===1){
+    modalDistSelected=dists[0];
+    distSection.style.display='none';
+  } else {
+    modalDistSelected=null;
+    distSection.style.display='none';
+  }
+  const lr=document.getElementById('modal-link-row');
+  if(r.url){const p=detectPlat(r.url);lr.style.display='block';lr.innerHTML=`<a href="${r.url}" target="_blank" rel="noopener" class="btn" style="width:100%;justify-content:center"><i class="ti ti-external-link" style="font-size:14px"></i>S'inscrire sur ${p?p.label:'le site officiel'}</a>`;}
+  else lr.style.display='none';
+  // Init toggle sold out
+  const isSO=!!(r.sold_out===true||r.sold_out==='true'||r.sold_out===1||r.sold_out==='t');
+  const cb=document.getElementById('sold-out-toggle');
+  cb.checked=isSO;
+  document.getElementById('sold-out-track').style.background=isSO?'#C0001A':'var(--bg3)';
+  document.getElementById('sold-out-thumb').style.transform=isSO?'translateX(20px)':'translateX(0)';
+  document.getElementById('modal-part').classList.add('open');
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function selectStatus(s){
+  modalStatus=s;
+  document.getElementById('btn-i').className='choice-btn'+(s==='interested'?' sel-i':'');
+  document.getElementById('btn-c').className='choice-btn'+(s==='confirmed'?' sel-c':'');
+}
+function selectDist(d){
+  modalDistSelected=d;
+  document.querySelectorAll('.dist-choice-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.textContent)===d));
+}
+async function saveStatus(){
+  document.getElementById('btn-save-status').disabled=true;setSyncing('syncing');
+  // Sauvegarde sold_out sur la course (toujours)
+  const soldOut=document.getElementById('sold-out-toggle').checked;
+  const race=races.find(r=>r.id===modalRaceId);
+  if(race&&soldOut!==race.sold_out){
+    await db.from('courses').update({sold_out:soldOut}).eq('id',modalRaceId);
+  }
+  // Sauvegarde participation si statut choisi
+  if(modalStatus){
+    const existing=participations.find(p=>p.membre_id===currentUserId&&p.course_id===modalRaceId);
+    const payload={...(existing?{id:existing.id}:{}),membre_id:currentUserId,course_id:modalRaceId,statut:modalStatus};
+    if(modalDistSelected)payload.distance=modalDistSelected;
+    const{error}=await db.from('participations').upsert(payload,{onConflict:'membre_id,course_id'});
+    if(error){document.getElementById('btn-save-status').disabled=false;setSyncing('error');showToast('⚠️ Erreur');return;}
+  }
+  document.getElementById('btn-save-status').disabled=false;
+  setSyncing('ok');showToast('Enregistré ✓');
+  await loadAll();closeModal('modal-part');
+}
+async function removeStatus(){
+  setSyncing('syncing');
+  const existing=participations.find(p=>p.membre_id===currentUserId&&p.course_id===modalRaceId);
+  if(existing){const{error}=await db.from('participations').delete().eq('id',existing.id);if(error){setSyncing('error');showToast('⚠️ Erreur');return;}}
+  setSyncing('ok');showToast('Participation retirée');
+  await loadAll();closeModal('modal-part');
+}
+function toggleDropdown(e){
+  e.stopPropagation();
+  const chip=document.getElementById('user-chip');
+  const dd=document.getElementById('user-dropdown');
+  const chev=document.getElementById('chip-chevron');
+  const isOpen=dd.classList.contains('open');
+  if(isOpen){closeDropdown();}
+  else{
+    chip.classList.add('open');
+    dd.classList.add('open');
+    chev.style.transform='rotate(180deg)';
+    renderDropdownList('');
+    setTimeout(()=>document.getElementById('member-search').focus(),50);
+  }
+}
+function closeDropdown(){
+  document.getElementById('user-chip').classList.remove('open');
+  document.getElementById('user-dropdown').classList.remove('open');
+  document.getElementById('chip-chevron').style.transform='rotate(0deg)';
+  document.getElementById('member-search').value='';
+}
+function filterMembers(){
+  const q=document.getElementById('member-search').value;
+  renderDropdownList(q);
+}
+function renderDropdownList(query){
+  const sorted=[...members].sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
+  const filtered=query?sorted.filter(m=>m.nom.toLowerCase().includes(query.toLowerCase())):sorted;
+  if(filtered.length===0){document.getElementById('user-dropdown-list').innerHTML='<div class="user-dropdown-empty">Aucun résultat</div>';return;}
+  let html='';
+  let lastLetter='';
+  filtered.forEach(m=>{
+    const letter=m.nom[0].toUpperCase();
+    if(!query&&letter!==lastLetter){html+=`<div class="user-dropdown-letter">${letter}</div>`;lastLetter=letter;}
+    const isActive=m.id===currentUserId;
+    html+=`<div class="user-dropdown-item${isActive?' active':''}" onclick="selectUser('${m.id}')">
+      <div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="user-dropdown-item-name">${m.nom}</div>
+        ${m.role?`<div class="user-dropdown-item-role">${m.role}</div>`:''}
+      </div>
+      ${isActive?'<i class="ti ti-check" style="color:#1D9E75;font-size:16px"></i>':''}
+    </div>`;
+  });
+  document.getElementById('user-dropdown-list').innerHTML=html;
+}
+function selectUser(id){currentUserId=id;localStorage.setItem('cr_uid',id);closeDropdown();renderAll();}
+
+// ── Ajout course ────────────────────────────────────────────────────────────
+async function addRace(){
+  const nom=document.getElementById('f-name').value.trim();
+  const type=document.getElementById('f-type').value;
+  const date_course=document.getElementById('f-date').value;
+  const date_limite=document.getElementById('f-limit').value||null;
+  const date_ouverture=document.getElementById('f-open').value||null;
+  const url=document.getElementById('f-url').value.trim();
+  if(!nom||!date_course){alert('Merci de renseigner le nom et la date.');return;}
+  if(formDistances.length===0){alert('Merci d\'ajouter au moins une distance.');return;}
+  document.getElementById('btn-add-race').disabled=true;setSyncing('syncing');
+  const{error}=await db.from('courses').insert({nom,type,distances:JSON.stringify(formDistances),date_course,date_limite,date_ouverture,url});
+  document.getElementById('btn-add-race').disabled=false;
+  if(error){setSyncing('error');showToast('⚠️ Erreur : '+error.message);return;}
+  ['f-name','f-date','f-limit','f-open','f-url'].forEach(id=>document.getElementById(id).value='');
+  resetDistTags();
+  showToast('Course ajoutée ✓');
+  await loadAll();switchTab('courses');
+}
+
+// ── Ajout membre ────────────────────────────────────────────────────────────
+async function addMember(){
+  const prenom=document.getElementById('m-prenom').value.trim();
+  const nom=document.getElementById('m-nom').value.trim();
+  const role=document.getElementById('m-role').value;
+  if(!prenom||!nom){alert('Merci de renseigner prénom et nom.');return;}
+  const fullName=prenom+' '+nom.charAt(0).toUpperCase()+'.';
+  if(members.find(m=>m.nom===fullName)){alert('Ce membre existe déjà.');return;}
+  document.getElementById('btn-add-member').disabled=true;setSyncing('syncing');
+  const{error}=await db.from('membres').insert({nom:fullName,role});
+  document.getElementById('btn-add-member').disabled=false;
+  if(error){setSyncing('error');showToast('⚠️ Erreur');return;}
+  document.getElementById('m-prenom').value='';document.getElementById('m-nom').value='';document.getElementById('m-role').value='';
+  document.getElementById('member-preview').style.display='none';
+  showToast(`${fullName} ajouté(e) ✓`);
+  await loadAll();switchTab('membres');
+}
+
+// ── Suppression membre ──────────────────────────────────────────────────────
+async function deleteMember(id){
+  const m=members.find(x=>x.id===id);
+  if(!confirm(`Retirer ${m.nom} du club ?`))return;
+  setSyncing('syncing');
+  const{error}=await db.from('membres').delete().eq('id',id);
+  if(error){setSyncing('error');showToast('⚠️ Erreur');return;}
+  if(currentUserId===id){currentUserId=members.find(x=>x.id!==id)?.id||null;localStorage.setItem('cr_uid',currentUserId);}
+  showToast(`${m.nom} retiré(e) ✓`);
+  await loadAll();
+}
+
+// ── Preview membre ──────────────────────────────────────────────────────────
+function updatePreview(){
+  const p=document.getElementById('m-prenom').value.trim();
+  const n=document.getElementById('m-nom').value.trim();
+  const r=document.getElementById('m-role').value;
+  const prev=document.getElementById('member-preview');
+  if(p&&n){
+    const full=p+' '+n.charAt(0).toUpperCase()+'.';
+    prev.style.display='block';
+    const av=document.getElementById('prev-av');
+    av.style.cssText=avStyle(full);av.textContent=initials(full);
+    document.getElementById('prev-name').textContent=full;
+    document.getElementById('prev-role').textContent=r||'Coureur';
+  }else{prev.style.display='none';}
+}
+
+// ── PWA ─────────────────────────────────────────────────────────────────────
+function dismissInstall(){document.getElementById('install-banner').classList.remove('show');localStorage.setItem('cr_install_dismissed','1');}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();if(!localStorage.getItem('cr_install_dismissed'))document.getElementById('install-banner').classList.add('show');});
+document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
+document.addEventListener('click',e=>{
+  const chip=document.getElementById('user-chip');
+  if(chip&&!chip.contains(e.target))closeDropdown();
+});
+
+// ── SQL migration hint (à exécuter une fois dans Supabase) ──────────────────
+// ALTER TABLE courses ADD COLUMN IF NOT EXISTS distances text;
+// ALTER TABLE participations ADD COLUMN IF NOT EXISTS distance integer;
+
+loadAll();
+</script>
+</body>
+</html>
