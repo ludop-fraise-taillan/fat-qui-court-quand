@@ -8,38 +8,8 @@
   <meta name="apple-mobile-web-app-title" content="La Fraise Athlétique">
   <meta name="theme-color" content="#ffffff">
   <title>La Fraise Athlétique du Taillan</title>
-  <style>
-    /* Icônes inline — remplacement du CDN Tabler */
-    .ti{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle}
-    .ti::before{content:'';display:inline-block;width:1em;height:1em;background-size:contain;background-repeat:no-repeat;background-position:center}
-    .ti-run::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Ccircle cx='14' cy='4' r='1'/%3E%3Cpath d='M5 21l1-4 3-1 3 3 3-8 3 2h3'/%3E%3C/svg%3E")}
-    .ti-calendar-event::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Crect x='4' y='5' width='16' height='16' rx='2'/%3E%3Cline x1='16' y1='3' x2='16' y2='7'/%3E%3Cline x1='8' y1='3' x2='8' y2='7'/%3E%3Cline x1='4' y1='11' x2='20' y2='11'/%3E%3Crect x='8' y='15' width='2' height='2'/%3E%3C/svg%3E")}
-    .ti-users::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3Cpath d='M21 21v-2a4 4 0 0 0-3-3.85'/%3E%3C/svg%3E")}
-    .ti-plus::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cline x1='12' y1='5' x2='12' y2='19'/%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E")}
-    .ti-trophy::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M8 21h8m-4-4v4M7 4H4a1 1 0 0 0-1 1v2a4 4 0 0 0 4 4h.5M17 4h3a1 1 0 0 1 1 1v2a4 4 0 0 1-4 4h-.5M7 4h10v5a5 5 0 0 1-10 0V4z'/%3E%3C/svg%3E")}
-    .ti-check::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E")}
-    .ti-star::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E")}
-    .ti-trash::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6'/%3E%3C/svg%3E")}
-    .ti-external-link::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'/%3E%3Cpath d='M15 3h6v6'/%3E%3Cline x1='10' y1='14' x2='21' y2='3'/%3E%3C/svg%3E")}
-    .ti-chevron-down::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
-    .ti-download::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2'/%3E%3Cpath d='M7 11l5 5 5-5'/%3E%3Cline x1='12' y1='4' x2='12' y2='16'/%3E%3C/svg%3E")}
-    .ti-flag::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M5 5a5 5 0 0 1 7 0 5 5 0 0 0 7 0v9a5 5 0 0 1-7 0 5 5 0 0 0-7 0V5z'/%3E%3Cline x1='5' y1='21' x2='5' y2='14'/%3E%3C/svg%3E")}
-    .ti-user-plus::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2'/%3E%3Cline x1='19' y1='8' x2='19' y2='14'/%3E%3Cline x1='16' y1='11' x2='22' y2='11'/%3E%3C/svg%3E")}
-    .ti-stopwatch::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Ccircle cx='12' cy='13' r='7'/%3E%3Cpath d='M9 3h6'/%3E%3Cpath d='M12 3v3'/%3E%3Cpath d='M12 13l-2-2'/%3E%3C/svg%3E")}
-    .ti-user-off::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M8.18 8.19A4 4 0 0 0 12 12a4 4 0 0 0 1.82-.44M12 3a4 4 0 0 1 4 4M3 21v-2a4 4 0 0 1 2.24-3.59M14.36 14.37A4 4 0 0 1 16 17v2'/%3E%3Cline x1='3' y1='3' x2='21' y2='21'/%3E%3C/svg%3E")}
-    .ti-calendar-off::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M4 8h4m4 0h8M4 5h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z'/%3E%3Cline x1='16' y1='3' x2='16' y2='7'/%3E%3Cline x1='8' y1='3' x2='8' y2='7'/%3E%3Cline x1='3' y1='3' x2='21' y2='21'/%3E%3C/svg%3E")}
-    .ti-pencil::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M4 20h4L18.5 9.5a2.121 2.121 0 0 0-3-3L4 17v3z'/%3E%3Cline x1='14' y1='6' x2='18' y2='10'/%3E%3C/svg%3E")}
-    .ti-file-analytics::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M14 3v4a1 1 0 0 0 1 1h4'/%3E%3Cpath d='M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z'/%3E%3Cline x1='9' y1='17' x2='9' y2='13'/%3E%3Cline x1='12' y1='17' x2='12' y2='10'/%3E%3Cline x1='15' y1='17' x2='15' y2='14'/%3E%3C/svg%3E")}
-    .ti-presentation::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M3 3h18v13H3z'/%3E%3Cpath d='M8 21l4-5 4 5'/%3E%3Cline x1='12' y1='16' x2='12' y2='21'/%3E%3C/svg%3E")}
-    .ti-file-type-pdf::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M14 3v4a1 1 0 0 0 1 1h4'/%3E%3Cpath d='M5 12V5a2 2 0 0 1 2-2h7l5 5v4'/%3E%3Cpath d='M5 18h1.5a1.5 1.5 0 0 0 0-3H5v6'/%3E%3Cpath d='M17 18h2m-1-3v6'/%3E%3Cpath d='M11 15v6h1a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-1z'/%3E%3C/svg%3E")}
-    .ti-code::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M7 8l-4 4 4 4'/%3E%3Cpath d='M17 8l4 4-4 4'/%3E%3Cline x1='14' y1='4' x2='10' y2='20'/%3E%3C/svg%3E")}
-    .ti-player-play::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M7 4v16l13-8z'/%3E%3C/svg%3E")}
-    .ti-repeat::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Cpath d='M4 12v-3a3 3 0 0 1 3-3h13m-3-3l3 3-3 3'/%3E%3Cpath d='M20 12v3a3 3 0 0 1-3 3H4m3 3l-3-3 3-3'/%3E%3C/svg%3E")}
-    .ti-info-circle::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cline x1='12' y1='8' x2='12' y2='12'/%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'/%3E%3C/svg%3E")}
-    .ti-world::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18'/%3E%3C/svg%3E")}
-  </style>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍓</text></svg>">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/tabler-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const manifestData = {
       name:"La Fraise Athlétique du Taillan",short_name:"La Fraise",start_url:".",display:"standalone",
@@ -272,7 +242,8 @@
   <div class="content">
 
     <!-- COURSES -->
-    <div id="s-courses" class="section active">      <div class="install-banner" id="install-banner">
+    <div id="s-courses" class="section active">
+      <div class="install-banner" id="install-banner">
         <i class="ti ti-download" style="font-size:20px;color:var(--text);flex-shrink:0"></i>
         <div style="flex:1"><strong style="color:var(--text)">Installer l'app</strong> — Ajouter à l'écran d'accueil</div>
         <span onclick="dismissInstall()" style="cursor:pointer;color:var(--text3);font-size:18px;padding:4px">×</span>
@@ -282,7 +253,7 @@
           <span><span class="legend-dot" style="background:#1D9E75"></span>Inscrit</span>
           <span><span class="legend-dot" style="background:#EF9F27"></span>Intéressé</span>
         </div>
-        <select id="month-select" onchange="onMonthChange()" style="font-size:13px;padding:6px 10px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;max-width:150px">
+        <select id="month-select" onchange="renderRaces()" style="font-size:13px;padding:6px 10px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;max-width:150px">
           <option value="all">Tous les mois</option>
           <option value="01">Janvier</option>
           <option value="02">Février</option>
@@ -299,21 +270,6 @@
         </select>
       </div>
       <div id="race-list"></div>
-    </div>
-
-    <!-- HISTORIQUE -->
-    <div id="s-historique" class="section">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-        <div class="legend" style="margin-bottom:0">
-          <span><span class="legend-dot" style="background:#1D9E75"></span>Inscrit</span>
-          <span><span class="legend-dot" style="background:#EF9F27"></span>Intéressé</span>
-          <span><span class="legend-dot" style="background:#185FA5"></span>Chrono</span>
-        </div>
-        <button class="btn btn-sm" onclick="openBilanModal()" style="background:var(--text);color:var(--bg);border-color:transparent">
-          <i class="ti ti-file-analytics" style="font-size:14px"></i>Générer le bilan
-        </button>
-      </div>
-      <div id="history-list"></div>
     </div>
 
     <!-- MEMBRES -->
@@ -405,7 +361,6 @@
 
   <nav class="bottom-nav">
     <button class="nav-item active" id="nav-courses" onclick="switchTab('courses')"><i class="ti ti-calendar-event"></i><span>Courses</span></button>
-    <button class="nav-item" id="nav-historique" onclick="switchTab('historique')"><i class="ti ti-trophy"></i><span>Historique</span></button>
     <button class="nav-item" id="nav-membres" onclick="switchTab('membres')"><i class="ti ti-users"></i><span>Membres</span></button>
     <button class="nav-item" id="nav-ajouter" onclick="switchTab('ajouter')"><i class="ti ti-plus"></i><span>Ajouter</span></button>
   </nav>
@@ -429,25 +384,6 @@
     <div style="margin-top:16px">
       <button class="btn" style="width:100%;justify-content:center" onclick="closeModal('modal-participants')">Fermer</button>
     </div>
-  </div>
-</div>
-
-<!-- Modal : bilan annuel -->
-<div class="modal-overlay" id="modal-bilan">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title"><i class="ti ti-file-analytics" style="font-size:18px;margin-right:8px;vertical-align:-3px"></i>Générer le bilan</div>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">Bilan de la saison sportive (septembre → août) basé sur les courses de l'historique.</div>
-    <div style="background:var(--bg2);border-radius:var(--radius-md);padding:12px;margin-bottom:16px;font-size:12px;color:var(--text2)" id="bilan-preview"></div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
-      <button class="btn btn-primary" style="justify-content:center" onclick="genererPDF()">
-        <i class="ti ti-file-type-pdf" style="font-size:15px"></i>Télécharger le PDF
-      </button>
-      <button class="btn" style="justify-content:center" onclick="genererPPTX()">
-        <i class="ti ti-presentation" style="font-size:15px"></i>Télécharger le PowerPoint
-      </button>
-    </div>
-    <button class="btn" style="width:100%;justify-content:center" onclick="closeModal('modal-bilan')">Fermer</button>
   </div>
 </div>
 
@@ -593,21 +529,12 @@ async function loadAll(){
 
 // ── Rendu courses ──────────────────────────────────────────────────────────
 let selectedMonth='all';
-let _renderingRaces=false;
-
-function onMonthChange(){
-  const msel=document.getElementById('month-select');
-  if(msel) selectedMonth=msel.value;
-  renderRaces();
-}
 
 function renderRaces(){
-  if(_renderingRaces)return;
-  _renderingRaces=true;
-  const today=new Date(new Date().toDateString());
-  // Exclure les courses passées — elles vont dans l'historique
-  const upcoming=[...races].filter(r=>!r.date_course||new Date(r.date_course)>=today).sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
-  const filtered=selectedMonth==='all'?upcoming:upcoming.filter(r=>{
+  const msel=document.getElementById('month-select');
+  if(msel)selectedMonth=msel.value;
+  const sorted=[...races].sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
+  const filtered=selectedMonth==='all'?sorted:sorted.filter(r=>{
     if(!r.date_course)return false;
     return r.date_course.substring(5,7)===selectedMonth;
   });
@@ -683,7 +610,6 @@ function renderRaces(){
     ?`<div class="empty-state"><i class="ti ti-calendar-off"></i>Aucune course ce mois-là.</div>`
     :'<div class="empty-state"><i class="ti ti-calendar-off"></i>Aucune course. Ajoutez-en une !</div>';
   document.getElementById('race-list').innerHTML=html;
-  _renderingRaces=false;
 }
 
 // ── Modale participants ─────────────────────────────────────────────────────
@@ -752,66 +678,6 @@ async function saveChrono(){
   openParticipantsModal(currentParticipantsRaceId);
 }
 
-// ── Historique ──────────────────────────────────────────────────────────────
-function renderHistory(){
-  const today=new Date(new Date().toDateString());
-  const past=[...races].filter(r=>r.date_course&&new Date(r.date_course)<today).sort((a,b)=>new Date(b.date_course)-new Date(a.date_course));
-  const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-  let html='';
-  let currentMonth=null;
-  past.forEach(r=>{
-    const d=new Date(r.date_course);
-    const monthKey=`${MOIS[d.getMonth()]} ${d.getFullYear()}`;
-    if(monthKey!==currentMonth){
-      currentMonth=monthKey;
-      html+=`<div class="month-sep"><span class="month-sep-label">${monthKey}</span><div class="month-sep-line"></div></div>`;
-    }
-    const tc=r.type==='Trail'?'badge-trail':r.type==='Ultra'?'badge-ultra':'badge-route';
-    const dists=parseDists(r.distances||r.distance);
-    const distTags=dists.length>0?dists.map(d=>`<span class="dist-tag">${d} km</span>`).join(''):'<span class="dist-tag">— km</span>';
-    const rParts=participations.filter(p=>p.course_id===r.id);
-    const conf=rParts.filter(p=>p.statut==='confirmed');
-    const inter=rParts.filter(p=>p.statut==='interested');
-    const allP=[...conf,...inter];
-    const shown=allP.slice(0,4); const extra=allP.length-4;
-    const plat=detectPlat(r.url);
-    const ptag=plat?`<span class="platform-tag"><i class="ti ti-external-link" style="font-size:10px"></i>${plat.label}</span>`:'';
-    const avs=shown.map(p=>{const mbr=members.find(x=>x.id===p.membre_id);const name=mbr?.nom||'?';const bg=p.statut==='confirmed'?'#9FE1CB':'#FAC775';const tc2=p.statut==='confirmed'?'#085041':'#633806';return`<div class="av" style="background:${bg};color:${tc2}">${initials(name)}</div>`;}).join('');
-    // Chronos des inscrits
-    const chronos=conf.filter(p=>p.chrono).sort((a,b)=>a.chrono.localeCompare(b.chrono));
-    const chronoRows=chronos.map(p=>{const mbr=members.find(x=>x.id===p.membre_id);return`<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:0.5px solid var(--border)"><div style="display:flex;align-items:center;gap:7px"><div class="av-md" style="${avStyle(mbr?.nom||'?',22,22,8)}">${initials(mbr?.nom||'?')}</div><span style="font-size:12px;color:var(--text)">${mbr?.nom||'?'}</span></div><span class="chrono-badge"><i class="ti ti-stopwatch" style="font-size:11px"></i>${p.chrono}</span></div>`;}).join('');
-    const chronoSection=chronos.length>0?`<div style="padding:8px 14px 10px;border-top:0.5px solid var(--border)"><div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:6px"><i class="ti ti-stopwatch" style="font-size:11px;margin-right:3px"></i>Chronos</div>${chronoRows}</div>`:'';
-    const myPart=rParts.find(p=>p.membre_id===currentUserId);
-    const myS=myPart?.statut;
-    const myChronoBadge=myPart?.chrono?`<span class="chrono-badge" style="margin-left:6px"><i class="ti ti-stopwatch" style="font-size:11px"></i>${myPart.chrono}</span>`:'';
-    html+=`<div class="race-card past">
-      <div class="race-card-header">
-        <div>
-          <div class="race-name">${r.nom}${ptag}${myChronoBadge}</div>
-          <div class="race-dist">${distTags}</div>
-        </div>
-        <span class="badge ${tc}">${r.type}</span>
-      </div>
-      <div class="race-meta">
-        <div class="meta-item"><span class="meta-label">Course</span><span class="meta-val">${dateStr(r.date_course)}</span></div>
-        <div class="meta-item"><span class="meta-label">Inscrits</span><span class="meta-val">${conf.length}</span></div>
-        <div class="meta-item"><span class="meta-label">Chronos</span><span class="meta-val" style="color:var(--green-text)">${chronos.length}</span></div>
-      </div>
-      <hr class="divider">
-      <div class="card-bottom">
-        <div class="avatars-zone" onclick="openParticipantsModal('${r.id}')">
-          <div class="avatars">${avs}${extra>0?`<div class="av-more">+${extra}</div>`:''}</div>
-          <div class="part-label">${conf.length} inscrit${conf.length>1?'s':''} · ${inter.length} intéressé${inter.length>1?'s':''} · voir la liste</div>
-        </div>
-        ${r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="btn-link"><i class="ti ti-external-link" style="font-size:12px"></i>${plat?plat.label:'Site'}</a>`:''}
-      </div>
-      ${chronoSection}
-    </div>`;
-  });
-  if(!html) html='<div class="empty-state"><i class="ti ti-trophy"></i>Aucune course passée pour l\'instant.</div>';
-  document.getElementById('history-list').innerHTML=html;
-}
-
 // ── Rendu membres ───────────────────────────────────────────────────────────
 function renderMembers(){
   const totalConf=participations.filter(p=>p.statut==='confirmed').length;
@@ -823,4 +689,309 @@ function renderMembers(){
     <div class="stat-card"><div class="stat-label">Intéressés</div><div class="stat-val" style="color:#EF9F27">${totalInter}</div></div>
   `;
   // Utilisateur courant en tête, reste trié alphabétiquement
-  const me = members.find(m=>m.id===c
+  const me = members.find(m=>m.id===currentUserId);
+  const others = members.filter(m=>m.id!==currentUserId).sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
+  const sorted = me ? [me, ...others] : others;
+
+  function memberRow(m){
+    const isMe = m.id===currentUserId;
+    const mParts=participations.filter(p=>p.membre_id===m.id);
+    const confCount=mParts.filter(p=>p.statut==='confirmed').length;
+    const pills=mParts.map(p=>{const r=races.find(x=>x.id===p.course_id);if(!r)return'';const distLabel=p.distance?` ${p.distance}km`:'';return`<span class="pill ${p.statut==='confirmed'?'pill-c':'pill-i'}">${r.nom.length>10?r.nom.slice(0,8)+'…':r.nom}${distLabel}</span>`;}).join('');
+    return `<div class="runner-row" style="${isMe?'background:var(--bg2);margin:0 -4px;padding:12px 4px;border-radius:var(--radius-md)':''}">
+      <div class="av-md" style="${avStyle(m.nom)}">${initials(m.nom)}</div>
+      <div class="runner-info">
+        <div class="runner-name">${m.nom}${isMe?` <span style="font-size:10px;font-weight:500;color:var(--text3);background:var(--bg3);border-radius:99px;padding:1px 7px;margin-left:4px">moi</span>`:''}</div>
+        <div class="runner-sub">${m.role||'Coureur'} · ${confCount} inscr.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="runner-pills">${pills||'<span style="font-size:11px;color:var(--text3)">—</span>'}</div>
+        <button class="delete-btn" onclick="deleteMember('${m.id}')"><i class="ti ti-trash" style="font-size:11px"></i>Retirer</button>
+      </div>
+    </div>`;
+  }
+
+  let html='';
+  if(me) html += memberRow(me);
+  if(me && others.length>0){
+    html+=`<div style="display:flex;align-items:center;gap:10px;margin:10px 0 6px">
+      <span style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap">Tous les membres</span>
+      <div style="flex:1;height:0.5px;background:var(--border2)"></div>
+    </div>`;
+  }
+  others.forEach(m=>{ html+=memberRow(m); });
+  if(!html) html='<div class="empty-state"><i class="ti ti-users"></i>Aucun membre.</div>';
+  document.getElementById('runner-list').innerHTML=html;
+}
+
+function renderMemberListPreview(){
+  let html=`<div style="font-size:12px;color:var(--text2);margin-bottom:8px">${members.length} membre${members.length>1?'s':''} dans le club</div>`;
+  members.forEach(m=>{html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)"><div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div><span style="font-size:13px;color:var(--text);flex:1">${m.nom}</span><span style="font-size:11px;color:var(--text3)">${m.role||'Coureur'}</span></div>`;});
+  document.getElementById('member-list-preview').innerHTML=html;
+}
+
+function updateHeader(){
+  const name=currentName();
+  const el=document.getElementById('hdr-av');
+  el.style.cssText=avStyle(name,22,22,9)+'border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;';
+  el.textContent=initials(name);
+  document.getElementById('hdr-name').textContent=name.split(' ')[0];
+}
+function renderAll(){updateHeader();renderRaces();renderMembers();}
+
+// ── Navigation ──────────────────────────────────────────────────────────────
+function switchTab(tab){
+  ['courses','membres','ajouter'].forEach(t=>{document.getElementById('s-'+t).classList.toggle('active',t===tab);document.getElementById('nav-'+t).classList.toggle('active',t===tab);});
+}
+function switchSub(sub){
+  document.getElementById('sub-s-course').style.display=sub==='course'?'block':'none';
+  document.getElementById('sub-s-membre').style.display=sub==='membre'?'block':'none';
+  document.getElementById('sub-course').classList.toggle('active',sub==='course');
+  document.getElementById('sub-membre').classList.toggle('active',sub==='membre');
+  if(sub==='membre')renderMemberListPreview();
+}
+
+// ── Modales ─────────────────────────────────────────────────────────────────
+function toggleSoldOut(){
+  const cb=document.getElementById('sold-out-toggle');
+  const track=document.getElementById('sold-out-track');
+  const thumb=document.getElementById('sold-out-thumb');
+  if(cb.checked){
+    track.style.background='#C0001A';
+    thumb.style.transform='translateX(20px)';
+  } else {
+    track.style.background='var(--bg3)';
+    thumb.style.transform='translateX(0)';
+  }
+}
+
+let pendingRaceId=null;
+
+function openModal(raceId){
+  // Afficher la confirmation d'identité avant d'ouvrir la modale de participation
+  pendingRaceId=raceId;
+  const me=currentMember();
+  if(!me) return;
+  const existing=participations.find(p=>p.membre_id===currentUserId&&p.course_id===raceId);
+  // Si déjà une participation, ouvrir directement (correction d'erreur)
+  if(existing){ _openParticipationModal(raceId); return; }
+  // Sinon afficher la confirmation
+  const race=races.find(r=>r.id===raceId);
+  document.getElementById('confirm-identity-member').innerHTML=`
+    <div class="av-md" style="${avStyle(me.nom)}">${initials(me.nom)}</div>
+    <div>
+      <div style="font-size:15px;font-weight:600;color:var(--text)">${me.nom}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:2px">${me.role||'Coureur'} · ${race.nom}</div>
+    </div>
+  `;
+  document.getElementById('modal-confirm-identity').classList.add('open');
+}
+
+function confirmIdentityAndProceed(){
+  closeModal('modal-confirm-identity');
+  _openParticipationModal(pendingRaceId);
+}
+
+function _openParticipationModal(raceId){
+  modalRaceId=raceId;
+  const r=races.find(x=>x.id===raceId);
+  const myPart=participations.find(p=>p.membre_id===currentUserId&&p.course_id===raceId);
+  modalStatus=myPart?.statut||null;
+  modalDistSelected=myPart?.distance||null;
+  document.getElementById('modal-race-name').textContent=r.nom;
+  document.getElementById('modal-race-sub').textContent=`${r.type} · ${dateStr(r.date_course)}`;
+  document.getElementById('btn-i').className='choice-btn'+(modalStatus==='interested'?' sel-i':'');
+  document.getElementById('btn-c').className='choice-btn'+(modalStatus==='confirmed'?' sel-c':'');
+  // Distances
+  const dists=parseDists(r.distances||r.distance);
+  const distSection=document.getElementById('modal-dist-section');
+  const distList=document.getElementById('modal-dist-list');
+  if(dists.length>1){
+    distSection.style.display='block';
+    distList.innerHTML=dists.map(d=>`<button class="dist-choice-btn${modalDistSelected===d?' sel':''}" onclick="selectDist(${d})">${d} km</button>`).join('');
+  } else if(dists.length===1){
+    modalDistSelected=dists[0];
+    distSection.style.display='none';
+  } else {
+    modalDistSelected=null;
+    distSection.style.display='none';
+  }
+  const lr=document.getElementById('modal-link-row');
+  if(r.url){const p=detectPlat(r.url);lr.style.display='block';lr.innerHTML=`<a href="${r.url}" target="_blank" rel="noopener" class="btn" style="width:100%;justify-content:center"><i class="ti ti-external-link" style="font-size:14px"></i>S'inscrire sur ${p?p.label:'le site officiel'}</a>`;}
+  else lr.style.display='none';
+  // Init toggle sold out
+  const isSO=!!(r.sold_out===true||r.sold_out==='true'||r.sold_out===1||r.sold_out==='t');
+  const cb=document.getElementById('sold-out-toggle');
+  cb.checked=isSO;
+  document.getElementById('sold-out-track').style.background=isSO?'#C0001A':'var(--bg3)';
+  document.getElementById('sold-out-thumb').style.transform=isSO?'translateX(20px)':'translateX(0)';
+  document.getElementById('modal-part').classList.add('open');
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function selectStatus(s){
+  modalStatus=s;
+  document.getElementById('btn-i').className='choice-btn'+(s==='interested'?' sel-i':'');
+  document.getElementById('btn-c').className='choice-btn'+(s==='confirmed'?' sel-c':'');
+}
+function selectDist(d){
+  modalDistSelected=d;
+  document.querySelectorAll('.dist-choice-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.textContent)===d));
+}
+async function saveStatus(){
+  document.getElementById('btn-save-status').disabled=true;setSyncing('syncing');
+  // Sauvegarde sold_out sur la course (toujours)
+  const soldOut=document.getElementById('sold-out-toggle').checked;
+  const race=races.find(r=>r.id===modalRaceId);
+  if(race&&soldOut!==race.sold_out){
+    await db.from('courses').update({sold_out:soldOut}).eq('id',modalRaceId);
+  }
+  // Sauvegarde participation si statut choisi
+  if(modalStatus){
+    const existing=participations.find(p=>p.membre_id===currentUserId&&p.course_id===modalRaceId);
+    const payload={...(existing?{id:existing.id}:{}),membre_id:currentUserId,course_id:modalRaceId,statut:modalStatus};
+    if(modalDistSelected)payload.distance=modalDistSelected;
+    const{error}=await db.from('participations').upsert(payload,{onConflict:'membre_id,course_id'});
+    if(error){document.getElementById('btn-save-status').disabled=false;setSyncing('error');showToast('⚠️ Erreur');return;}
+  }
+  document.getElementById('btn-save-status').disabled=false;
+  setSyncing('ok');showToast('Enregistré ✓');
+  await loadAll();closeModal('modal-part');
+}
+async function removeStatus(){
+  setSyncing('syncing');
+  const existing=participations.find(p=>p.membre_id===currentUserId&&p.course_id===modalRaceId);
+  if(existing){const{error}=await db.from('participations').delete().eq('id',existing.id);if(error){setSyncing('error');showToast('⚠️ Erreur');return;}}
+  setSyncing('ok');showToast('Participation retirée');
+  await loadAll();closeModal('modal-part');
+}
+function toggleDropdown(e){
+  e.stopPropagation();
+  const chip=document.getElementById('user-chip');
+  const dd=document.getElementById('user-dropdown');
+  const chev=document.getElementById('chip-chevron');
+  const isOpen=dd.classList.contains('open');
+  if(isOpen){closeDropdown();}
+  else{
+    chip.classList.add('open');
+    dd.classList.add('open');
+    chev.style.transform='rotate(180deg)';
+    renderDropdownList('');
+    setTimeout(()=>document.getElementById('member-search').focus(),50);
+  }
+}
+function closeDropdown(){
+  document.getElementById('user-chip').classList.remove('open');
+  document.getElementById('user-dropdown').classList.remove('open');
+  document.getElementById('chip-chevron').style.transform='rotate(0deg)';
+  document.getElementById('member-search').value='';
+}
+function filterMembers(){
+  const q=document.getElementById('member-search').value;
+  renderDropdownList(q);
+}
+function renderDropdownList(query){
+  const sorted=[...members].sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
+  const filtered=query?sorted.filter(m=>m.nom.toLowerCase().includes(query.toLowerCase())):sorted;
+  if(filtered.length===0){document.getElementById('user-dropdown-list').innerHTML='<div class="user-dropdown-empty">Aucun résultat</div>';return;}
+  let html='';
+  let lastLetter='';
+  filtered.forEach(m=>{
+    const letter=m.nom[0].toUpperCase();
+    if(!query&&letter!==lastLetter){html+=`<div class="user-dropdown-letter">${letter}</div>`;lastLetter=letter;}
+    const isActive=m.id===currentUserId;
+    html+=`<div class="user-dropdown-item${isActive?' active':''}" onclick="selectUser('${m.id}')">
+      <div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="user-dropdown-item-name">${m.nom}</div>
+        ${m.role?`<div class="user-dropdown-item-role">${m.role}</div>`:''}
+      </div>
+      ${isActive?'<i class="ti ti-check" style="color:#1D9E75;font-size:16px"></i>':''}
+    </div>`;
+  });
+  document.getElementById('user-dropdown-list').innerHTML=html;
+}
+function selectUser(id){currentUserId=id;localStorage.setItem('cr_uid',id);closeDropdown();renderAll();}
+
+// ── Ajout course ────────────────────────────────────────────────────────────
+async function addRace(){
+  const nom=document.getElementById('f-name').value.trim();
+  const type=document.getElementById('f-type').value;
+  const date_course=document.getElementById('f-date').value;
+  const date_limite=document.getElementById('f-limit').value||null;
+  const date_ouverture=document.getElementById('f-open').value||null;
+  const url=document.getElementById('f-url').value.trim();
+  if(!nom||!date_course){alert('Merci de renseigner le nom et la date.');return;}
+  if(formDistances.length===0){alert('Merci d\'ajouter au moins une distance.');return;}
+  document.getElementById('btn-add-race').disabled=true;setSyncing('syncing');
+  const{error}=await db.from('courses').insert({nom,type,distances:JSON.stringify(formDistances),date_course,date_limite,date_ouverture,url});
+  document.getElementById('btn-add-race').disabled=false;
+  if(error){setSyncing('error');showToast('⚠️ Erreur : '+error.message);return;}
+  ['f-name','f-date','f-limit','f-open','f-url'].forEach(id=>document.getElementById(id).value='');
+  resetDistTags();
+  showToast('Course ajoutée ✓');
+  await loadAll();switchTab('courses');
+}
+
+// ── Ajout membre ────────────────────────────────────────────────────────────
+async function addMember(){
+  const prenom=document.getElementById('m-prenom').value.trim();
+  const nom=document.getElementById('m-nom').value.trim();
+  const role=document.getElementById('m-role').value;
+  if(!prenom||!nom){alert('Merci de renseigner prénom et nom.');return;}
+  const fullName=prenom+' '+nom.charAt(0).toUpperCase()+'.';
+  if(members.find(m=>m.nom===fullName)){alert('Ce membre existe déjà.');return;}
+  document.getElementById('btn-add-member').disabled=true;setSyncing('syncing');
+  const{error}=await db.from('membres').insert({nom:fullName,role});
+  document.getElementById('btn-add-member').disabled=false;
+  if(error){setSyncing('error');showToast('⚠️ Erreur');return;}
+  document.getElementById('m-prenom').value='';document.getElementById('m-nom').value='';document.getElementById('m-role').value='';
+  document.getElementById('member-preview').style.display='none';
+  showToast(`${fullName} ajouté(e) ✓`);
+  await loadAll();switchTab('membres');
+}
+
+// ── Suppression membre ──────────────────────────────────────────────────────
+async function deleteMember(id){
+  const m=members.find(x=>x.id===id);
+  if(!confirm(`Retirer ${m.nom} du club ?`))return;
+  setSyncing('syncing');
+  const{error}=await db.from('membres').delete().eq('id',id);
+  if(error){setSyncing('error');showToast('⚠️ Erreur');return;}
+  if(currentUserId===id){currentUserId=members.find(x=>x.id!==id)?.id||null;localStorage.setItem('cr_uid',currentUserId);}
+  showToast(`${m.nom} retiré(e) ✓`);
+  await loadAll();
+}
+
+// ── Preview membre ──────────────────────────────────────────────────────────
+function updatePreview(){
+  const p=document.getElementById('m-prenom').value.trim();
+  const n=document.getElementById('m-nom').value.trim();
+  const r=document.getElementById('m-role').value;
+  const prev=document.getElementById('member-preview');
+  if(p&&n){
+    const full=p+' '+n.charAt(0).toUpperCase()+'.';
+    prev.style.display='block';
+    const av=document.getElementById('prev-av');
+    av.style.cssText=avStyle(full);av.textContent=initials(full);
+    document.getElementById('prev-name').textContent=full;
+    document.getElementById('prev-role').textContent=r||'Coureur';
+  }else{prev.style.display='none';}
+}
+
+// ── PWA ─────────────────────────────────────────────────────────────────────
+function dismissInstall(){document.getElementById('install-banner').classList.remove('show');localStorage.setItem('cr_install_dismissed','1');}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();if(!localStorage.getItem('cr_install_dismissed'))document.getElementById('install-banner').classList.add('show');});
+document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
+document.addEventListener('click',e=>{
+  const chip=document.getElementById('user-chip');
+  if(chip&&!chip.contains(e.target))closeDropdown();
+});
+
+// ── SQL migration hint (à exécuter une fois dans Supabase) ──────────────────
+// ALTER TABLE courses ADD COLUMN IF NOT EXISTS distances text;
+// ALTER TABLE participations ADD COLUMN IF NOT EXISTS distance integer;
+
+loadAll();
+</script>
+</body>
+</html>
