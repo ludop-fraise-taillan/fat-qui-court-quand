@@ -1159,7 +1159,7 @@ async function addMember(){
   const nom=document.getElementById('m-nom').value.trim();
   const role=document.getElementById('m-role').value;
   if(!prenom||!nom){alert('Merci de renseigner prénom et nom.');return;}
-  const fullName=prenom+' '+nom.charAt(0).toUpperCase()+'.';
+  const fullName=prenom+' '+nom.charAt(0).toUpperCase()+nom.slice(1).toLowerCase();
   if(members.find(m=>m.nom===fullName)){alert('Ce membre existe déjà.');return;}
   document.getElementById('btn-add-member').disabled=true;setSyncing('syncing');
   const{error}=await db.from('membres').insert({nom:fullName,role});
@@ -1190,7 +1190,7 @@ function updatePreview(){
   const r=document.getElementById('m-role').value;
   const prev=document.getElementById('member-preview');
   if(p&&n){
-    const full=p+' '+n.charAt(0).toUpperCase()+'.';
+    const full=p+' '+n.charAt(0).toUpperCase()+n.slice(1).toLowerCase();
     prev.style.display='block';
     const av=document.getElementById('prev-av');
     av.style.cssText=avStyle(full);av.textContent=initials(full);
@@ -1385,9 +1385,4 @@ document.addEventListener('click',e=>{
 
 // ── SQL migration hint (à exécuter une fois dans Supabase) ──────────────────
 // ALTER TABLE courses ADD COLUMN IF NOT EXISTS distances text;
-// ALTER TABLE participations ADD COLUMN IF NOT EXISTS distance integer;
-
-loadAll();
-</script>
-</body>
-</html>
+// ALTER TABLE participations ADD COLUMN IF NOT EXISTS distance int
