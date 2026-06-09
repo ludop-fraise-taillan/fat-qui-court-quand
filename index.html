@@ -1159,7 +1159,7 @@ async function addMember(){
   const nom=document.getElementById('m-nom').value.trim();
   const role=document.getElementById('m-role').value;
   if(!prenom||!nom){alert('Merci de renseigner prénom et nom.');return;}
-  const fullName=prenom+' '+nom.charAt(0).toUpperCase()+'.';
+  const fullName=prenom+' '+(nom.length>=2?nom.slice(0,2).charAt(0).toUpperCase()+nom.slice(1,2).toLowerCase():nom.charAt(0).toUpperCase())+'.';
   if(members.find(m=>m.nom===fullName)){alert('Ce membre existe déjà.');return;}
   document.getElementById('btn-add-member').disabled=true;setSyncing('syncing');
   const{error}=await db.from('membres').insert({nom:fullName,role});
@@ -1190,7 +1190,7 @@ function updatePreview(){
   const r=document.getElementById('m-role').value;
   const prev=document.getElementById('member-preview');
   if(p&&n){
-    const full=p+' '+n.charAt(0).toUpperCase()+'.';
+    const full=p+' '+(n.length>=2?n.slice(0,2).charAt(0).toUpperCase()+n.slice(1,2).toLowerCase():n.charAt(0).toUpperCase())+'.';
     prev.style.display='block';
     const av=document.getElementById('prev-av');
     av.style.cssText=avStyle(full);av.textContent=initials(full);
