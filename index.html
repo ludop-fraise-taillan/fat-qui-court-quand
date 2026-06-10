@@ -667,19 +667,19 @@ let selectedDist='all';
 let _renderingRaces=false;
 
 function renderDistFilter(){
-  // Collecter toutes les distances uniques des courses à venir
   const today=new Date(new Date().toDateString());
   const upcoming=races.filter(r=>!r.date_course||new Date(r.date_course)>=today);
   const distMap={};
   upcoming.forEach(r=>{
     const dists=parseDists(r.distances||r.distance);
-    dists.forEach(d=>{distMap[d]=(distMap[d]||0)+1;});
+    dists.forEach(d=>{const k=String(d);distMap[k]=(distMap[k]||0)+1;});
   });
   const sorted=Object.entries(distMap).sort((a,b)=>Number(a[0])-Number(b[0]));
   const total=upcoming.length;
-  let html=`<div class="chip-dist all${selectedDist==='all'?' active':''}" onclick="selectDist('all')"><span class="cd">Tout</span><span class="cc">${total}</span></div>`;
+  const selStr=String(selectedDist);
+  let html=`<div class="chip-dist all${selStr==='all'?' active':''}" onclick="selectDist('all')"><span class="cd">Tout</span><span class="cc">${total}</span></div>`;
   sorted.forEach(([d,count])=>{
-    html+=`<div class="chip-dist${selectedDist===d?' active':''}" onclick="selectDist('${d}')"><span class="cd">${d}</span><span class="cc">km·${count}</span></div>`;
+    html+=`<div class="chip-dist${selStr===d?' active':''}" onclick="selectDist('${d}')"><span class="cd">${d}</span><span class="cc">km·${count}</span></div>`;
   });
   const el=document.getElementById('dist-filter');
   if(el)el.innerHTML=html;
@@ -712,7 +712,7 @@ function renderRaces(){
   if(selectedDist!=='all'){
     filtered=filtered.filter(r=>{
       const dists=parseDists(r.distances||r.distance);
-      return dists.includes(Number(selectedDist));
+      return dists.map(String).includes(String(selectedDist));
     });
   }
   const mnames=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
