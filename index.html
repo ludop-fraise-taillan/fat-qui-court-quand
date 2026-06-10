@@ -102,14 +102,7 @@
     .month-sep:first-child{margin-top:0}
     .month-sep-label{font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;text-transform:uppercase;letter-spacing:0.08em}
     .month-sep-line{flex:1;height:0.5px;background:var(--border2)}
-    #dist-filter::-webkit-scrollbar{display:none}
-    .chip-dist{flex-shrink:0;text-align:center;padding:5px 10px;border-radius:8px;border:0.5px solid var(--border);background:var(--bg2);cursor:pointer;min-width:46px;-webkit-tap-highlight-color:transparent}
     .chip-dist:active{opacity:.7}
-    .chip-dist .cd{font-size:13px;font-weight:700;color:var(--text);display:block;line-height:1.2}
-    .chip-dist .cc{font-size:9px;color:var(--text3);display:block}
-    .chip-dist.active{background:#185FA5;border-color:#185FA5}
-    .chip-dist.active .cd,.chip-dist.active .cc{color:#fff}
-    .chip-dist.all .cd{font-size:11px;color:var(--text2)}
     .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
 
     /* Race card */
@@ -333,24 +326,6 @@
         <span><span class="legend-dot" style="background:#1D9E75"></span>Inscrit</span>
         <span><span class="legend-dot" style="background:#EF9F27"></span>Intéressé</span>
       </div>
-      <!-- Filtre distance B1 -->
-      <div id="dist-filter" style="display:flex;gap:5px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;scrollbar-width:none;-webkit-overflow-scrolling:touch"></div>
-      <!-- Filtre mois -->
-      <select id="month-select" onchange="onMonthChange()" style="width:100%;font-size:13px;padding:7px 10px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;margin-bottom:12px">
-        <option value="all">Tous les mois</option>
-        <option value="01">Janvier</option>
-        <option value="02">Février</option>
-        <option value="03">Mars</option>
-        <option value="04">Avril</option>
-        <option value="05">Mai</option>
-        <option value="06">Juin</option>
-        <option value="07">Juillet</option>
-        <option value="08">Août</option>
-        <option value="09">Septembre</option>
-        <option value="10">Octobre</option>
-        <option value="11">Novembre</option>
-        <option value="12">Décembre</option>
-      </select>
       <div id="race-list"></div>
     </div>
 
@@ -652,8 +627,7 @@ async function loadAll(){
       db.from('participations').select('*'),
     ]);
     members=m||[];races=r||[];participations=p||[];
-    console.log('🍓 Courses reçues:', races.map(c=>({nom:c.nom,sold_out:c.sold_out,type:typeof c.sold_out})));
-    if(currentUserId&&!members.find(m=>m.id===currentUserId)){currentUserId=members[0]?.id||null;localStorage.setItem('cr_uid',currentUserId);}
+        if(currentUserId&&!members.find(m=>m.id===currentUserId)){currentUserId=members[0]?.id||null;localStorage.setItem('cr_uid',currentUserId);}
     if(!currentUserId&&members.length>0){currentUserId=members[0].id;localStorage.setItem('cr_uid',currentUserId);}
     setSyncing('ok');
   }catch(e){setSyncing('error');showToast('⚠️ Erreur de connexion');}
@@ -662,68 +636,21 @@ async function loadAll(){
 }
 
 // ── Rendu courses ──────────────────────────────────────────────────────────
-let selectedMonth='all';
-let selectedDist='all';
 let _renderingRaces=false;
 
-function renderDistFilter(){
-  const today=new Date(new Date().toDateString());
-  const upcoming=races.filter(r=>!r.date_course||new Date(r.date_course)>=today);
-  const distMap={};
-  upcoming.forEach(r=>{
-    const dists=parseDists(r.distances||r.distance);
-    dists.forEach(d=>{const k=String(d);distMap[k]=(distMap[k]||0)+1;});
-  });
-  const sorted=Object.entries(distMap).sort((a,b)=>Number(a[0])-Number(b[0]));
-  const total=upcoming.length;
-  const selStr=String(selectedDist);
-  let html=`<div class="chip-dist all${selStr==='all'?' active':''}" onclick="selectDist('all')"><span class="cd">Tout</span><span class="cc">${total}</span></div>`;
-  sorted.forEach(([d,count])=>{
-    html+=`<div class="chip-dist${selStr===d?' active':''}" onclick="selectDist('${d}')"><span class="cd">${d}</span><span class="cc">km·${count}</span></div>`;
-  });
-  const el=document.getElementById('dist-filter');
-  if(el)el.innerHTML=html;
-}
 
-function selectDist(d){
-  selectedDist=d;
-  if(d!=='all'){
-    console.log('🔍 selectDist:', d, typeof d);
-    races.forEach(r=>{
-      const raw=r.distances||r.distance;
-      const parsed=parseDists(raw);
-      const match=parsed.map(String).includes(String(d));
-      console.log(r.nom,'| raw:', JSON.stringify(raw),'| parsed:', parsed,'| match:', match);
-    });
-  }
-  renderDistFilter();
-  renderRaces();
-}
 
-function onMonthChange(){
-  const msel=document.getElementById('month-select');
-  if(msel) selectedMonth=msel.value;
-  renderRaces();
-}
+
+
+
 
 function renderRaces(){
   if(_renderingRaces)return;
   _renderingRaces=true;
-  renderDistFilter();
   const today=new Date(new Date().toDateString());
   const upcoming=[...races].filter(r=>!r.date_course||new Date(r.date_course)>=today).sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
-  // Filtre mois
-  let filtered=selectedMonth==='all'?upcoming:upcoming.filter(r=>{
-    if(!r.date_course)return false;
-    return r.date_course.substring(5,7)===selectedMonth;
-  });
-  // Filtre distance
-  if(selectedDist!=='all'){
-    filtered=filtered.filter(r=>{
-      const dists=parseDists(r.distances||r.distance);
-      return dists.map(String).includes(String(selectedDist));
-    });
-  }
+  // Pas de filtre actif
+  const filtered=[...upcoming];
   const mnames=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   let currentMonth=null;
@@ -1198,10 +1125,7 @@ function selectStatus(s){
   document.getElementById('btn-i').className='choice-btn'+(s==='interested'?' sel-i':'');
   document.getElementById('btn-c').className='choice-btn'+(s==='confirmed'?' sel-c':'');
 }
-function selectDist(d){
-  modalDistSelected=d;
-  document.querySelectorAll('.dist-choice-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.textContent)===d));
-}
+
 async function saveStatus(){
   document.getElementById('btn-save-status').disabled=true;setSyncing('syncing');
   // Sauvegarde sold_out sur la course (toujours)
