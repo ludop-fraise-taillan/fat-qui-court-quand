@@ -923,7 +923,7 @@ function renderHistory(){
     const myChronoBadge=myPart?.chrono?`<span class="chrono-badge">⏱ ${myPart.chrono}</span>`:'';
     const accentClass2=r.type==='Trail'?'trail':r.type==='Ultra'?'ultra':'route';
     const typeClass2=r.type==='Trail'?'badge-trail':r.type==='Ultra'?'badge-ultra':'badge-route';
-    html+=`<div class="race-card past">
+    html+=`<div class="race-card past" onclick="openParticipantsModal('${r.id}')" style="cursor:pointer">
       <div class="past-card-inner">
         <div class="card-accent past"></div>
         <div class="card-body">
@@ -942,16 +942,13 @@ function renderHistory(){
               <div class="date-item">Inscrits<span>${conf.length}</span></div>
               <div class="date-item">Chronos<span style="color:#185FA5;font-weight:500;margin-left:3px">${chronos.length}</span></div>
             </div>
-            <div class="card-actions-row">
-              <div class="avs-wrap" onclick="openParticipantsModal('${r.id}')">
-                ${avs}${extra>0?`<div class="av-more">+${extra}</div>`:''}
-                <span class="part-label">voir la liste</span>
-              </div>
+            <div class="card-actions-row" onclick="event.stopPropagation()">
               ${r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="ext-link">↗ ${plat?plat.label:'Site'}</a>`:''}
               ${r.url_results?`<a href="${r.url_results}" target="_blank" rel="noopener" class="ext-link" style="background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)">🏅 Résultats</a>`:''}
             </div>
           </div>
         </div>
+        <div style="display:flex;align-items:center;padding:0 10px;color:var(--text3);font-size:18px">›</div>
       </div>
       ${chronoSection}
     </div>`;
