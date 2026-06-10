@@ -374,7 +374,7 @@
           </div>
           <div class="form-field"><label>Ouverture inscr.</label><input type="date" id="f-open"></div>
           <div class="form-field">
-            <label>Lien officiel</label>
+            <label>Lien officiel d'inscription</label>
             <input type="url" id="f-url" placeholder="https://..." inputmode="url">
             <div class="platform-shortcuts">
               <button class="platform-btn" onclick="setUrl('https://www.protiming.fr')"><span style="font-size:11px">↗</span>Protiming</button>
@@ -383,7 +383,24 @@
               <button class="platform-btn" onclick="setUrl('https://www.kalenji-running.com')"><span style="font-size:11px">↗</span>Kalenji</button>
               <button class="platform-btn" onclick="setUrl('https://www.utmb.world')"><span style="font-size:11px">↗</span>UTMB</button>
             </div>
-
+          </div>
+          <div class="form-field">
+            <label>Lien résultats <span style="color:var(--text3);font-size:11px">(optionnel — à renseigner après la course)</span></label>
+            <input type="url" id="f-url-results" placeholder="https://..." inputmode="url">
+            <div class="platform-shortcuts">
+              <button class="platform-btn" onclick="setUrlResults('https://www.protiming.fr')"><span style="font-size:11px">↗</span>Protiming</button>
+              <button class="platform-btn" onclick="setUrlResults('https://www.finishers.com')"><span style="font-size:11px">↗</span>Finishers</button>
+              <button class="platform-btn" onclick="setUrlResults('https://www.time-to.com')"><span style="font-size:11px">↗</span>TimeToRun</button>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Lien résultats <span style="color:var(--text3);font-size:11px">(optionnel — à ajouter après la course)</span></label>
+            <input type="url" id="f-results" placeholder="https://..." inputmode="url">
+            <div class="platform-shortcuts">
+              <button class="platform-btn" onclick="setResultsUrl('https://www.protiming.fr')"><span style="font-size:11px">↗</span>Protiming</button>
+              <button class="platform-btn" onclick="setResultsUrl('https://www.finishers.com')"><span style="font-size:11px">↗</span>Finishers</button>
+              <button class="platform-btn" onclick="setResultsUrl('https://www.time-to.com')"><span style="font-size:11px">↗</span>TimeToRun</button>
+            </div>
           </div>
           <div style="display:flex;justify-content:flex-end;margin-top:4px">
             <button class="btn btn-primary" id="btn-add-race" onclick="addRace()"><span style="font-size:13px">＋</span>Ajouter la course</button>
@@ -440,6 +457,7 @@
     <div class="modal-handle"></div>
     <div class="modal-title" id="mp-race-name"></div>
     <div class="modal-subtitle" id="mp-race-sub"></div>
+    <div id="mp-results-row" style="display:none;margin-bottom:10px"></div>
     <div id="mp-body" style="max-height:55vh;overflow-y:auto"></div>
     <div id="mp-chrono-section" style="display:none;border-top:0.5px solid var(--border);margin-top:4px;padding-top:14px">
       <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.07em"><span style="font-size:13px;margin-right:4px">⏱</span>Mon chrono</div>
@@ -592,6 +610,7 @@ function resetDistTags(){formDistances=[];renderDistTags();}
 
 // ── URL preview ────────────────────────────────────────────────────────────
 function setUrl(u){document.getElementById('f-url').value=u;}
+function setUrlResults(u){document.getElementById('f-url-results').value=u;}
 
 // ── Chargement ─────────────────────────────────────────────────────────────
 async function loadAll(){
@@ -722,6 +741,14 @@ function openParticipantsModal(raceId){
   document.getElementById('mp-race-name').textContent=r.nom;
   const dists=parseDists(r.distances||r.distance);
   document.getElementById('mp-race-sub').textContent=`${dists.length>0?dists.join(' · ')+' km':''} · ${r.type} · ${dateStr(r.date_course)}`;
+  // Lien résultats
+  const resultsRow=document.getElementById('mp-results-row');
+  if(r.url_results){
+    resultsRow.style.display='block';
+    resultsRow.innerHTML=`<a href="${r.url_results}" target="_blank" rel="noopener" class="btn" style="width:100%;justify-content:center;background:var(--green-bg);color:var(--green-text);border-color:var(--green-border);text-decoration:none">🏅 Voir les résultats officiels</a>`;
+  } else {
+    resultsRow.style.display='none';
+  }
   let html='';
   html+=`<div class="part-section-title"><span style="font-size:12px;margin-right:4px;color:var(--green-text)">✓</span>Inscrits (${conf.length})</div>`;
   if(conf.length===0){html+='<div class="part-empty">Aucun inscrit pour l\'instant</div>';}
@@ -834,6 +861,7 @@ function renderHistory(){
                 <span class="part-label">voir la liste</span>
               </div>
               ${r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="ext-link">↗ ${plat?plat.label:'Site'}</a>`:''}
+              ${r.url_results?`<a href="${r.url_results}" target="_blank" rel="noopener" class="ext-link" style="background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)">🏅 Résultats</a>`:''}
             </div>
           </div>
         </div>
@@ -1141,14 +1169,15 @@ async function addRace(){
   const date_limite=document.getElementById('f-limit').value||null;
   const date_ouverture=document.getElementById('f-open').value||null;
   const url=document.getElementById('f-url').value.trim();
+  const url_results=document.getElementById('f-url-results')?document.getElementById('f-url-results').value.trim():'';
   if(!nom||!date_course){alert('Merci de renseigner le nom et la date.');return;}
   if(formDistances.length===0){alert('Merci d\'ajouter au moins une distance.');return;}
   document.getElementById('btn-add-race').disabled=true;setSyncing('syncing');
-  const{error}=await db.from('courses').insert({nom,type,distances:JSON.stringify(formDistances),date_course,date_limite,date_ouverture,url});
+  const{error}=await db.from('courses').insert({nom,type,distances:JSON.stringify(formDistances),date_course,date_limite,date_ouverture,url,url_results});
   document.getElementById('btn-add-race').disabled=false;
   if(error){setSyncing('error');showToast('⚠️ Erreur : '+error.message);return;}
   ['f-name','f-date','f-limit','f-open','f-url'].forEach(id=>document.getElementById(id).value='');
-  resetDistTags();
+  ['f-name','f-date','f-limit','f-open','f-url','f-url-results'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
   showToast('Course ajoutée ✓');
   await loadAll();switchTab('courses');
 }
