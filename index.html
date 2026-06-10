@@ -687,6 +687,15 @@ function renderDistFilter(){
 
 function selectDist(d){
   selectedDist=d;
+  if(d!=='all'){
+    console.log('🔍 selectDist:', d, typeof d);
+    races.forEach(r=>{
+      const raw=r.distances||r.distance;
+      const parsed=parseDists(raw);
+      const match=parsed.map(String).includes(String(d));
+      console.log(r.nom,'| raw:', JSON.stringify(raw),'| parsed:', parsed,'| match:', match);
+    });
+  }
   renderDistFilter();
   renderRaces();
 }
@@ -1236,10 +1245,14 @@ function toggleDropdown(e){
   }
 }
 function closeDropdown(){
-  document.getElementById('user-chip').classList.remove('open');
-  document.getElementById('user-dropdown').classList.remove('open');
-  document.getElementById('chip-chevron').style.transform='rotate(0deg)';
-  document.getElementById('member-search').value='';
+  const chip=document.getElementById('user-chip');
+  const dd=document.getElementById('user-dropdown');
+  const chev=document.getElementById('chip-chevron');
+  const search=document.getElementById('member-search');
+  if(chip)chip.classList.remove('open');
+  if(dd)dd.classList.remove('open');
+  if(chev)chev.style.transform='rotate(0deg)';
+  if(search)search.value='';
 }
 function filterMembers(){
   const q=document.getElementById('member-search').value;
