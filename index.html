@@ -191,6 +191,27 @@
     .pill-c{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}
     .pill-i{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border)}
     .delete-btn{background:none;border:0.5px solid #F7C1C1;border-radius:var(--radius-md);color:#A32D2D;font-size:11px;padding:4px 8px;cursor:pointer;display:inline-flex;align-items:center;gap:3px;margin-top:4px}
+    .runner-drawer{background:var(--bg2);border-radius:var(--radius-lg);margin:4px 0 8px;overflow:hidden;border:0.5px solid var(--border);display:none}
+    .runner-drawer.open{display:block}
+    .drawer-header{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:0.5px solid var(--border);background:var(--bg3)}
+    .drawer-close{font-size:11px;color:var(--text3);padding:3px 8px;border-radius:99px;border:0.5px solid var(--border);background:none;cursor:pointer;margin-left:auto}
+    .drawer-body{padding:8px 12px 10px}
+    .drawer-section-sep{display:flex;align-items:center;gap:8px;margin:8px 0 5px}
+    .drawer-section-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+    .drawer-section-line{flex:1;height:0.5px;background:var(--border2)}
+    .course-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;margin-bottom:3px;cursor:pointer}
+    .course-item:active{opacity:.7}
+    .course-item:hover{background:var(--bg3)}
+    .course-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .course-item-name{flex:1;min-width:0;font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .course-item-name.past{font-style:italic;color:var(--text2)}
+    .course-item-meta{font-size:10px;color:var(--text3)}
+    .course-item-badge{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap;flex-shrink:0;cursor:pointer}
+    .course-item-badge.c{background:var(--green-bg);color:var(--green-text);border:0.5px solid var(--green-border)}
+    .course-item-badge.i{background:var(--amber-bg);color:var(--amber-text);border:0.5px solid var(--amber-border)}
+    .course-item-badge.past{background:var(--bg3);color:var(--text3);border:0.5px solid var(--border);font-style:italic}
+    .course-item-arrow{font-size:13px;color:var(--text3);flex-shrink:0}
+    .drawer-empty{font-size:11px;color:var(--text3);font-style:italic;padding:3px 8px 5px}
 
     /* Forms */
     .form-section{background:var(--bg2);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px;border:0.5px solid var(--border)}
@@ -879,7 +900,7 @@ function renderMembers(){
   const totalInter=participations.filter(p=>p.statut==='interested').length;
   const totalChronos=participations.filter(p=>p.chrono).length;
 
-  // Calcul top 3 distances
+  // Top 3 distances
   const distCount={};
   participations.filter(p=>p.statut==='confirmed'&&p.distance).forEach(p=>{
     const k=p.distance+' km';
@@ -890,7 +911,6 @@ function renderMembers(){
   const medals=['🥇','🥈','🥉'];
   const barColors=['#185FA5','#3B6D11','#633806'];
   const valColors=['#85B7EB','#9FE1CB','#FAC775'];
-
   const top3Html=top3.length>0?`
     <div class="top3-card">
       <div class="top3-header">🏅 Top 3 distances pratiquées</div>
@@ -899,77 +919,121 @@ function renderMembers(){
         <div class="top3-row">
           <div class="top3-medal">${medals[i]}</div>
           <div class="top3-dist">${d[0]}</div>
-          <div class="top3-bar-wrap">
-            <div class="top3-bar-bg">
-              <div class="top3-bar-fill" style="width:${Math.round(d[1]/maxDist*100)}%;background:${barColors[i]}"></div>
-            </div>
-          </div>
-          <div>
-            <div class="top3-count" style="color:${valColors[i]}">${d[1]}</div>
-            <div class="top3-sub">inscrit${d[1]>1?'s':''}</div>
-          </div>
+          <div class="top3-bar-wrap"><div class="top3-bar-bg"><div class="top3-bar-fill" style="width:${Math.round(d[1]/maxDist*100)}%;background:${barColors[i]}"></div></div></div>
+          <div><div class="top3-count" style="color:${valColors[i]}">${d[1]}</div><div class="top3-sub">inscrit${d[1]>1?'s':''}</div></div>
         </div>`).join('')}
       </div>
-    </div>`
-  :'';
+    </div>`:'';
 
   document.getElementById('stats-grid').innerHTML=`
-    <div class="stat-card">
-      <div class="stat-icon" style="background:#E6F1FB">👥</div>
-      <div><div class="stat-val">${members.length}</div><div class="stat-label">Membres</div></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background:#EAF3DE">📅</div>
-      <div><div class="stat-val">${races.length}</div><div class="stat-label">Courses</div></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background:var(--green-bg)">✓</div>
-      <div><div class="stat-val" style="color:var(--green-text)">${totalConf}</div><div class="stat-label">Inscrits</div></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background:var(--amber-bg)">★</div>
-      <div><div class="stat-val" style="color:var(--amber-text)">${totalInter}</div><div class="stat-label">Intéressés</div></div>
-    </div>
-    <div class="stat-card wide">
-      <div class="stat-icon" style="background:#E6F1FB">⏱</div>
-      <div><div class="stat-val" style="color:#185FA5">${totalChronos}</div><div class="stat-label">Chronos enregistrés</div></div>
-    </div>
+    <div class="stat-card"><div class="stat-icon" style="background:#E6F1FB">👥</div><div><div class="stat-val">${members.length}</div><div class="stat-label">Membres</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#EAF3DE">📅</div><div><div class="stat-val">${races.length}</div><div class="stat-label">Courses</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:var(--green-bg)">✓</div><div><div class="stat-val" style="color:var(--green-text)">${totalConf}</div><div class="stat-label">Inscrits</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:var(--amber-bg)">★</div><div><div class="stat-val" style="color:var(--amber-text)">${totalInter}</div><div class="stat-label">Intéressés</div></div></div>
+    <div class="stat-card wide"><div class="stat-icon" style="background:#E6F1FB">⏱</div><div><div class="stat-val" style="color:#185FA5">${totalChronos}</div><div class="stat-label">Chronos enregistrés</div></div></div>
     ${top3Html}
   `;
-  // Utilisateur courant en tête, reste trié alphabétiquement
-  const me = members.find(m=>m.id===currentUserId);
-  const others = members.filter(m=>m.id!==currentUserId).sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
-  const sorted = me ? [me, ...others] : others;
+
+  const today=new Date(new Date().toDateString());
+  const me=members.find(m=>m.id===currentUserId);
+  const others=members.filter(m=>m.id!==currentUserId).sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
+  const sorted=me?[me,...others]:others;
+
+  function buildDrawer(m){
+    const mParts=participations.filter(p=>p.membre_id===m.id);
+    const upcoming=mParts.filter(p=>{const r=races.find(x=>x.id===p.course_id);return r&&new Date(r.date_course)>=today;}).sort((a,b)=>{const ra=races.find(x=>x.id===a.course_id),rb=races.find(x=>x.id===b.course_id);return new Date(ra?.date_course)-new Date(rb?.date_course);});
+    const past=mParts.filter(p=>{const r=races.find(x=>x.id===p.course_id);return r&&new Date(r.date_course)<today;}).sort((a,b)=>{const ra=races.find(x=>x.id===a.course_id),rb=races.find(x=>x.id===b.course_id);return new Date(rb?.date_course)-new Date(ra?.date_course);});
+
+    function courseRow(p,isPast){
+      const r=races.find(x=>x.id===p.course_id);
+      if(!r)return'';
+      const accentColor=r.type==='Trail'?'#3B6D11':r.type==='Ultra'?'#993C1D':'#185FA5';
+      const distLabel=p.distance?` · ${p.distance} km`:'';
+      const chronoLabel=p.chrono?` · <span style="color:#185FA5">⏱ ${p.chrono}</span>`:'';
+      const badgeClass=isPast?'past':p.statut==='confirmed'?'c':'i';
+      const badgeLabel=p.statut==='confirmed'?'Inscrit ✓':'Intéressé ★';
+      return `<div class="course-item" onclick="goToRace('${r.id}')">
+        <div class="course-dot" style="background:${isPast?'#1D9E75':accentColor}"></div>
+        <div style="flex:1;min-width:0">
+          <div class="course-item-name${isPast?' past':''}">${r.nom}</div>
+          <div class="course-item-meta">${dateStr(r.date_course)}${distLabel}${chronoLabel}</div>
+        </div>
+        <span class="course-item-badge ${badgeClass}" onclick="event.stopPropagation();goToRace('${r.id}')">${badgeLabel}</span>
+        <span class="course-item-arrow">›</span>
+      </div>`;
+    }
+
+    const upcomingHtml=upcoming.length>0?upcoming.map(p=>courseRow(p,false)).join(''):`<div class="drawer-empty">Aucune course à venir</div>`;
+    const pastHtml=past.length>0?past.map(p=>courseRow(p,true)).join(''):`<div class="drawer-empty">Aucune course passée</div>`;
+
+    return `<div class="runner-drawer" id="drawer-${m.id}">
+      <div class="drawer-header">
+        <div class="av-md" style="${avStyle(m.nom)}">${initials(m.nom)}</div>
+        <div><div style="font-size:14px;font-weight:500;color:var(--text)">${m.nom}</div><div style="font-size:11px;color:var(--text3);margin-top:1px">${m.role||'Coureur'} · ${mParts.length} participation${mParts.length>1?'s':''}</div></div>
+        <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
+          <button class="delete-btn" onclick="event.stopPropagation();deleteMember('${m.id}')">🗑 Retirer</button>
+          <button class="drawer-close" onclick="toggleDrawer('${m.id}')">✕</button>
+        </div>
+      </div>
+      <div class="drawer-body">
+        <div class="drawer-section-sep"><span class="drawer-section-label">📅 À venir</span><div class="drawer-section-line"></div></div>
+        ${upcomingHtml}
+        <div class="drawer-section-sep" style="margin-top:10px"><span class="drawer-section-label">🏁 Passées</span><div class="drawer-section-line"></div></div>
+        ${pastHtml}
+      </div>
+    </div>`;
+  }
 
   function memberRow(m){
-    const isMe = m.id===currentUserId;
+    const isMe=m.id===currentUserId;
     const mParts=participations.filter(p=>p.membre_id===m.id);
     const confCount=mParts.filter(p=>p.statut==='confirmed').length;
-    const pills=mParts.map(p=>{const r=races.find(x=>x.id===p.course_id);if(!r)return'';const distLabel=p.distance?` ${p.distance}km`:'';return`<span class="pill ${p.statut==='confirmed'?'pill-c':'pill-i'}">${r.nom.length>10?r.nom.slice(0,8)+'…':r.nom}${distLabel}</span>`;}).join('');
-    return `<div class="runner-row" style="${isMe?'background:var(--bg2);margin:0 -4px;padding:12px 4px;border-radius:var(--radius-md)':''}">
+    const pills=mParts.slice(0,3).map(p=>{
+      const r=races.find(x=>x.id===p.course_id);
+      if(!r)return'';
+      return`<span class="pill ${p.statut==='confirmed'?'pill-c':'pill-i'}" onclick="event.stopPropagation();goToRace('${r.id}')" title="${r.nom}">${r.nom.length>8?r.nom.slice(0,7)+'…':r.nom}</span>`;
+    }).join('');
+    return`<div class="runner-row" style="${isMe?'background:var(--bg2);margin:0 -4px;padding:12px 4px;border-radius:var(--radius-md)':''};cursor:pointer" onclick="toggleDrawer('${m.id}')">
       <div class="av-md" style="${avStyle(m.nom)}">${initials(m.nom)}</div>
       <div class="runner-info">
         <div class="runner-name">${m.nom}${isMe?` <span style="font-size:10px;font-weight:500;color:var(--text3);background:var(--bg3);border-radius:99px;padding:1px 7px;margin-left:4px">moi</span>`:''}</div>
         <div class="runner-sub">${m.role||'Coureur'} · ${confCount} inscr.</div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-        <div class="runner-pills">${pills||'<span style="font-size:11px;color:var(--text3)">—</span>'}</div>
-        <button class="delete-btn" onclick="deleteMember('${m.id}')"><span style="font-size:11px">🗑</span>Retirer</button>
-      </div>
-    </div>`;
+      <div class="runner-pills">${pills||'<span style="font-size:11px;color:var(--text3)">—</span>'}</div>
+      <span style="font-size:13px;color:var(--text3);margin-left:4px" id="chev-${m.id}">▾</span>
+    </div>
+    ${buildDrawer(m)}`;
   }
 
   let html='';
-  if(me) html += memberRow(me);
-  if(me && others.length>0){
+  if(me) html+=memberRow(me);
+  if(me&&others.length>0){
     html+=`<div style="display:flex;align-items:center;gap:10px;margin:10px 0 6px">
       <span style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap">Tous les membres</span>
       <div style="flex:1;height:0.5px;background:var(--border2)"></div>
     </div>`;
   }
-  others.forEach(m=>{ html+=memberRow(m); });
-  if(!html) html='<div class="empty-state"><span>👥</span>Aucun membre.</div>';
+  others.forEach(m=>{html+=memberRow(m);});
+  if(!html)html='<div class="empty-state"><span>👥</span>Aucun membre.</div>';
   document.getElementById('runner-list').innerHTML=html;
+}
+
+function toggleDrawer(memberId){
+  const drawer=document.getElementById('drawer-'+memberId);
+  const chev=document.getElementById('chev-'+memberId);
+  if(!drawer)return;
+  const isOpen=drawer.classList.contains('open');
+  drawer.classList.toggle('open',!isOpen);
+  if(chev)chev.textContent=isOpen?'▾':'▴';
+}
+
+function goToRace(raceId){
+  // Naviguer vers l'onglet courses et ouvrir la modale participants
+  switchTab('courses');
+  setTimeout(()=>{
+    // Scroll vers la carte si possible
+    openParticipantsModal(raceId);
+  },100);
 }
 
 function renderMemberListPreview(){
