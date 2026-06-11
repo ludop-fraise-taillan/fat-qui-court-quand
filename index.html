@@ -105,56 +105,95 @@
     .chip-dist:active{opacity:.7}
     .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
 
-    /* Race card */
-    /* ── Cartes course — design compact ── */
-    .race-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);margin-bottom:8px;overflow:hidden;display:flex;position:relative}
-    .race-card.past{background:#F0FAF5;border-color:#9FE1CB;flex-direction:column}
-    @media(prefers-color-scheme:dark){.race-card.past{background:#04342C;border-color:#0F6E56}}
-    .race-card.sold-out{opacity:0.82;background:var(--bg2);filter:grayscale(35%)}
-    .card-accent{width:4px;flex-shrink:0}
-    .card-accent.trail{background:#3B6D11}
-    .card-accent.route{background:#185FA5}
-    .card-accent.ultra{background:#993C1D}
-    .card-accent.past{background:#1D9E75}
-    .card-body{flex:1;padding:9px 10px 8px}
-    .card-row1{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-    .race-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.3}
-    .race-type{font-size:10px;font-weight:500;padding:1px 7px;border-radius:99px;white-space:nowrap;flex-shrink:0}
-    .badge-trail{background:#EAF3DE;color:#3B6D11}
-    .badge-route{background:#E6F1FB;color:#185FA5}
-    .badge-ultra{background:#FAECE7;color:#993C1D}
-    .card-row2{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:6px}
-    .dist-tag{font-size:10px;padding:2px 7px;border-radius:99px;background:var(--bg2);color:var(--text2);border:0.5px solid var(--border)}
-    .dist-tag.sel{background:#E6F1FB;color:#185FA5;border-color:#B5D4F4}
-    .card-row3{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
-    .card-dates{display:flex;gap:10px;flex-wrap:wrap}
-    .date-item{font-size:10px;color:var(--text3)}
-    .date-item span{font-weight:500;color:var(--text);margin-left:3px}
-    .date-item span.urgent{color:var(--red-text)}
-    .date-item span.ok{color:#085041}
-    .card-actions-row{display:flex;gap:5px;align-items:center}
-    .av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;border:2px solid var(--bg);margin-right:-6px}
-    .av-more{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--text2);background:var(--bg2);border:0.5px solid var(--border);margin-left:8px;flex-shrink:0}
-    .avs-wrap{display:flex;align-items:center;cursor:pointer}
-    .avs-wrap:active{opacity:0.7}
-    .part-label{font-size:10px;color:var(--text2);margin-left:8px;text-decoration:underline dotted;text-underline-offset:2px}
-    .btn-join{font-size:11px;padding:4px 10px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:none;color:var(--text);white-space:nowrap;cursor:pointer}
-    .btn-join.confirmed{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}
-    .btn-join.interested{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border)}
-    .ext-link{font-size:10px;padding:3px 7px;border-radius:var(--radius-md);border:0.5px solid var(--border);background:none;color:var(--text2);text-decoration:none;display:inline-flex;align-items:center;gap:3px}
-    .past-badge{font-size:10px;font-weight:500;color:#085041;background:#E1F5EE;border:0.5px solid #9FE1CB;border-radius:99px;padding:1px 7px;margin-left:5px}
-    .complet-badge{font-size:10px;font-weight:600;color:#791F1F;background:#FCEBEB;border:0.5px solid #F7C1C1;border-radius:99px;padding:1px 7px;margin-left:5px}
+    /* ── Cartes course — design V3 gradient + barre statut D ── */
+    .race-card{border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 2px 14px rgba(0,0,0,.1);position:relative}
+    .race-card.sold-out .card-head{background:linear-gradient(135deg,#5a0a0a,#900f0f) !important}
+    /* En-tête gradient */
+    .card-head{display:flex;align-items:stretch;cursor:pointer;-webkit-tap-highlight-color:transparent;flex-direction:column}
+    .card-head-inner{display:flex;align-items:stretch;flex:1}
+    .card-head.trail .card-head-inner,.card-head.trail{background:linear-gradient(135deg,#1a3a1a,#2d5a2d)}
+    .card-head.route .card-head-inner,.card-head.route{background:linear-gradient(135deg,#0d2a4a,#1a4a7a)}
+    .card-head.ultra .card-head-inner,.card-head.ultra{background:linear-gradient(135deg,#3a0d0d,#6a1a1a)}
+    /* Colonne date */
+    .date-col{background:rgba(0,0,0,.22);padding:12px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:58px;flex-shrink:0;gap:1px}
+    .dc-day{font-size:9px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.07em}
+    .dc-dd{font-size:24px;font-weight:800;color:#fff;line-height:1}
+    .dc-mm{font-size:12px;font-weight:700;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.04em}
+    .dc-yy{font-size:9px;color:rgba(255,255,255,.45);margin-top:1px}
+    /* Infos header */
+    .head-info{flex:1;padding:11px 10px 11px 12px;display:flex;flex-direction:column;justify-content:center;gap:5px}
+    .head-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+    .race-name{font-size:16px;font-weight:700;color:#fff;line-height:1.25;flex:1}
+    .head-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+    .race-type{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.18);color:#fff;white-space:nowrap}
+    .complet-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.92);color:#900f0f;white-space:nowrap}
+    .head-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .head-dists{display:flex;gap:5px;flex-wrap:wrap}
+    .dist-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.18);color:#fff}
+    /* Chevron */
+    .head-chev{display:flex;align-items:center;padding:0 10px;color:rgba(255,255,255,.4);font-size:13px;flex-shrink:0;transition:transform .25s}
+    .head-chev.open{transform:rotate(180deg)}
+    /* Barre statut D */
+    .status-bar{padding:5px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .status-bar.c{background:rgba(159,225,203,.22);border-top:1px solid rgba(159,225,203,.28)}
+    .status-bar.i{background:rgba(250,199,117,.18);border-top:1px solid rgba(250,199,117,.25)}
+    .status-bar.none{background:rgba(255,255,255,.08);border-top:1px solid rgba(255,255,255,.12)}
+    .status-bar-txt{font-size:11px;font-weight:600}
+    .status-bar-txt.c{color:#9FE1CB}
+    .status-bar-txt.i{color:#FAC775}
+    .status-bar-txt.none{color:rgba(255,255,255,.55);font-weight:400}
+    .status-bar-counts{display:flex;gap:8px;align-items:center}
+    .sbc-item{font-size:10px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:3px}
+    .sbc-val{font-size:12px;font-weight:700}
+    .sbc-val.green{color:#9FE1CB}
+    .sbc-val.amber{color:#FAC775}
+    /* Zone déroulante */
+    .card-expand{background:var(--bg);display:none;border-top:0.5px solid rgba(0,0,0,.06)}
+    .card-expand.open{display:block}
+    /* Zone médiane */
+    .card-mid{padding:9px 14px;border-bottom:0.5px solid var(--border)}
+    .mid-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .mid-left{font-size:11px;color:var(--text2)}
+    .mid-left strong.urgent{color:var(--red-text);font-weight:600}
+    .mid-left strong.normal{color:var(--text);font-weight:600}
+    .mid-right{font-size:11px;text-align:right}
+    .mid-right.ok strong{color:#085041;font-weight:600}
+    .mid-right.future strong{color:#185FA5;font-weight:600}
+    .mid-right.passed{color:var(--text3);font-size:10px}
+    /* Zone basse */
+    .card-bot{padding:10px 14px 12px}
+    .inscrits-toggle{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text);margin-bottom:8px;user-select:none}
+    .inscrits-list{background:var(--bg2);border-radius:10px;padding:8px 10px;margin-bottom:10px}
+    .dist-group{margin-bottom:10px}
+    .dist-group:last-child{margin-bottom:0}
+    .dist-group-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;padding-bottom:4px;border-bottom:0.5px solid var(--border)}
+    .runner-line{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:0.5px solid var(--border)}
+    .runner-line:last-child{border:none}
+    .rl-av{width:22px;height:22px;border-radius:50%;font-size:8px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .rl-name{flex:1;font-size:12px;font-weight:500;color:var(--text)}
+    .rl-badge{font-size:9px;padding:2px 7px;border-radius:99px}
+    .rl-c{background:var(--green-bg);color:var(--green-text);border:0.5px solid var(--green-border)}
+    .rl-i{background:var(--amber-bg);color:var(--amber-text);border:0.5px solid var(--amber-border)}
+    .bot-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:8px;border-top:0.5px solid var(--border)}
+    .btn-site{font-size:11px;padding:6px 12px;border-radius:var(--radius-md);border:0.5px solid var(--border);background:none;color:var(--text2);display:inline-flex;align-items:center;gap:4px;cursor:pointer;text-decoration:none}
+    .btn-join-card{font-size:12px;font-weight:600;padding:7px 18px;border-radius:var(--radius-md);cursor:pointer;white-space:nowrap;border:none}
+    .btn-join-card.none{border:0.5px solid var(--border2);background:none;color:var(--text)}
+    .btn-join-card.c{background:var(--green-bg);color:var(--green-text);border:0.5px solid var(--green-border)}
+    .btn-join-card.i{background:var(--amber-bg);color:var(--amber-text);border:0.5px solid var(--amber-border)}
+    /* Chrono & sold-out stamp */
     .chrono-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:500;color:#185FA5;background:#E6F1FB;border:0.5px solid #B5D4F4;border-radius:99px;padding:2px 7px}
+    .sold-out-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);pointer-events:none;z-index:5;user-select:none}
+    /* Historique */
+    .race-card.past .card-head{background:linear-gradient(135deg,#04342C,#0a5c4a) !important}
+    .past-badge{font-size:10px;font-weight:500;color:#085041;background:#E1F5EE;border:0.5px solid #9FE1CB;border-radius:99px;padding:1px 7px;margin-left:5px}
+    .past-card-inner{display:flex}
     .chronos-strip{border-top:0.5px solid #9FE1CB;padding:5px 10px;display:flex;gap:8px;flex-wrap:wrap;background:#E8F7F0}
     .ch-item{display:flex;align-items:center;gap:4px}
     .ch-av{width:18px;height:18px;border-radius:50%;font-size:7px;font-weight:600;display:flex;align-items:center;justify-content:center;background:#9FE1CB;color:#085041}
     .ch-val{font-size:10px;font-weight:500;color:#185FA5}
-    .sold-out-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);pointer-events:none;z-index:5;user-select:none}
-    .past-card-inner{display:flex}
     .chrono-input-row{display:flex;gap:6px;align-items:center;margin-bottom:14px}
     .chrono-input-row input{flex:1;font-size:16px;padding:9px 12px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);text-align:center;letter-spacing:0.05em}
     .chrono-hint{font-size:11px;color:var(--text3);margin-bottom:14px;text-align:center}
-    /* Supprimés : race-card-header, race-meta, divider, card-bottom, avatars-zone, badge */
 
     /* Buttons */
     .btn{font-size:13px;padding:7px 12px;border-radius:var(--radius-md);border:0.5px solid var(--border2);cursor:pointer;background:none;color:var(--text);display:inline-flex;align-items:center;gap:5px;white-space:nowrap;text-decoration:none}
@@ -665,57 +704,112 @@ function renderRaces(){
         html+=`<div class="month-sep"><span class="month-sep-label">${monthKey}</span><div class="month-sep-line"></div></div>`;
       }
     }
-    const tc=r.type==='Trail'?'badge-trail':r.type==='Ultra'?'badge-ultra':'badge-route';
+    const tc=r.type==='Trail'?'trail':r.type==='Ultra'?'ultra':'route';
     const dists=parseDists(r.distances||r.distance);
     const rParts=participations.filter(p=>p.course_id===r.id);
     const conf=rParts.filter(p=>p.statut==='confirmed');
     const inter=rParts.filter(p=>p.statut==='interested');
-    const allP=[...conf,...inter];
-    const shown=allP.slice(0,4);const extra=allP.length-4;
     const dtl=daysUntil(r.date_limite),dto=daysUntil(r.date_ouverture);
-    const lc=dtl!==null&&dtl<14?'urgent':'';
-    const oc=dto!==null&&dto>0&&dto<30?'open-soon':'';
     const myPart=rParts.find(p=>p.membre_id===currentUserId);
     const plat=detectPlat(r.url);
-    const ptag=plat?`<span class="platform-tag"><span style="font-size:10px">↗</span>${plat.label}</span>`:'';
-    const distTags=dists.length>0?dists.map(d=>`<span class="dist-tag">${d} km</span>`).join(''):'<span class="dist-tag">— km</span>';
-    const avs=shown.map(p=>{const mbr=members.find(x=>x.id===p.membre_id);const name=mbr?.nom||'?';const bg=p.statut==='confirmed'?'#9FE1CB':'#FAC775';const tc2=p.statut==='confirmed'?'#085041':'#633806';return`<div class="av" style="background:${bg};color:${tc2}">${initials(name)}</div>`;}).join('');
-    const lb=r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="ext-link">↗ ${plat?plat.label:'Site'}</a>`:'';
     const isSoldOut=!!(r.sold_out===true||r.sold_out==='true'||r.sold_out===1||r.sold_out==='t');
-    const isPast=r.date_course&&new Date(r.date_course)<new Date(new Date().toDateString());
-    const soldOutStamp=isSoldOut?`<div class="sold-out-stamp"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMjAgOTAiIHdpZHRoPSIyMjAiIGhlaWdodD0iOTAiPgogIDxyZWN0IHg9IjMiIHk9IjMiIHdpZHRoPSIyMTQiIGhlaWdodD0iODQiIHJ4PSI2IiBmaWxsPSJub25lIiBzdHJva2U9IiNDMDAwMUEiIHN0cm9rZS13aWR0aD0iNC41Ii8+CiAgPHJlY3QgeD0iMTEiIHk9IjExIiB3aWR0aD0iMTk4IiBoZWlnaHQ9IjY4IiByeD0iMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzAwMDFBIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC40NSIvPgogIDx0ZXh0IHg9IjExMCIgeT0iNTciIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjayxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjI4IiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjQzAwMDFBIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iNCI+U09MRCBPVVQ8L3RleHQ+Cjwvc3ZnPg==" alt="SOLD OUT" style="width:110px;height:auto;opacity:0.9"></div>`:'';
     const myS=myPart?.statut;
-    const bl=myS==='confirmed'?'Inscrit ✓':myS==='interested'?'Intéressé ★':'Participer ?';
-    const bjClass=myS==='confirmed'?'confirmed':myS==='interested'?'interested':'';
-    const accentClass=r.type==='Trail'?'trail':r.type==='Ultra'?'ultra':'route';
-    const typeClass=r.type==='Trail'?'badge-trail':r.type==='Ultra'?'badge-ultra':'badge-route';
-    const limiteStr=dtl!==null&&dtl>=0&&dtl<14?`<span class="urgent">${dateStr(r.date_limite)} · J-${dtl}</span>`:`<span>${dateStr(r.date_limite)}</span>`;
-    const ouvertureStr=dto!==null&&dto>0?`<span class="ok">J-${dto}</span>`:`<span>${dateStr(r.date_ouverture)}</span>`;
+
+    // Date formatée
+    const JOURS=['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
+    const MOIS_COURT=['Jan.','Fév.','Mar.','Avr.','Mai','Juin','Juil.','Août','Sep.','Oct.','Nov.','Déc.'];
+    const dc=r.date_course?new Date(r.date_course):null;
+    const dcDay=dc?JOURS[dc.getDay()]:'—';
+    const dcDD=dc?String(dc.getDate()).padStart(2,'0'):'—';
+    const dcMM=dc?MOIS_COURT[dc.getMonth()]:'—';
+    const dcYY=dc?dc.getFullYear():'—';
+
+    // Distances en pills blancs
+    const distTags=dists.length>0?dists.map(d=>`<span class="dist-tag">${d} km</span>`).join(''):'<span class="dist-tag">— km</span>';
+
+    // Barre statut
+    const statusClass=myS==='confirmed'?'c':myS==='interested'?'i':'none';
+    const statusTxt=myS==='confirmed'?`✓ Inscrit${myPart?.distance?' — '+myPart.distance+' km':''}`:myS==='interested'?'★ Intéressé':'Participer ?';
+
+    // Zone médiane
+    const limiteLeft=dtl!==null&&dtl>=0&&dtl<14
+      ?`Limite inscr. <strong class="urgent">${dateStr(r.date_limite)} · J-${dtl}</strong>`
+      :`Limite inscr. <strong class="normal">${dateStr(r.date_limite)||'—'}</strong>`;
+    let ouvertureRight='';
+    if(dto!==null&&dto>0) ouvertureRight=`<div class="mid-right future">Ouverture <strong>J-${dto}</strong></div>`;
+    else if(dto===0||dto!==null&&dto<=0) ouvertureRight=`<div class="mid-right ok">Ouverture <strong>ouverte</strong></div>`;
+    else ouvertureRight=`<div class="mid-right passed">Ouverture <strong>${dateStr(r.date_ouverture)||'—'}</strong></div>`;
+
+    // Inscrits par distance pour la liste déroulante
+    const distGroups={};
+    rParts.forEach(p=>{
+      const k=p.distance?`${p.distance} km`:'—';
+      if(!distGroups[k])distGroups[k]=[];
+      distGroups[k].push(p);
+    });
+    const noDistParts=distGroups['—']||[];
+    delete distGroups['—'];
+    let inscritsList='';
+    Object.entries(distGroups).sort((a,b)=>parseInt(a[0])-parseInt(b[0])).forEach(([dist,parts])=>{
+      const rows=parts.map(p=>{const mbr=members.find(x=>x.id===p.membre_id);const name=mbr?.nom||'?';const bg=p.statut==='confirmed'?'#9FE1CB':'#FAC775';const tc2=p.statut==='confirmed'?'#085041':'#633806';const badge=p.statut==='confirmed'?'rl-c':'rl-i';const bl2=p.statut==='confirmed'?'Inscrit ✓':'Intéressé ★';return`<div class="runner-line"><div class="rl-av" style="background:${bg};color:${tc2}">${initials(name)}</div><span class="rl-name">${name}</span><span class="rl-badge ${badge}">${bl2}</span></div>`;}).join('');
+      inscritsList+=`<div class="dist-group"><div class="dist-group-label">${dist}</div>${rows}</div>`;
+    });
+    if(noDistParts.length>0){
+      const rows=noDistParts.map(p=>{const mbr=members.find(x=>x.id===p.membre_id);const name=mbr?.nom||'?';const bg=p.statut==='confirmed'?'#9FE1CB':'#FAC775';const tc2=p.statut==='confirmed'?'#085041':'#633806';const badge=p.statut==='confirmed'?'rl-c':'rl-i';const bl2=p.statut==='confirmed'?'Inscrit ✓':'Intéressé ★';return`<div class="runner-line"><div class="rl-av" style="background:${bg};color:${tc2}">${initials(name)}</div><span class="rl-name">${name}</span><span class="rl-badge ${badge}">${bl2}</span></div>`;}).join('');
+      inscritsList+=`<div class="dist-group"><div class="dist-group-label">Distance non renseignée</div>${rows}</div>`;
+    }
+    if(!inscritsList) inscritsList='<div style="font-size:11px;color:var(--text3);font-style:italic;padding:4px 0">Aucune participation pour l\'instant</div>';
+
+    const cardId='card-'+r.id;
     html+=`<div class="race-card${isSoldOut?' sold-out':''}">
-      ${soldOutStamp}
-      <div class="card-accent ${accentClass}"></div>
-      <div class="card-body">
-        <div class="card-row1">
-          <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
-            <span class="race-name">${r.nom}${ptag}</span>
-            ${isSoldOut?'<span class="complet-badge">COMPLET</span>':''}
+      <div class="card-head ${tc}${isSoldOut?' sold-out':''}" onclick="toggleCard('${cardId}')">
+        <div class="card-head-inner">
+          <div class="date-col">
+            <span class="dc-day">${dcDay}</span>
+            <span class="dc-dd">${dcDD}</span>
+            <span class="dc-mm">${dcMM}</span>
+            <span class="dc-yy">${dcYY}</span>
           </div>
-          <span class="race-type ${typeClass}">${r.type}</span>
-        </div>
-        <div class="card-row2">${distTags}</div>
-        <div class="card-row3">
-          <div class="card-dates">
-            <div class="date-item">Course<span>${dateStr(r.date_course)}</span></div>
-            <div class="date-item">Limite ${limiteStr}</div>
-            <div class="date-item">Ouverture ${ouvertureStr}</div>
-          </div>
-          <div class="card-actions-row">
-            <div class="avs-wrap" onclick="openParticipantsModal('${r.id}')">
-              ${avs}${extra>0?`<div class="av-more">+${extra}</div>`:''}
-              <span class="part-label">${conf.length}i · ${inter.length}int</span>
+          <div class="head-info">
+            <div class="head-top">
+              <span class="race-name">${r.nom}</span>
+              <div class="head-right">
+                <span class="race-type">${r.type}</span>
+                ${isSoldOut?'<span class="complet-badge">COMPLET</span>':''}
+              </div>
             </div>
-            ${lb}
-            <button class="btn-join ${bjClass}" onclick="openModal('${r.id}')">${bl}</button>
+            <div class="head-bottom">
+              <div class="head-dists">${distTags}</div>
+            </div>
+          </div>
+          <div class="head-chev" id="chev-${cardId}">▾</div>
+        </div>
+        <div class="status-bar ${statusClass}">
+          <span class="status-bar-txt ${statusClass}">${statusTxt}</span>
+          <div class="status-bar-counts">
+            <div class="sbc-item"><span class="sbc-val green">${conf.length}</span> inscrit${conf.length>1?'s':''}</div>
+            <div class="sbc-item"><span class="sbc-val amber">${inter.length}</span> int.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-expand" id="${cardId}">
+        <div class="card-mid">
+          <div class="mid-row">
+            <div class="mid-left">${limiteLeft}</div>
+            ${ouvertureRight}
+          </div>
+        </div>
+        <div class="card-bot">
+          <div class="inscrits-toggle" onclick="toggleInscritsList('list-${r.id}','arr-${r.id}')">
+            <span>👥 Inscrits par distance</span>
+            <span id="arr-${r.id}">▾</span>
+          </div>
+          <div id="list-${r.id}" style="display:none">
+            <div class="inscrits-list">${inscritsList}</div>
+          </div>
+          <div class="bot-actions">
+            ${r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="btn-site">↗ ${plat?plat.label:'Site'}</a>`:'<span></span>'}
+            <button class="btn-join-card ${statusClass==='c'?'c':statusClass==='i'?'i':'none'}" onclick="openModal('${r.id}')">${statusTxt}</button>
           </div>
         </div>
       </div>
@@ -726,6 +820,24 @@ function renderRaces(){
     :'<div class="empty-state"><span>📅</span>Aucune course. Ajoutez-en une !</div>';
   document.getElementById('race-list').innerHTML=html;
   _renderingRaces=false;
+}
+
+function toggleCard(cardId){
+  const exp=document.getElementById(cardId);
+  const chev=document.getElementById('chev-'+cardId);
+  if(!exp)return;
+  const open=exp.classList.contains('open');
+  exp.classList.toggle('open',!open);
+  if(chev)chev.classList.toggle('open',!open);
+}
+
+function toggleInscritsList(listId,arrId){
+  const list=document.getElementById(listId);
+  const arr=document.getElementById(arrId);
+  if(!list)return;
+  const open=list.style.display!=='none';
+  list.style.display=open?'none':'block';
+  if(arr)arr.textContent=open?'▾':'▴';
 }
 
 // ── Modale participants ─────────────────────────────────────────────────────
