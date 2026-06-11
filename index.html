@@ -184,16 +184,33 @@
     .chrono-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:500;color:#185FA5;background:#E6F1FB;border:0.5px solid #B5D4F4;border-radius:99px;padding:2px 7px}
     .sold-out-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);pointer-events:none;z-index:5;user-select:none}
     /* Historique */
-    .race-card.past .card-head{background:linear-gradient(135deg,#04342C,#0a5c4a) !important}
-    .past-badge{font-size:10px;font-weight:500;color:#085041;background:#E1F5EE;border:0.5px solid #9FE1CB;border-radius:99px;padding:1px 7px;margin-left:5px}
-    .past-card-inner{display:flex}
-    .chronos-strip{border-top:0.5px solid #9FE1CB;padding:5px 10px;display:flex;gap:8px;flex-wrap:wrap;background:#E8F7F0}
-    .ch-item{display:flex;align-items:center;gap:4px}
-    .ch-av{width:18px;height:18px;border-radius:50%;font-size:7px;font-weight:600;display:flex;align-items:center;justify-content:center;background:#9FE1CB;color:#085041}
-    .ch-val{font-size:10px;font-weight:500;color:#185FA5}
-    .chrono-input-row{display:flex;gap:6px;align-items:center;margin-bottom:14px}
-    .chrono-input-row input{flex:1;font-size:16px;padding:9px 12px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);text-align:center;letter-spacing:0.05em}
-    .chrono-hint{font-size:11px;color:var(--text3);margin-bottom:14px;text-align:center}
+    .hcard{border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 2px 14px rgba(0,0,0,.1)}
+    .hcard-expand{background:var(--bg);display:none}
+    .hcard-expand.open{display:block}
+    .stats-bar{padding:6px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.18)}
+    .sb-item{font-size:10px;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:4px}
+    .sb-val{font-size:13px;font-weight:700}
+    .sb-val.green{color:#9FE1CB}
+    .sb-val.blue{color:#85B7EB}
+    .sb-my-chrono{font-size:11px;font-weight:600;color:#85B7EB;background:rgba(133,183,235,.15);border:1px solid rgba(133,183,235,.3);border-radius:99px;padding:3px 10px;white-space:nowrap}
+    .past-pill{font-size:9px;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.7);white-space:nowrap}
+    .chron-section{padding:10px 14px}
+    .chron-dist-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;margin-top:8px}
+    .chron-dist-header:first-child{margin-top:0}
+    .chron-dist-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--text);color:var(--bg)}
+    .chron-dist-count{font-size:10px;color:var(--text3)}
+    .chron-divider{flex:1;height:.5px;background:var(--border)}
+    .chron-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:.5px solid var(--border)}
+    .chron-row:last-child{border:none}
+    .cr-rank{font-size:14px;min-width:24px;text-align:center;flex-shrink:0}
+    .cr-av{width:26px;height:26px;border-radius:50%;font-size:9px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .cr-name{flex:1;font-size:12px;font-weight:500;color:var(--text)}
+    .cr-time{font-size:12px;font-weight:700;color:#185FA5;background:#E6F1FB;border:.5px solid #B5D4F4;border-radius:99px;padding:3px 10px;white-space:nowrap}
+    .cr-no-time{font-size:11px;color:var(--text3);font-style:italic}
+    .hcard-actions{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 12px;border-top:.5px solid var(--border)}
+    .btn-site{font-size:11px;padding:6px 12px;border-radius:var(--radius-md);border:.5px solid var(--border);background:none;color:var(--text2);display:inline-flex;align-items:center;gap:4px;text-decoration:none;cursor:pointer}
+    .btn-results{font-size:11px;padding:6px 14px;border-radius:var(--radius-md);background:var(--green-bg);color:var(--green-text);border:.5px solid var(--green-border);font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+    /* Supprimés : past-card-inner, card-accent past, chronos-strip, ch-av, ch-val */
 
     /* Buttons */
     .btn{font-size:13px;padding:7px 12px;border-radius:var(--radius-md);border:0.5px solid var(--border2);cursor:pointer;background:none;color:var(--text);display:inline-flex;align-items:center;gap:5px;white-space:nowrap;text-decoration:none}
@@ -1006,8 +1023,11 @@ function renderHistory(){
   const today=new Date(new Date().toDateString());
   const past=[...races].filter(r=>r.date_course&&new Date(r.date_course)<today).sort((a,b)=>new Date(b.date_course)-new Date(a.date_course));
   const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const MOIS_COURT=['Jan.','Fév.','Mar.','Avr.','Mai','Juin','Juil.','Août','Sep.','Oct.','Nov.','Déc.'];
+  const JOURS=['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
   let html='';
   let currentMonth=null;
+
   past.forEach(r=>{
     const d=new Date(r.date_course);
     const monthKey=`${MOIS[d.getMonth()]} ${d.getFullYear()}`;
@@ -1015,56 +1035,107 @@ function renderHistory(){
       currentMonth=monthKey;
       html+=`<div class="month-sep"><span class="month-sep-label">${monthKey}</span><div class="month-sep-line"></div></div>`;
     }
-    const tc=r.type==='Trail'?'badge-trail':r.type==='Ultra'?'badge-ultra':'badge-route';
+
+    const tc=r.type==='Trail'?'trail':r.type==='Ultra'?'ultra':'route';
     const dists=parseDists(r.distances||r.distance);
-    const distTags=dists.length>0?dists.map(d=>`<span class="dist-tag">${d} km</span>`).join(''):'<span class="dist-tag">— km</span>';
     const rParts=participations.filter(p=>p.course_id===r.id);
     const conf=rParts.filter(p=>p.statut==='confirmed');
-    const inter=rParts.filter(p=>p.statut==='interested');
-    const allP=[...conf,...inter];
-    const shown=allP.slice(0,4); const extra=allP.length-4;
-    const plat=detectPlat(r.url);
-    const ptag=plat?`<span class="platform-tag"><span style="font-size:10px">↗</span>${plat.label}</span>`:'';
-    const avs=shown.map(p=>{const mbr=members.find(x=>x.id===p.membre_id);const name=mbr?.nom||'?';const bg=p.statut==='confirmed'?'#9FE1CB':'#FAC775';const tc2=p.statut==='confirmed'?'#085041':'#633806';return`<div class="av" style="background:${bg};color:${tc2}">${initials(name)}</div>`;}).join('');
-    // Chronos des inscrits
-    const chronos=conf.filter(p=>p.chrono).sort((a,b)=>a.chrono.localeCompare(b.chrono));
-    const chronoRows=chronos.map(p=>{const mbr=members.find(x=>x.id===p.membre_id);const name=mbr?.nom||'?';return`<div class="ch-item"><div class="ch-av">${initials(name)}</div><span style="font-size:10px;color:var(--text2)">${name}</span><span class="ch-val">${p.chrono}</span></div>`;}).join('');
-    const chronoSection=chronos.length>0?`<div class="chronos-strip">${chronoRows}</div>`:'';
     const myPart=rParts.find(p=>p.membre_id===currentUserId);
-    const myS=myPart?.statut;
-    const myChronoBadge=myPart?.chrono?`<span class="chrono-badge">⏱ ${myPart.chrono}</span>`:'';
-    const accentClass2=r.type==='Trail'?'trail':r.type==='Ultra'?'ultra':'route';
-    const typeClass2=r.type==='Trail'?'badge-trail':r.type==='Ultra'?'badge-ultra':'badge-route';
-    html+=`<div class="race-card past" onclick="openParticipantsModal('${r.id}')" style="cursor:pointer">
-      <div class="past-card-inner">
-        <div class="card-accent past"></div>
-        <div class="card-body">
-          <div class="card-row1">
-            <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
-              <span class="race-name" style="font-style:italic">${r.nom}${ptag}</span>
-              <span class="past-badge">Passée</span>
-              ${myChronoBadge}
-            </div>
-            <span class="race-type ${typeClass2}">${r.type}</span>
+    const plat=detectPlat(r.url);
+    const allChronos=conf.filter(p=>p.chrono);
+
+    // Date formatée
+    const dcDay=JOURS[d.getDay()];
+    const dcDD=String(d.getDate()).padStart(2,'0');
+    const dcMM=MOIS_COURT[d.getMonth()];
+    const dcYY=d.getFullYear();
+
+    // Distances en pills
+    const distTags=dists.length>0?dists.map(d=>`<span class="dist-pill">${d} km</span>`).join(''):'<span class="dist-pill">— km</span>';
+
+    // Mon chrono
+    const myChronoBar=myPart?.chrono?`<span class="sb-my-chrono">⏱ Mon chrono : ${myPart.chrono}</span>`:'';
+
+    // Chronos classés par distance
+    const distGroups={};
+    conf.forEach(p=>{
+      const k=p.distance?`${p.distance}`:'0';
+      if(!distGroups[k])distGroups[k]=[];
+      distGroups[k].push(p);
+    });
+    const medals=['🥇','🥈','🥉'];
+    let chronoHtml='';
+    const sortedDists=Object.keys(distGroups).sort((a,b)=>Number(a)-Number(b));
+    sortedDists.forEach(dist=>{
+      const parts=distGroups[dist].sort((a,b)=>{
+        if(a.chrono&&b.chrono) return a.chrono.localeCompare(b.chrono);
+        if(a.chrono) return -1;
+        if(b.chrono) return 1;
+        return 0;
+      });
+      const label=dist==='0'?'Distance non renseignée':`${dist} km`;
+      chronoHtml+=`<div class="chron-dist-header">
+        <span class="chron-dist-badge">${label}</span>
+        <span class="chron-dist-count">${parts.length} coureur${parts.length>1?'s':''}</span>
+        <div class="chron-divider"></div>
+      </div>`;
+      parts.forEach((p,i)=>{
+        const mbr=members.find(x=>x.id===p.membre_id);
+        const name=mbr?.nom||'?';
+        const bg=p.statut==='confirmed'?'#9FE1CB':'#FAC775';
+        const col=p.statut==='confirmed'?'#085041':'#633806';
+        const rank=p.chrono?(i<3?medals[i]:`<span style="color:#9e9e99;font-size:12px">${i+1}</span>`):'<span style="color:#9e9e99">—</span>';
+        const time=p.chrono?`<span class="cr-time">${p.chrono}</span>`:`<span class="cr-no-time">pas de chrono</span>`;
+        chronoHtml+=`<div class="chron-row">
+          <span class="cr-rank">${rank}</span>
+          <div class="cr-av" style="background:${bg};color:${col}">${initials(name)}</div>
+          <span class="cr-name">${name}</span>
+          ${time}
+        </div>`;
+      });
+    });
+    if(!chronoHtml) chronoHtml='<div style="font-size:11px;color:var(--text3);font-style:italic;padding:8px 0">Aucun participant enregistré</div>';
+
+    const cardId='hcard-'+r.id;
+    html+=`<div class="hcard">
+      <div class="card-head ${tc}" onclick="toggleCard('${cardId}')">
+        <div class="card-head-inner">
+          <div class="date-col">
+            <span class="dc-day">${dcDay}</span>
+            <span class="dc-dd">${dcDD}</span>
+            <span class="dc-mm">${dcMM}</span>
+            <span class="dc-yy">${dcYY}</span>
           </div>
-          <div class="card-row2">${distTags}</div>
-          <div class="card-row3">
-            <div class="card-dates">
-              <div class="date-item">Course<span class="ok">${dateStr(r.date_course)}</span></div>
-              <div class="date-item">Inscrits<span>${conf.length}</span></div>
-              <div class="date-item">Chronos<span style="color:#185FA5;font-weight:500;margin-left:3px">${chronos.length}</span></div>
+          <div class="head-info">
+            <div class="head-top">
+              <span class="race-name">${r.nom}</span>
+              <div class="head-right">
+                <span class="race-type">${r.type}</span>
+                <span class="past-pill">Passée</span>
+              </div>
             </div>
-            <div class="card-actions-row" onclick="event.stopPropagation()">
-              ${r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="ext-link">↗ ${plat?plat.label:'Site'}</a>`:''}
-              ${r.url_results?`<a href="${r.url_results}" target="_blank" rel="noopener" class="ext-link" style="background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)">🏅 Résultats</a>`:''}
+            <div class="head-bottom">
+              <div class="head-dists">${distTags}</div>
             </div>
           </div>
+          <div class="head-chev" id="chev-${cardId}">▾</div>
         </div>
-        <div style="display:flex;align-items:center;padding:0 10px;color:var(--text3);font-size:18px">›</div>
+        <div class="stats-bar">
+          <div class="sb-item"><span class="sb-val green">${conf.length}</span> inscrit${conf.length>1?'s':''}</div>
+          <div class="sb-item"><span class="sb-val blue">${allChronos.length}</span> chrono${allChronos.length>1?'s':''}</div>
+          ${myChronoBar}
+        </div>
       </div>
-      ${chronoSection}
+      <div class="hcard-expand" id="${cardId}">
+        <div class="chron-section">${chronoHtml}</div>
+        <div class="hcard-actions">
+          ${r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="btn-site">↗ ${plat?plat.label:'Site'}</a>`:'<span></span>'}
+          ${r.url_results?`<a href="${r.url_results}" target="_blank" rel="noopener" class="btn-results">🏅 Résultats officiels</a>`:''}
+        </div>
+      </div>
     </div>`;
   });
+
   if(!html) html='<div class="empty-state"><span>🏆</span>Aucune course passée pour l\'instant.</div>';
   document.getElementById('history-list').innerHTML=html;
 }
