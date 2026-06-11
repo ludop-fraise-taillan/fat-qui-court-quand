@@ -221,13 +221,13 @@
     .platform-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 7px;border-radius:99px;border:0.5px solid var(--border);color:var(--text3);background:var(--bg2);margin-left:5px;vertical-align:middle}
 
     /* Stats & members */
-    .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
-    .stat-card{background:var(--bg2);border-radius:var(--radius-lg);padding:10px 12px;display:flex;align-items:center;gap:10px;border:.5px solid var(--border)}
-    .stat-card.wide{grid-column:span 2}
-    .stat-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-    .stat-val{font-size:20px;font-weight:700;line-height:1;color:var(--text)}
-    .stat-label{font-size:10px;color:var(--text3);margin-top:3px}
-    .top3-card{background:var(--bg2);border-radius:var(--radius-lg);padding:12px 14px;border:.5px solid var(--border);grid-column:span 2}
+    .stats-grid{margin-bottom:12px}
+    .stats-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+    .stats-scroll::-webkit-scrollbar{display:none}
+    .stat-b{flex-shrink:0;background:var(--bg);border-radius:10px;padding:10px 14px;text-align:center;border:0.5px solid var(--border);min-width:70px}
+    .stat-b-val{font-size:20px;font-weight:700;line-height:1;color:var(--text)}
+    .stat-b-lbl{font-size:9px;color:var(--text3);margin-top:3px;white-space:nowrap}
+    .top3-card{background:var(--bg);border-radius:var(--radius-lg);padding:12px 14px;border:0.5px solid var(--border);margin-bottom:12px}
     .top3-header{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
     .top3-rows{display:flex;flex-direction:column;gap:8px}
     .top3-row{display:flex;align-items:center;gap:10px}
@@ -238,18 +238,28 @@
     .top3-bar-fill{height:100%;border-radius:99px;transition:width .5s ease}
     .top3-count{font-size:12px;font-weight:600;min-width:28px;text-align:right}
     .top3-sub{font-size:9px;color:var(--text3);text-align:right}
-    .runner-row{display:flex;align-items:center;padding:12px 0;border-bottom:0.5px solid var(--border);gap:10px}
-    .av-md{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
-    .runner-info{flex:1;min-width:0}
-    .runner-name{font-size:14px;font-weight:500;color:var(--text)}
-    .runner-sub{font-size:11px;color:var(--text2);margin-top:1px}
-    .runner-pills{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:150px}
-    .pill{font-size:10px;padding:2px 7px;border-radius:99px;background:var(--bg2);color:var(--text2);border:0.5px solid var(--border)}
-    .pill-c{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border)}
-    .pill-i{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border)}
-    .delete-btn{background:none;border:0.5px solid #F7C1C1;border-radius:var(--radius-md);color:#A32D2D;font-size:11px;padding:4px 8px;cursor:pointer;display:inline-flex;align-items:center;gap:3px;margin-top:4px}
-    .runner-drawer{background:var(--bg2);border-radius:var(--radius-lg);margin:4px 0 8px;overflow:hidden;border:0.5px solid var(--border);display:none}
-    .runner-drawer.open{display:block}
+    /* Membres cards B */
+    .member-card{background:var(--bg);border-radius:14px;margin-bottom:8px;overflow:hidden;border:0.5px solid var(--border);cursor:pointer}
+    .member-card.me{border-color:#185FA5;border-width:1.5px}
+    .member-card:active{opacity:.85}
+    .mcb-head{display:flex;align-items:center;gap:10px;padding:12px 14px}
+    .mcb-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0}
+    .mcb-info{flex:1;min-width:0}
+    .mcb-name{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .mcb-me{font-size:9px;background:#185FA5;color:#fff;border-radius:99px;padding:2px 7px;font-weight:600}
+    .mcb-role{font-size:11px;color:var(--text3);margin-top:2px}
+    .mcb-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+    .mcb-badges{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+    .mcb-badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px}
+    .mcb-c{background:var(--green-bg);color:var(--green-text);border:0.5px solid var(--green-border)}
+    .mcb-i{background:var(--amber-bg);color:var(--amber-text);border:0.5px solid var(--amber-border)}
+    .mcb-t{background:#E6F1FB;color:#185FA5;border:0.5px solid #B5D4F4}
+    .mcb-chev{font-size:13px;color:var(--text3)}
+    .mcb-bar{height:3px;opacity:.35}
+    .mcb-bar.me{opacity:1}
+    /* Drawer */
+    .runner-drawer{display:none}
+    .runner-drawer.open{display:block;margin:0 8px 8px;border-radius:var(--radius-lg);overflow:hidden;border:0.5px solid var(--border);background:var(--bg2)}
     .drawer-header{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:0.5px solid var(--border);background:var(--bg3)}
     .drawer-close{font-size:11px;color:var(--text3);padding:3px 8px;border-radius:99px;border:0.5px solid var(--border);background:none;cursor:pointer;margin-left:auto}
     .drawer-body{padding:8px 12px 10px}
@@ -263,12 +273,15 @@
     .course-item-name{flex:1;min-width:0;font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .course-item-name.past{font-style:italic;color:var(--text2)}
     .course-item-meta{font-size:10px;color:var(--text3)}
-    .course-item-badge{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap;flex-shrink:0;cursor:pointer}
+    .course-item-badge{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap;flex-shrink:0}
     .course-item-badge.c{background:var(--green-bg);color:var(--green-text);border:0.5px solid var(--green-border)}
     .course-item-badge.i{background:var(--amber-bg);color:var(--amber-text);border:0.5px solid var(--amber-border)}
     .course-item-badge.past{background:var(--bg3);color:var(--text3);border:0.5px solid var(--border);font-style:italic}
     .course-item-arrow{font-size:13px;color:var(--text3);flex-shrink:0}
     .drawer-empty{font-size:11px;color:var(--text3);font-style:italic;padding:3px 8px 5px}
+    .delete-btn{background:none;border:0.5px solid #F7C1C1;border-radius:var(--radius-md);color:#A32D2D;font-size:11px;padding:4px 8px;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
+    .av-md{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+    .runner-row{display:flex;align-items:center;padding:12px 0;border-bottom:0.5px solid var(--border);gap:10px}
 
     /* Forms */
     .form-section{background:var(--bg2);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px;border:0.5px solid var(--border)}
@@ -1129,8 +1142,8 @@ function renderHistory(){
       <div class="hcard-expand" id="${cardId}">
         <div class="chron-section">${chronoHtml}</div>
         <div class="hcard-actions">
-          ${r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="btn-site">↗ ${plat?plat.label:'Site'}</a>`:'<span></span>'}
-          ${r.url_results?`<a href="${r.url_results}" target="_blank" rel="noopener" class="btn-results">🏅 Résultats officiels</a>`:''}
+          ${r.url?('<a href="'+r.url+'" target="_blank" rel="noopener" class="btn-site">↗ '+(plat?plat.label:'Site')+'</a>'):'<span></span>'}
+          ${r.url_results?('<a href="'+r.url_results+'" target="_blank" rel="noopener" class="btn-results">🏅 Résultats officiels</a>'):''}
         </div>
       </div>
     </div>`;
@@ -1172,11 +1185,13 @@ function renderMembers(){
     </div>`:'';
 
   document.getElementById('stats-grid').innerHTML=`
-    <div class="stat-card"><div class="stat-icon" style="background:#E6F1FB">👥</div><div><div class="stat-val">${members.length}</div><div class="stat-label">Membres</div></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:#EAF3DE">📅</div><div><div class="stat-val">${races.length}</div><div class="stat-label">Courses</div></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:var(--green-bg)">✓</div><div><div class="stat-val" style="color:var(--green-text)">${totalConf}</div><div class="stat-label">Inscrits</div></div></div>
-    <div class="stat-card"><div class="stat-icon" style="background:var(--amber-bg)">★</div><div><div class="stat-val" style="color:var(--amber-text)">${totalInter}</div><div class="stat-label">Intéressés</div></div></div>
-    <div class="stat-card wide"><div class="stat-icon" style="background:#E6F1FB">⏱</div><div><div class="stat-val" style="color:#185FA5">${totalChronos}</div><div class="stat-label">Chronos enregistrés</div></div></div>
+    <div class="stats-scroll">
+      <div class="stat-b"><div class="stat-b-val">👥 ${members.length}</div><div class="stat-b-lbl">Membres</div></div>
+      <div class="stat-b"><div class="stat-b-val">📅 ${races.length}</div><div class="stat-b-lbl">Courses</div></div>
+      <div class="stat-b"><div class="stat-b-val" style="color:var(--green-text)">${totalConf}</div><div class="stat-b-lbl">✓ Inscrits</div></div>
+      <div class="stat-b"><div class="stat-b-val" style="color:var(--amber-text)">${totalInter}</div><div class="stat-b-lbl">★ Intéressés</div></div>
+      <div class="stat-b"><div class="stat-b-val" style="color:#185FA5">⏱ ${totalChronos}</div><div class="stat-b-lbl">Chronos</div></div>
+    </div>
     ${top3Html}
   `;
 
@@ -1210,45 +1225,55 @@ function renderMembers(){
     }
 
     const upcomingHtml=upcoming.length>0?upcoming.map(p=>courseRow(p,false)).join(''):`<div class="drawer-empty">Aucune course à venir</div>`;
-    const pastHtml=past.length>0?past.map(p=>courseRow(p,true)).join(''):`<div class="drawer-empty">Aucune course passée</div>`;
+    const pastHtml=past.length>0?past.map(p=>courseRow(p,true)).join(''):'<div class="drawer-empty">Aucune course passée</div>';
 
-    return `<div class="runner-drawer" id="drawer-${m.id}">
-      <div class="drawer-header">
-        <div class="av-md" style="${avStyle(m.nom)}">${initials(m.nom)}</div>
-        <div><div style="font-size:14px;font-weight:500;color:var(--text)">${m.nom}</div><div style="font-size:11px;color:var(--text3);margin-top:1px">${m.role||'Coureur'} · ${mParts.length} participation${mParts.length>1?'s':''}</div></div>
-        <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
-          <button class="delete-btn" onclick="event.stopPropagation();deleteMember('${m.id}')">🗑 Retirer</button>
-          <button class="drawer-close" onclick="toggleDrawer('${m.id}')">✕</button>
-        </div>
-      </div>
-      <div class="drawer-body">
-        <div class="drawer-section-sep"><span class="drawer-section-label">📅 À venir</span><div class="drawer-section-line"></div></div>
-        ${upcomingHtml}
-        <div class="drawer-section-sep" style="margin-top:10px"><span class="drawer-section-label">🏁 Passées</span><div class="drawer-section-line"></div></div>
-        ${pastHtml}
-      </div>
-    </div>`;
+    return '<div class="runner-drawer" id="drawer-'+m.id+'">'
+      +'<div class="drawer-header">'
+        +'<div class="av-md" style="'+avStyle(m.nom)+'">'+initials(m.nom)+'</div>'
+        +'<div><div style="font-size:14px;font-weight:500;color:var(--text)">'+m.nom+'</div>'
+        +'<div style="font-size:11px;color:var(--text3);margin-top:1px">'+(m.role||'Coureur')+' · '+mParts.length+' participation'+(mParts.length>1?'s':'')+'</div></div>'
+        +'<div style="margin-left:auto;display:flex;gap:6px;align-items:center">'
+          +'<button class="delete-btn" onclick="event.stopPropagation();deleteMember(\''+m.id+'\')">🗑 Retirer</button>'
+          +'<button class="drawer-close" onclick="toggleDrawer(\''+m.id+'\')">✕</button>'
+        +'</div>'
+      +'</div>'
+      +'<div class="drawer-body">'
+        +'<div class="drawer-section-sep"><span class="drawer-section-label">📅 À venir</span><div class="drawer-section-line"></div></div>'
+        +upcomingHtml
+        +'<div class="drawer-section-sep" style="margin-top:10px"><span class="drawer-section-label">🏁 Passées</span><div class="drawer-section-line"></div></div>'
+        +pastHtml
+      +'</div>'
+    +'</div>';
   }
 
   function memberRow(m){
     const isMe=m.id===currentUserId;
     const mParts=participations.filter(p=>p.membre_id===m.id);
     const confCount=mParts.filter(p=>p.statut==='confirmed').length;
-    const pills=mParts.slice(0,3).map(p=>{
-      const r=races.find(x=>x.id===p.course_id);
-      if(!r)return'';
-      return`<span class="pill ${p.statut==='confirmed'?'pill-c':'pill-i'}" onclick="event.stopPropagation();goToRace('${r.id}')" title="${r.nom}">${r.nom.length>8?r.nom.slice(0,7)+'…':r.nom}</span>`;
-    }).join('');
-    return`<div class="runner-row" style="${isMe?'background:var(--bg2);margin:0 -4px;padding:12px 4px;border-radius:var(--radius-md)':''};cursor:pointer" onclick="toggleDrawer('${m.id}')">
-      <div class="av-md" style="${avStyle(m.nom)}">${initials(m.nom)}</div>
-      <div class="runner-info">
-        <div class="runner-name">${m.nom}${isMe?` <span style="font-size:10px;font-weight:500;color:var(--text3);background:var(--bg3);border-radius:99px;padding:1px 7px;margin-left:4px">moi</span>`:''}</div>
-        <div class="runner-sub">${m.role||'Coureur'} · ${confCount} inscr.</div>
-      </div>
-      <div class="runner-pills">${pills||'<span style="font-size:11px;color:var(--text3)">—</span>'}</div>
-      <span style="font-size:13px;color:var(--text3);margin-left:4px" id="chev-${m.id}">▾</span>
-    </div>
-    ${buildDrawer(m)}`;
+    const interCount=mParts.filter(p=>p.statut==='interested').length;
+    const chronoCount=mParts.filter(p=>p.chrono).length;
+    let badges='';
+    if(confCount>0) badges+=`<span class="mcb-badge mcb-c">${confCount} ✓</span>`;
+    if(interCount>0) badges+=`<span class="mcb-badge mcb-i">${interCount} ★</span>`;
+    if(chronoCount>0) badges+=`<span class="mcb-badge mcb-t">${chronoCount} ⏱</span>`;
+    if(!badges) badges='<span style="font-size:11px;color:var(--text3)">—</span>';
+    const barColor=confCount>0?'linear-gradient(90deg,#185FA5,#3B6D11,#EF9F27)':'var(--border)';
+    const drawerHtml=buildDrawer(m);
+    return '<div class="member-card'+(isMe?' me':'')+'" onclick="toggleDrawer(\''+m.id+'\')">'+
+      '<div class="mcb-head">'+
+        '<div class="mcb-av" style="'+avStyle(m.nom)+'">'+initials(m.nom)+'</div>'+
+        '<div class="mcb-info">'+
+          '<div class="mcb-name">'+m.nom+(isMe?'<span class="mcb-me">moi</span>':'')+'</div>'+
+          '<div class="mcb-role">'+(m.role||'Coureur')+'</div>'+
+        '</div>'+
+        '<div class="mcb-right">'+
+          '<div class="mcb-badges">'+badges+'</div>'+
+          '<span class="mcb-chev" id="chev-'+m.id+'">▾</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="mcb-bar'+(isMe?' me':'')+'" style="background:'+barColor+'"></div>'+
+      drawerHtml+
+    '</div>';
   }
 
   let html='';
@@ -1387,6 +1412,13 @@ function _openParticipationModal(raceId){
   document.getElementById('modal-part').classList.add('open');
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');}
+function selectDist(d){
+  modalDistSelected=d;
+  document.querySelectorAll('.dist-choice-btn').forEach(b=>{
+    b.classList.toggle('sel', parseInt(b.textContent)===d);
+  });
+}
+
 function selectStatus(s){
   modalStatus=s;
   document.getElementById('btn-i').className='choice-btn'+(s==='interested'?' sel-i':'');
