@@ -282,6 +282,12 @@
     .delete-btn{background:none;border:0.5px solid #F7C1C1;border-radius:var(--radius-md);color:#A32D2D;font-size:11px;padding:4px 8px;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
     .av-md{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
     .runner-row{display:flex;align-items:center;padding:12px 0;border-bottom:0.5px solid var(--border);gap:10px}
+    .alpha-sep-s3{margin:14px 0 6px;padding-bottom:5px;border-bottom:2px solid var(--text);display:flex;align-items:baseline;gap:8px}
+    .alpha-sep-letter{font-size:22px;font-weight:800;color:var(--text);line-height:1}
+    .alpha-sep-count{font-size:11px;color:var(--text3)}
+    .alpha-sb-letter{font-size:9px;font-weight:700;color:var(--text3);cursor:pointer;line-height:1.7;width:20px;text-align:center;-webkit-tap-highlight-color:transparent;user-select:none}
+    .alpha-sb-letter.has{color:var(--text);font-weight:800}
+    .alpha-sb-letter.active{color:#185FA5;font-size:10px;font-weight:900}
 
     /* Forms */
     .form-section{background:var(--bg2);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px;border:0.5px solid var(--border)}
@@ -471,7 +477,10 @@
     <!-- MEMBRES -->
     <div id="s-membres" class="section">
       <div class="stats-grid" id="stats-grid"></div>
-      <div id="runner-list"></div>
+      <div style="display:flex;gap:0;position:relative">
+        <div id="runner-list" style="flex:1;min-width:0"></div>
+        <div id="alpha-sidebar" style="width:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:4px;gap:1px"></div>
+      </div>
     </div>
 
     <!-- AJOUTER -->
@@ -1379,16 +1388,53 @@ function renderMembers(){
   }
 
   let html='';
-  if(me) html+=memberRow(me);
-  if(me&&others.length>0){
-    html+=`<div style="display:flex;align-items:center;gap:10px;margin:10px 0 6px">
-      <span style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap">Tous les membres</span>
-      <div style="flex:1;height:0.5px;background:var(--border2)"></div>
-    </div>`;
+
+  // Membre actif "moi" en premier sans séparateur alphabétique
+  if(me){
+    html+='<div style="margin-bottom:10px">'+memberRow(me)+'</div>';
   }
-  others.forEach(m=>{html+=memberRow(m);});
+
+  // Tous les autres triés alphabétiquement avec séparateurs S3
+  if(others.length>0){
+    if(me){
+      html+='<div class="alpha-sep-s3"><span class="alpha-sep-letter">Tous</span><span class="alpha-sep-count">'+others.length+' membres</span></div>';
+    }
+    let currentLetter='';
+    const lettersWithMembers=[];
+    others.forEach(m=>{
+      const firstLetter=m.nom[0].toUpperCase();
+      if(firstLetter!==currentLetter){
+        currentLetter=firstLetter;
+        lettersWithMembers.push(firstLetter);
+        const count=others.filter(x=>x.nom[0].toUpperCase()===firstLetter).length;
+        html+='<div class="alpha-sep-s3" id="alpha-'+firstLetter+'"><span class="alpha-sep-letter">'+firstLetter+'</span><span class="alpha-sep-count">'+count+'</span></div>';
+      }
+      html+=memberRow(m);
+    });
+
+    // Construire l'index latéral
+    const ALPHABET='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const sidebarHtml=ALPHABET.map(l=>{
+      const has=lettersWithMembers.includes(l);
+      return '<div class="alpha-sb-letter'+(has?' has':'')+'" onclick="scrollToLetter(\''+l+'\')" id="sb-'+l+'">'+l+'</div>';
+    }).join('');
+    const sidebar=document.getElementById('alpha-sidebar');
+    if(sidebar) sidebar.innerHTML=sidebarHtml;
+  }
+
   if(!html)html='<div class="empty-state"><span>👥</span>Aucun membre.</div>';
   document.getElementById('runner-list').innerHTML=html;
+}
+
+function scrollToLetter(letter){
+  const el=document.getElementById('alpha-'+letter);
+  if(!el)return;
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+  // Mettre en surbrillance la lettre active dans la sidebar
+  document.querySelectorAll('.alpha-sb-letter').forEach(b=>b.classList.remove('active'));
+  const sb=document.getElementById('sb-'+letter);
+  if(sb) sb.classList.add('active');
+  setTimeout(()=>{if(sb)sb.classList.remove('active');},1500);
 }
 
 function toggleDrawer(memberId){
