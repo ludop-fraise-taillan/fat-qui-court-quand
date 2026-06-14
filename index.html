@@ -345,8 +345,22 @@
     .tab-sub{display:flex;gap:6px;margin-bottom:16px}
     .tab-sub-btn{font-size:12px;padding:6px 14px;border-radius:99px;border:0.5px solid var(--border);cursor:pointer;background:none;color:var(--text2);display:inline-flex;align-items:center;gap:5px}
     .tab-sub-btn.active{background:var(--text);color:var(--bg);border-color:transparent}
-    .member-preview-box{display:none;margin-bottom:14px}
-    .member-preview-inner{display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--border);border-radius:var(--radius-md);background:var(--bg)}
+    .member-preview-box{display:none}
+    /* Design B — formulaire membre */
+    .fb-card{border-radius:16px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.1);margin-bottom:14px;background:var(--bg)}
+    .fb-top{padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;transition:background .3s;background:linear-gradient(135deg,#185FA5,#0d2a4a)}
+    .fb-avatar-wrap{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#fff;transition:all .2s}
+    .fb-name-preview{font-size:16px;font-weight:700;color:#fff;text-align:center}
+    .fb-role-preview{font-size:11px;color:rgba(255,255,255,.6);text-align:center}
+    .fb-body{padding:16px;background:var(--bg)}
+    .fb-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+    .fb-field label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block}
+    .fb-field input{width:100%;font-size:15px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);outline:none}
+    .fb-field input:focus{border-color:#185FA5;background:var(--bg)}
+    .fb-role-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+    .fb-role-btn{flex:1;min-width:60px;padding:9px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;text-align:center}
+    .fb-role-btn.sel{border-color:#185FA5;background:#E6F1FB;color:#185FA5}
+    .fb-submit{width:100%;font-size:14px;font-weight:700;padding:13px;border-radius:12px;background:var(--text);color:var(--bg);border:none;cursor:pointer}
     .install-banner{display:none;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-md);padding:12px 14px;margin-bottom:14px;font-size:13px;color:var(--text2);align-items:center;gap:10px}
     .install-banner.show{display:flex}
     .empty-state{text-align:center;padding:40px 16px;color:var(--text2)}
@@ -558,33 +572,37 @@
       </div>
 
       <div id="sub-s-membre" style="display:none">
-        <div class="form-section">
-          <div class="form-title"><span style="font-size:15px">➕</span>Nouveau membre</div>
-          <div class="form-row">
-            <div class="form-field"><label>Prénom</label><input type="text" id="m-prenom" placeholder="ex. Lucas" oninput="updatePreview()"></div>
-            <div class="form-field"><label>Nom</label><input type="text" id="m-nom" placeholder="ex. Martin" oninput="updatePreview()"></div>
-          </div>
-          <div class="form-field">
-            <label>Rôle <span style="color:var(--text3);font-size:11px">(optionnel)</span></label>
-            <select id="m-role" onchange="updatePreview()">
-              <option value="">Coureur</option>
-              <option value="Bureau">Bureau</option>
-              <option value="Bénévole">Bénévole</option>
-              <option value="Coach">Coach</option>
-            </select>
-          </div>
-          <div class="member-preview-box" id="member-preview">
-            <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Aperçu</div>
-            <div class="member-preview-inner">
-              <div class="av-md" id="prev-av"></div>
-              <div>
-                <div id="prev-name" style="font-size:14px;font-weight:500;color:var(--text)"></div>
-                <div id="prev-role" style="font-size:12px;color:var(--text2)"></div>
-              </div>
+        <!-- Design B : avatar centré + gradient -->
+        <div class="fb-card">
+          <!-- Zone gradient avec avatar + aperçu -->
+          <div class="fb-top" id="fb-top">
+            <div class="fb-avatar-wrap" id="prev-av">👤</div>
+            <div>
+              <div class="fb-name-preview" id="prev-name">Nouveau membre</div>
+              <div class="fb-role-preview" id="prev-role">Aperçu en temps réel</div>
             </div>
           </div>
-          <div style="display:flex;justify-content:flex-end">
-            <button class="btn btn-primary" id="btn-add-member" onclick="addMember()"><span style="font-size:13px">➕</span>Ajouter au club</button>
+          <!-- Formulaire -->
+          <div class="fb-body">
+            <div class="fb-row">
+              <div class="fb-field">
+                <label>Prénom *</label>
+                <input type="text" id="m-prenom" placeholder="ex. Lucas" oninput="updatePreview()">
+              </div>
+              <div class="fb-field">
+                <label>Nom (2-3 lettres) *</label>
+                <input type="text" id="m-nom" placeholder="ex. Mar" oninput="updatePreview()">
+              </div>
+            </div>
+            <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px">Rôle</div>
+            <div class="fb-role-row">
+              <button class="fb-role-btn sel" id="role-coureur" onclick="setRole('Coureur',this)">🏃 Coureur</button>
+              <button class="fb-role-btn" id="role-bureau" onclick="setRole('Bureau',this)">🏅 Bureau</button>
+              <button class="fb-role-btn" id="role-benevole" onclick="setRole('Bénévole',this)">🙌 Bénévole</button>
+              <button class="fb-role-btn" id="role-coach" onclick="setRole('Coach',this)">📋 Coach</button>
+            </div>
+            <input type="hidden" id="m-role" value="Coureur">
+            <button class="fb-submit" id="btn-add-member" onclick="addMember()">＋ Ajouter au club</button>
           </div>
         </div>
         <div id="member-list-preview"></div>
@@ -1640,19 +1658,33 @@ async function deleteMember(id){
 }
 
 // ── Preview membre ──────────────────────────────────────────────────────────
+function setRole(role, btn){
+  document.getElementById('m-role').value=role;
+  document.querySelectorAll('.fb-role-btn').forEach(b=>b.classList.remove('sel'));
+  if(btn) btn.classList.add('sel');
+  updatePreview();
+}
+
 function updatePreview(){
   const p=document.getElementById('m-prenom').value.trim();
   const n=document.getElementById('m-nom').value.trim();
-  const r=document.getElementById('m-role').value;
-  const prev=document.getElementById('member-preview');
-  if(p&&n){
-    const _t3=n.length>=3?n.slice(0,1).toUpperCase()+n.slice(1,3).toLowerCase():n.length===2?n.slice(0,1).toUpperCase()+n.slice(1,2).toLowerCase():n.charAt(0).toUpperCase();const full=p+'.'+_t3;
-    prev.style.display='block';
-    const av=document.getElementById('prev-av');
-    av.style.cssText=avStyle(full);av.textContent=initials(full);
-    document.getElementById('prev-name').textContent=full;
-    document.getElementById('prev-role').textContent=r||'Coureur';
-  }else{prev.style.display='none';}
+  const role=document.getElementById('m-role').value||'Coureur';
+  const _t3=n.length>=3?n.slice(0,1).toUpperCase()+n.slice(1,3).toLowerCase():n.length===2?n.slice(0,1).toUpperCase()+n.slice(1,2).toLowerCase():n.charAt(0).toUpperCase();
+  const full=p&&n?p+'.'+_t3:'';
+  const nameEl=document.getElementById('prev-name');
+  const roleEl=document.getElementById('prev-role');
+  const avEl=document.getElementById('prev-av');
+  if(nameEl) nameEl.textContent=full||'Nouveau membre';
+  if(roleEl) roleEl.textContent=full?role+' · Aperçu':'Aperçu en temps réel';
+  if(avEl){
+    if(full){
+      avEl.textContent=initials(full);
+      avEl.style.cssText=avStyle(full)+'width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;border:2px solid rgba(255,255,255,.4);';
+    } else {
+      avEl.textContent='👤';
+      avEl.style.cssText='width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#fff;';
+    }
+  }
 }
 
 // ── Bilan ────────────────────────────────────────────────────────────────────
