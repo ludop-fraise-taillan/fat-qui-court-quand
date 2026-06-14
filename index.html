@@ -1410,8 +1410,9 @@ function goToRace(raceId){
 }
 
 function renderMemberListPreview(){
+  const sorted=[...members].sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
   let html=`<div style="font-size:12px;color:var(--text2);margin-bottom:8px">${members.length} membre${members.length>1?'s':''} dans le club</div>`;
-  members.forEach(m=>{html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)"><div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div><span style="font-size:13px;color:var(--text);flex:1">${m.nom}</span><span style="font-size:11px;color:var(--text3)">${m.role||'Coureur'}</span></div>`;});
+  sorted.forEach(m=>{html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)"><div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div><span style="font-size:13px;color:var(--text);flex:1">${m.nom}</span><span style="font-size:11px;color:var(--text3)">${m.role||'Coureur'}</span></div>`;});
   document.getElementById('member-list-preview').innerHTML=html;
 }
 
