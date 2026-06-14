@@ -289,6 +289,47 @@
     .form-field{margin-bottom:12px}
     .form-field label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px}
     .form-field input,.form-field select{width:100%;font-size:14px;padding:10px 12px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg);color:var(--text)}
+    /* ── Nouveau formulaire V4 ── */
+    .fv4-wrap{display:flex;flex-direction:column;gap:10px}
+    .fv4-card{border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.1)}
+    /* Bloc haut */
+    .fv4-top-head{padding:10px 14px;display:flex;align-items:center;gap:8px;transition:background .2s}
+    .fv4-top-head-icon{font-size:15px}
+    .fv4-top-head-title{font-size:11px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.07em}
+    .fv4-top-body{background:var(--bg);display:flex;align-items:stretch}
+    .fv4-top-left{flex:1;padding:14px;border-right:0.5px solid var(--border)}
+    .fv4-top-right{width:90px;flex-shrink:0;padding:10px 10px;display:flex;flex-direction:column;gap:6px}
+    .fv4-name-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px}
+    .fv4-name-input{width:100%;font-size:17px;font-weight:700;border:none;background:transparent;color:var(--text);outline:none;padding:0}
+    .fv4-name-input::placeholder{color:var(--text3);font-weight:400;font-size:15px}
+    .fv4-type-btn{width:100%;padding:8px 4px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+    .fv4-type-btn.sel-trail{border-color:#3B6D11;background:#EAF3DE;color:#3B6D11}
+    .fv4-type-btn.sel-route{border-color:#185FA5;background:#E6F1FB;color:#185FA5}
+    .fv4-type-btn.sel-ultra{border-color:#993C1D;background:#FAECE7;color:#993C1D}
+    /* Blocs milieu et bas */
+    .fv4-head{padding:10px 14px;display:flex;align-items:center;gap:8px}
+    .fv4-head-icon{font-size:15px}
+    .fv4-head-title{font-size:11px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.07em}
+    .fv4-inner{background:var(--bg);display:flex;align-items:stretch}
+    .fv4-left{flex:1;padding:12px 14px;border-right:0.5px solid var(--border)}
+    .fv4-right{width:155px;flex-shrink:0;padding:12px 12px;display:flex;flex-direction:column;gap:8px}
+    .fv4-right-half{flex:1;padding:12px 12px}
+    .fv4-sect-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;display:block}
+    .fv4-dist-row{display:flex;gap:6px;margin-bottom:7px}
+    .fv4-dist-row input{flex:1;font-size:13px;padding:8px 10px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);outline:none}
+    .fv4-dist-row input:focus{border-color:#185FA5;background:var(--bg)}
+    .fv4-add-btn{font-size:12px;font-weight:700;padding:8px 12px;border-radius:9px;background:#185FA5;color:#fff;border:none;cursor:pointer}
+    .fv4-date-field{display:flex;flex-direction:column;gap:3px}
+    .fv4-date-field label{font-size:10px;font-weight:600;color:var(--text3)}
+    .fv4-date-field input{width:100%;font-size:12px;padding:7px 9px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);outline:none}
+    .fv4-date-field input:focus{border-color:#EF9F27;background:var(--bg)}
+    .fv4-link-input{width:100%;font-size:12px;padding:8px 10px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);outline:none;margin-bottom:5px}
+    .fv4-link-input:focus{border-color:#C0001A;background:var(--bg)}
+    .fv4-link-input.results:focus{border-color:#085041}
+    .fv4-shortcuts{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+    .fv4-pbtn{font-size:10px;padding:3px 8px;border-radius:99px;border:0.5px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer}
+    .fv4-hint{font-size:10px;color:var(--text3);margin-top:4px}
+    .fv4-submit{width:100%;font-size:14px;font-weight:700;padding:14px;border-radius:13px;background:var(--text);color:var(--bg);border:none;cursor:pointer}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .platform-shortcuts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
     .platform-btn{font-size:11px;padding:5px 10px;border-radius:99px;border:0.5px solid var(--border);cursor:pointer;background:var(--bg2);color:var(--text2);display:inline-flex;align-items:center;gap:4px}
@@ -427,58 +468,92 @@
       </div>
 
       <div id="sub-s-course">
-        <div class="form-section">
-          <div class="form-title"><span style="font-size:15px">⚑</span>Nouvelle course</div>
-          <div class="form-field"><label>Nom de la course</label><input type="text" id="f-name" placeholder="ex. Trail des Landes"></div>
-          <div class="form-field">
-            <label>Type</label>
-            <select id="f-type"><option>Trail</option><option>Route</option><option>Ultra</option></select>
-          </div>
-          <div class="form-field">
-            <label>Distances disponibles (km)</label>
-            <div class="dist-input-wrap">
-              <input type="number" id="f-dist-input" placeholder="ex. 21" inputmode="numeric" onkeydown="if(event.key==='Enter'){event.preventDefault();addDistTag()}">
-              <button class="btn btn-sm btn-primary" onclick="addDistTag()" type="button"><span style="font-size:13px">＋</span>Ajouter</button>
+        <div class="fv4-wrap">
+
+          <!-- BLOC HAUT : nom + type -->
+          <div class="fv4-card">
+            <div class="fv4-top-head" id="fv4-head" style="background:linear-gradient(90deg,#1a3a1a,#2d5a2d)">
+              <span class="fv4-top-head-icon">🏁</span>
+              <span class="fv4-top-head-title">Nouvelle course</span>
             </div>
-            <div class="dist-tags-list" id="f-dist-tags"></div>
-          </div>
-          <div class="form-row">
-            <div class="form-field"><label>Date course</label><input type="date" id="f-date"></div>
-            <div class="form-field"><label>Limite inscr.</label><input type="date" id="f-limit"></div>
-          </div>
-          <div class="form-field"><label>Ouverture inscr.</label><input type="date" id="f-open"></div>
-          <div class="form-field">
-            <label>Lien officiel d'inscription</label>
-            <input type="url" id="f-url" placeholder="https://..." inputmode="url">
-            <div class="platform-shortcuts">
-              <button class="platform-btn" onclick="setUrl('https://www.protiming.fr')"><span style="font-size:11px">↗</span>Protiming</button>
-              <button class="platform-btn" onclick="setUrl('https://www.finishers.com')"><span style="font-size:11px">↗</span>Finishers</button>
-              <button class="platform-btn" onclick="setUrl('https://www.time-to.com')"><span style="font-size:11px">↗</span>TimeToRun</button>
-              <button class="platform-btn" onclick="setUrl('https://www.kalenji-running.com')"><span style="font-size:11px">↗</span>Kalenji</button>
-              <button class="platform-btn" onclick="setUrl('https://www.utmb.world')"><span style="font-size:11px">↗</span>UTMB</button>
+            <div class="fv4-top-body">
+              <div class="fv4-top-left">
+                <div class="fv4-name-lbl">Nom de la course *</div>
+                <input class="fv4-name-input" type="text" id="f-name" placeholder="ex. Trail des Landes">
+              </div>
+              <div class="fv4-top-right">
+                <button class="fv4-type-btn sel-trail" id="fv4-trail" onclick="setFv4Type('Trail')">🌿 Trail</button>
+                <button class="fv4-type-btn" id="fv4-route" onclick="setFv4Type('Route')">🛣 Route</button>
+                <button class="fv4-type-btn" id="fv4-ultra" onclick="setFv4Type('Ultra')">⚡ Ultra</button>
+                <input type="hidden" id="f-type" value="Trail">
+              </div>
             </div>
           </div>
-          <div class="form-field">
-            <label>Lien résultats <span style="color:var(--text3);font-size:11px">(optionnel — à renseigner après la course)</span></label>
-            <input type="url" id="f-url-results" placeholder="https://..." inputmode="url">
-            <div class="platform-shortcuts">
-              <button class="platform-btn" onclick="setUrlResults('https://www.protiming.fr')"><span style="font-size:11px">↗</span>Protiming</button>
-              <button class="platform-btn" onclick="setUrlResults('https://www.finishers.com')"><span style="font-size:11px">↗</span>Finishers</button>
-              <button class="platform-btn" onclick="setUrlResults('https://www.time-to.com')"><span style="font-size:11px">↗</span>TimeToRun</button>
+
+          <!-- BLOC MILIEU : distances + dates -->
+          <div class="fv4-card">
+            <div class="fv4-head" style="background:linear-gradient(90deg,#0d2a4a,#185FA5)">
+              <span class="fv4-head-icon">📏</span>
+              <span class="fv4-head-title">Distances &amp; Dates</span>
+            </div>
+            <div class="fv4-inner">
+              <div class="fv4-left">
+                <span class="fv4-sect-label">Distances (km)</span>
+                <div class="fv4-dist-row">
+                  <input type="number" id="f-dist-input" placeholder="ex. 21" inputmode="numeric" onkeydown="if(event.key==='Enter'){event.preventDefault();addDistTag()}">
+                  <button class="fv4-add-btn" onclick="addDistTag()" type="button">＋</button>
+                </div>
+                <div class="dist-tags-list" id="f-dist-tags"></div>
+              </div>
+              <div class="fv4-right">
+                <div class="fv4-date-field">
+                  <label>📅 Date course *</label>
+                  <input type="date" id="f-date">
+                </div>
+                <div class="fv4-date-field">
+                  <label>Limite inscr.</label>
+                  <input type="date" id="f-limit">
+                </div>
+                <div class="fv4-date-field">
+                  <label>Ouverture inscr.</label>
+                  <input type="date" id="f-open">
+                </div>
+              </div>
             </div>
           </div>
-          <div class="form-field">
-            <label>Lien résultats <span style="color:var(--text3);font-size:11px">(optionnel — à ajouter après la course)</span></label>
-            <input type="url" id="f-results" placeholder="https://..." inputmode="url">
-            <div class="platform-shortcuts">
-              <button class="platform-btn" onclick="setResultsUrl('https://www.protiming.fr')"><span style="font-size:11px">↗</span>Protiming</button>
-              <button class="platform-btn" onclick="setResultsUrl('https://www.finishers.com')"><span style="font-size:11px">↗</span>Finishers</button>
-              <button class="platform-btn" onclick="setResultsUrl('https://www.time-to.com')"><span style="font-size:11px">↗</span>TimeToRun</button>
+
+          <!-- BLOC BAS : liens -->
+          <div class="fv4-card">
+            <div class="fv4-head" style="background:linear-gradient(90deg,#3a0a12,#C0001A)">
+              <span class="fv4-head-icon">🔗</span>
+              <span class="fv4-head-title">Liens</span>
+            </div>
+            <div class="fv4-inner">
+              <div class="fv4-left">
+                <span class="fv4-sect-label">Inscription</span>
+                <input class="fv4-link-input" type="url" id="f-url" placeholder="https://..." inputmode="url">
+                <div class="fv4-shortcuts">
+                  <button class="fv4-pbtn" onclick="setUrl('https://www.protiming.fr')">Protiming</button>
+                  <button class="fv4-pbtn" onclick="setUrl('https://www.finishers.com')">Finishers</button>
+                  <button class="fv4-pbtn" onclick="setUrl('https://www.time-to.com')">TimeToRun</button>
+                  <button class="fv4-pbtn" onclick="setUrl('https://www.kalenji-running.com')">Kalenji</button>
+                  <button class="fv4-pbtn" onclick="setUrl('https://www.utmb.world')">UTMB</button>
+                </div>
+              </div>
+              <div class="fv4-right-half">
+                <span class="fv4-sect-label">🏅 Résultats</span>
+                <input class="fv4-link-input results" type="url" id="f-url-results" placeholder="https://..." inputmode="url">
+                <div class="fv4-shortcuts">
+                  <button class="fv4-pbtn" onclick="setUrlResults('https://www.protiming.fr')">Protiming</button>
+                  <button class="fv4-pbtn" onclick="setUrlResults('https://www.finishers.com')">Finishers</button>
+                  <button class="fv4-pbtn" onclick="setUrlResults('https://www.time-to.com')">TimeToRun</button>
+                </div>
+                <div class="fv4-hint">À renseigner après la course</div>
+              </div>
             </div>
           </div>
-          <div style="display:flex;justify-content:flex-end;margin-top:4px">
-            <button class="btn btn-primary" id="btn-add-race" onclick="addRace()"><span style="font-size:13px">＋</span>Ajouter la course</button>
-          </div>
+
+          <button class="fv4-submit" id="btn-add-race" onclick="addRace()">＋ Ajouter la course</button>
         </div>
       </div>
 
@@ -685,6 +760,15 @@ function resetDistTags(){formDistances=[];renderDistTags();}
 // ── URL preview ────────────────────────────────────────────────────────────
 function setUrl(u){document.getElementById('f-url').value=u;}
 function setUrlResults(u){document.getElementById('f-url-results').value=u;}
+function setFv4Type(type){
+  const colors={Trail:'linear-gradient(90deg,#1a3a1a,#2d5a2d)',Route:'linear-gradient(90deg,#0d2a4a,#1a4a7a)',Ultra:'linear-gradient(90deg,#3a0d0d,#6a1a1a)'};
+  document.getElementById('fv4-head').style.background=colors[type];
+  document.getElementById('f-type').value=type;
+  ['Trail','Route','Ultra'].forEach(t=>{
+    const btn=document.getElementById('fv4-'+t.toLowerCase());
+    btn.className='fv4-type-btn'+(type===t?' sel-'+t.toLowerCase():'');
+  });
+}
 
 // ── Chargement ─────────────────────────────────────────────────────────────
 async function loadAll(){
