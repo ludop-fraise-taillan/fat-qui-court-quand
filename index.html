@@ -102,8 +102,11 @@
     .month-sep:first-child{margin-top:0}
     .month-sep-label{font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;text-transform:uppercase;letter-spacing:0.08em}
     .month-sep-line{flex:1;height:0.5px;background:var(--border2)}
-    .month-sb-item{font-size:8px;font-weight:700;color:var(--text3);cursor:pointer;line-height:1;width:28px;text-align:center;padding:3px 2px;border-radius:5px;-webkit-tap-highlight-color:transparent;user-select:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .month-sb-item.active{color:#fff;background:#185FA5;font-size:8px}
+    .month-sb-item{font-size:10px;font-weight:700;padding:5px 6px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;text-align:center;line-height:1.2;white-space:nowrap;min-width:38px;box-shadow:0 1px 4px rgba(0,0,0,.08);-webkit-tap-highlight-color:transparent;user-select:none}
+    .month-sb-item .msb-month{font-size:10px;font-weight:700;display:block}
+    .month-sb-item .msb-year{font-size:8px;color:var(--text3);display:block;margin-top:1px}
+    .month-sb-item.active{background:#185FA5;color:#fff;border-color:#185FA5}
+    .month-sb-item.active .msb-year{color:rgba(255,255,255,.7)}
     .chip-dist:active{opacity:.7}
     .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
 
@@ -460,7 +463,7 @@
       </div>
       <div style="display:flex;gap:0;position:relative">
         <div id="race-list" style="flex:1;min-width:0"></div>
-        <div id="month-sidebar" style="width:28px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:4px;gap:2px;position:sticky;top:60px;align-self:flex-start;max-height:calc(100vh - 120px);overflow-y:auto;scrollbar-width:none"></div>
+        <div id="month-sidebar" style="width:44px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:4px;gap:4px;position:sticky;top:60px;align-self:flex-start;max-height:calc(100vh - 120px);overflow-y:auto;scrollbar-width:none"></div>
       </div>
     </div>
 
@@ -970,10 +973,11 @@ function renderRaces(){
     :'<div class="empty-state"><span>📅</span>Aucune course. Ajoutez-en une !</div>';
   document.getElementById('race-list').innerHTML=html;
 
-  // Générer l'index latéral mois
+  // Générer l'index latéral mois — design A pills
   const sidebar=document.getElementById('month-sidebar');
   if(sidebar){
-    sidebar.innerHTML=monthsList.map(m=>`<div class="month-sb-item" id="msb-${m.id}" onclick="scrollToMonth('${m.id}')">${m.short}</div>`).join('');
+    sidebar.style.width='44px';
+    sidebar.innerHTML=monthsList.map(m=>`<div class="month-sb-item" id="msb-${m.id}" onclick="scrollToMonth('${m.id}')"><span class="msb-month">${m.short.split('\n')[0]}</span><span class="msb-year">${m.short.split('\n')[1]}</span></div>`).join('');
   }
 
   _renderingRaces=false;
