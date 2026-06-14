@@ -102,6 +102,8 @@
     .month-sep:first-child{margin-top:0}
     .month-sep-label{font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;text-transform:uppercase;letter-spacing:0.08em}
     .month-sep-line{flex:1;height:0.5px;background:var(--border2)}
+    .month-sb-item{font-size:8px;font-weight:700;color:var(--text3);cursor:pointer;line-height:1;width:28px;text-align:center;padding:3px 2px;border-radius:5px;-webkit-tap-highlight-color:transparent;user-select:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .month-sb-item.active{color:#fff;background:#185FA5;font-size:8px}
     .chip-dist:active{opacity:.7}
     .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
 
@@ -456,7 +458,10 @@
         <span><span class="legend-dot" style="background:#1D9E75"></span>Inscrit</span>
         <span><span class="legend-dot" style="background:#EF9F27"></span>Intéressé</span>
       </div>
-      <div id="race-list"></div>
+      <div style="display:flex;gap:0;position:relative">
+        <div id="race-list" style="flex:1;min-width:0"></div>
+        <div id="month-sidebar" style="width:28px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:4px;gap:2px;position:sticky;top:60px;align-self:flex-start;max-height:calc(100vh - 120px);overflow-y:auto;scrollbar-width:none"></div>
+      </div>
     </div>
 
     <!-- HISTORIQUE -->
@@ -833,16 +838,20 @@ function renderRaces(){
   const filtered=[...upcoming];
   const mnames=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const MOIS_SHORT=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
   let currentMonth=null;
   let html='';
+  const monthsList=[];
   filtered.forEach(r=>{
     // Séparateur de mois
     if(r.date_course){
       const d=new Date(r.date_course);
       const monthKey=`${MOIS[d.getMonth()]} ${d.getFullYear()}`;
+      const monthId='month-'+d.getFullYear()+'-'+d.getMonth();
       if(monthKey!==currentMonth){
         currentMonth=monthKey;
-        html+=`<div class="month-sep"><span class="month-sep-label">${monthKey}</span><div class="month-sep-line"></div></div>`;
+        monthsList.push({key:monthKey,id:monthId,short:MOIS_SHORT[d.getMonth()]+'\n'+d.getFullYear().toString().slice(2)});
+        html+=`<div class="month-sep" id="${monthId}"><span class="month-sep-label">${monthKey}</span><div class="month-sep-line"></div></div>`;
       }
     }
     const tc=r.type==='Trail'?'trail':r.type==='Ultra'?'ultra':'route';
@@ -960,7 +969,24 @@ function renderRaces(){
     ?`<div class="empty-state"><span>📅</span>Aucune course ce mois-là.</div>`
     :'<div class="empty-state"><span>📅</span>Aucune course. Ajoutez-en une !</div>';
   document.getElementById('race-list').innerHTML=html;
+
+  // Générer l'index latéral mois
+  const sidebar=document.getElementById('month-sidebar');
+  if(sidebar){
+    sidebar.innerHTML=monthsList.map(m=>`<div class="month-sb-item" id="msb-${m.id}" onclick="scrollToMonth('${m.id}')">${m.short}</div>`).join('');
+  }
+
   _renderingRaces=false;
+}
+
+function scrollToMonth(monthId){
+  const el=document.getElementById(monthId);
+  if(!el)return;
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.month-sb-item').forEach(b=>b.classList.remove('active'));
+  const sb=document.getElementById('msb-'+monthId);
+  if(sb)sb.classList.add('active');
+  setTimeout(()=>{if(sb)sb.classList.remove('active');},1500);
 }
 
 function toggleCard(cardId){
