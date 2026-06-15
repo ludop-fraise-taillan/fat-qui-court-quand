@@ -1823,6 +1823,20 @@ function getSaisonData(){
   return stats;
 }
 
+function openBilanModal(){
+  const s=getSaisonData();
+  document.getElementById('bilan-preview').innerHTML=`
+    <div style="font-weight:600;color:var(--text);margin-bottom:8px">Saison ${s.saisonLabel}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
+      <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:#C0001A">${s.totalCourses}</div><div style="font-size:10px;color:var(--text3)">courses</div></div>
+      <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:#1D9E75">${s.totalInscrits}</div><div style="font-size:10px;color:var(--text3)">inscrits</div></div>
+      <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:#185FA5">${s.totalChronos}</div><div style="font-size:10px;color:var(--text3)">chronos</div></div>
+      <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:#EF9F27">${s.palmares.length}</div><div style="font-size:10px;color:var(--text3)">actifs</div></div>
+    </div>
+  `;
+  document.getElementById('modal-bilan').classList.add('open');
+}
+
 function genererBilan(){
   const s=getSaisonData();
   const now=new Date().toLocaleDateString('fr-FR');
