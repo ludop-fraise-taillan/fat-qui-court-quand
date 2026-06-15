@@ -1766,176 +1766,156 @@ function updatePreview(){
 
 // ── Bilan ────────────────────────────────────────────────────────────────────
 function getSaisonData(){
-  const today = new Date();
-  // Saison : sept année N → août année N+1
-  // Si on est entre sept et déc → saison en cours : sept this year → août next year
-  // Si on est entre jan et août → saison en cours : sept last year → août this year
-  const month = today.getMonth(); // 0=jan
-  const year = today.getFullYear();
-  let saisonStart, saisonEnd, saisonLabel;
-  if(month >= 8){ // sept-déc
-    saisonStart = new Date(year, 8, 1);
-    saisonEnd   = new Date(year+1, 7, 31);
-    saisonLabel = `${year} — ${year+1}`;
-  } else {
-    saisonStart = new Date(year-1, 8, 1);
-    saisonEnd   = new Date(year, 7, 31);
-    saisonLabel = `${year-1} — ${year}`;
-  }
-  const pastRaces = races.filter(r=>{
-    if(!r.date_course) return false;
-    const d = new Date(r.date_course);
-    return d >= saisonStart && d <= saisonEnd && d < today;
-  }).sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
-
-  const stats = {
-    saisonLabel,
-    totalCourses: pastRaces.length,
-    totalInscrits: 0,
-    totalChronos: 0,
-    courses: [],
-    palmares: [],
-  };
-
-  // Par course
+  const today=new Date();
+  const month=today.getMonth();
+  const year=today.getFullYear();
+  let saisonStart,saisonEnd,saisonLabel;
+  if(month>=8){saisonStart=new Date(year,8,1);saisonEnd=new Date(year+1,7,31);saisonLabel=year+' — '+(year+1);}
+  else{saisonStart=new Date(year-1,8,1);saisonEnd=new Date(year,7,31);saisonLabel=(year-1)+' — '+year;}
+  const pastRaces=races.filter(r=>{if(!r.date_course)return false;const d=new Date(r.date_course);return d>=saisonStart&&d<=saisonEnd&&d<today;}).sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
+  const stats={saisonLabel,totalCourses:pastRaces.length,totalInscrits:0,totalChronos:0,totalMembers:members.length,courses:[],palmares:[],bestByDist:{},sortiesByDist:{}};
   pastRaces.forEach(r=>{
-    const rParts = participations.filter(p=>p.course_id===r.id);
-    const conf = rParts.filter(p=>p.statut==='confirmed');
-    const inter = rParts.filter(p=>p.statut==='interested');
-    const chronos = conf.filter(p=>p.chrono).sort((a,b)=>a.chrono.localeCompare(b.chrono));
-    stats.totalInscrits += conf.length;
-    stats.totalChronos += chronos.length;
-    const dists = parseDists(r.distances||r.distance);
-    stats.courses.push({
-      nom: r.nom, date: r.date_course, type: r.type,
-      distances: dists, inscrits: conf.length, interesses: inter.length,
-      chronos: chronos.map(p=>({nom: members.find(x=>x.id===p.membre_id)?.nom||'?', chrono: p.chrono}))
-    });
-  });
-
-  // Palmarès par coureur
-  const memberStats = {};
-  members.forEach(m=>{
-    memberStats[m.id] = {nom: m.nom, role: m.role||'Coureur', courses: 0, chronos: [], bestChrono: null};
-  });
-  pastRaces.forEach(r=>{
-    const rParts = participations.filter(p=>p.course_id===r.id&&p.statut==='confirmed');
-    rParts.forEach(p=>{
-      if(memberStats[p.membre_id]){
-        memberStats[p.membre_id].courses++;
-        if(p.chrono) memberStats[p.membre_id].chronos.push({course: r.nom, chrono: p.chrono});
+    const rParts=participations.filter(p=>p.course_id===r.id);
+    const conf=rParts.filter(p=>p.statut==='confirmed');
+    const inter=rParts.filter(p=>p.statut==='interested');
+    const dists=parseDists(r.distances||r.distance);
+    stats.totalInscrits+=conf.length;
+    // Grouper par distance
+    const distGroups={};
+    conf.forEach(p=>{const k=p.distance?String(p.distance):'0';if(!distGroups[k])distGroups[k]=[];distGroups[k].push(p);});
+    // Chronos par distance
+    const distChronos=[];
+    Object.entries(distGroups).sort((a,b)=>Number(a[0])-Number(b[0])).forEach(([dist,parts])=>{
+      const sorted=parts.filter(p=>p.chrono).sort((a,b)=>a.chrono.localeCompare(b.chrono));
+      const noChronos=parts.filter(p=>!p.chrono);
+      stats.totalChronos+=sorted.length;
+      distChronos.push({dist,sorted:sorted.map(p=>({nom:members.find(x=>x.id===p.membre_id)?.nom||'?',chrono:p.chrono})),noChronos:noChronos.map(p=>({nom:members.find(x=>x.id===p.membre_id)?.nom||'?'}))});
+      // Meilleurs chronos par distance (toute la saison)
+      if(dist!=='0'){
+        if(!stats.bestByDist[dist])stats.bestByDist[dist]=[];
+        sorted.forEach(p=>stats.bestByDist[dist].push({nom:members.find(x=>x.id===p.membre_id)?.nom||'?',chrono:p.chrono,course:r.nom,date:r.date_course}));
+      }
+      // Sorties par distance
+      if(dist!=='0'){
+        if(!stats.sortiesByDist[dist])stats.sortiesByDist[dist]={courses:0,coureurs:0,chronos:0,types:new Set()};
+        stats.sortiesByDist[dist].courses++;
+        stats.sortiesByDist[dist].coureurs+=parts.length;
+        stats.sortiesByDist[dist].chronos+=sorted.length;
+        stats.sortiesByDist[dist].types.add(r.type);
       }
     });
+    // Distance 0 = pas de distance renseignée
+    if(distGroups['0']){
+      distChronos.push({dist:'0',sorted:distGroups['0'].filter(p=>p.chrono).sort((a,b)=>a.chrono.localeCompare(b.chrono)).map(p=>({nom:members.find(x=>x.id===p.membre_id)?.nom||'?',chrono:p.chrono})),noChronos:distGroups['0'].filter(p=>!p.chrono).map(p=>({nom:members.find(x=>x.id===p.membre_id)?.nom||'?'}))});
+    }
+    stats.courses.push({nom:r.nom,date:r.date_course,type:r.type,distances:dists,inscrits:conf.length,interesses:inter.length,distChronos});
   });
-  stats.palmares = Object.values(memberStats)
-    .filter(m=>m.courses>0)
-    .sort((a,b)=>b.courses-a.courses || a.nom.localeCompare(b.nom,'fr'));
-
+  // Trier meilleurs chronos par dist
+  Object.keys(stats.bestByDist).forEach(d=>{stats.bestByDist[d].sort((a,b)=>a.chrono.localeCompare(b.chrono));});
+  // Palmarès membres
+  const memberStats={};
+  members.forEach(m=>{memberStats[m.id]={nom:m.nom,role:m.role||'Coureur',courses:0,chronos:[],dists:new Set()};});
+  pastRaces.forEach(r=>{
+    const rParts=participations.filter(p=>p.course_id===r.id&&p.statut==='confirmed');
+    rParts.forEach(p=>{if(memberStats[p.membre_id]){memberStats[p.membre_id].courses++;if(p.chrono)memberStats[p.membre_id].chronos.push({course:r.nom,chrono:p.chrono});if(p.distance)memberStats[p.membre_id].dists.add(p.distance);}});
+  });
+  stats.palmares=Object.values(memberStats).filter(m=>m.courses>0).sort((a,b)=>b.courses-a.courses||a.nom.localeCompare(b.nom,'fr'));
   return stats;
 }
 
-function openBilanModal(){
-  const s = getSaisonData();
-  document.getElementById('bilan-preview').innerHTML = `
-    <div style="font-weight:600;color:var(--text);margin-bottom:8px">Saison ${s.saisonLabel}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-      <div style="text-align:center"><div style="font-size:22px;font-weight:600;color:var(--text)">${s.totalCourses}</div><div style="font-size:10px;color:var(--text3)">courses</div></div>
-      <div style="text-align:center"><div style="font-size:22px;font-weight:600;color:#1D9E75">${s.totalInscrits}</div><div style="font-size:10px;color:var(--text3)">inscriptions</div></div>
-      <div style="text-align:center"><div style="font-size:22px;font-weight:600;color:#185FA5">${s.totalChronos}</div><div style="font-size:10px;color:var(--text3)">chronos</div></div>
-    </div>
-  `;
-  document.getElementById('modal-bilan').classList.add('open');
-}
-
 function genererBilan(){
-  const s = getSaisonData();
-  const css = [
-    '*{box-sizing:border-box;margin:0;padding:0}',
-    'body{font-family:Arial,sans-serif;font-size:11pt;color:#1a1a18;padding:20px}',
-    'h1{font-size:20pt;color:#C0001A;margin-bottom:4px}',
-    'h2{font-size:13pt;color:#C0001A;margin:20px 0 8px;border-bottom:2px solid #C0001A;padding-bottom:4px}',
-    '.sub{color:#6b6b67;font-size:10pt;margin-bottom:18px}',
-    '.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}',
-    '.box{border:1px solid #e0e0de;border-radius:6px;padding:10px;text-align:center}',
-    '.bv{font-size:26pt;font-weight:bold;line-height:1}',
-    '.bl{font-size:9pt;color:#6b6b67;margin-top:3px}',
-    'table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:10pt}',
-    'th{background:#1a1a18;color:#fff;padding:6px 8px;text-align:left;font-size:9pt}',
-    'td{padding:5px 8px;border-bottom:1px solid #e0e0de}',
-    'tr:nth-child(even) td{background:#f5f5f3}',
-    '.rh{background:#f0faf5;border-left:4px solid #9FE1CB;padding:7px 10px;margin:10px 0 3px;font-weight:bold;font-size:10pt}',
-    '.rm{font-size:9pt;color:#6b6b67;margin-bottom:5px}',
-    '.cl{margin-left:14px;margin-bottom:6px}',
-    '.ci{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #eee;font-size:10pt}',
-    '.ch{color:#185FA5;font-weight:bold}',
-    '.gr{color:#085041;font-weight:bold}',
-    '.ft{margin-top:24px;padding-top:8px;border-top:1px solid #e0e0de;font-size:9pt;color:#9e9e99;display:flex;justify-content:space-between}',
-    '.np{margin-bottom:16px;display:flex;gap:10px}',
-    '@media print{.np{display:none}}'
-  ].join('');
+  const s=getSaisonData();
+  const now=new Date().toLocaleDateString('fr-FR');
+  const medals=['🥇','🥈','🥉'];
+  const typeColor={Trail:'linear-gradient(90deg,#1a3a1a,#2d5a2d)',Route:'linear-gradient(90deg,#0d2a4a,#1a4a7a)',Ultra:'linear-gradient(90deg,#3a0d0d,#6a1a1a)'};
+  const typeBadge={Trail:'background:#EAF3DE;color:#3B6D11;border:.5px solid #9FE1CB',Route:'background:#E6F1FB;color:#185FA5;border:.5px solid #B5D4F4',Ultra:'background:#FAECE7;color:#993C1D;border:.5px solid #F09595'};
 
-  var b = '';
-  b += '<div class="np">';
-  b += '<button onclick="window.print()" style="padding:7px 14px;background:#C0001A;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:11pt">Imprimer / PDF</button>';
-  b += '<button onclick="window.close()" style="padding:7px 14px;background:#f5f5f3;border:1px solid #ccc;border-radius:5px;cursor:pointer;font-size:11pt">Fermer</button>';
-  b += '</div>';
-  b += '<h1>La Fraise Athletique du Taillan</h1>';
-  b += '<div class="sub">Bilan saison ' + s.saisonLabel + ' - Genere le ' + new Date().toLocaleDateString('fr-FR') + '</div>';
-  b += '<h2>Statistiques globales</h2>';
-  b += '<div class="grid">';
-  b += '<div class="box"><div class="bv">' + s.totalCourses + '</div><div class="bl">Courses</div></div>';
-  b += '<div class="box"><div class="bv" style="color:#085041">' + s.totalInscrits + '</div><div class="bl">Inscrits</div></div>';
-  b += '<div class="box"><div class="bv" style="color:#633806">' + s.palmares.length + '</div><div class="bl">Coureurs actifs</div></div>';
-  b += '<div class="box"><div class="bv" style="color:#185FA5">' + s.totalChronos + '</div><div class="bl">Chronos</div></div>';
-  b += '</div>';
-  b += '<h2>Detail des courses</h2>';
-  if(s.courses.length === 0){
-    b += '<p style="color:#9e9e99;font-style:italic">Aucune course cette saison.</p>';
-  } else {
-    for(var ci=0; ci<s.courses.length; ci++){
-      var c = s.courses[ci];
-      b += '<div class="rh">' + c.nom + ' - ' + dateStr(c.date) + '</div>';
-      b += '<div class="rm">' + c.type + ' - ' + c.distances.join('/') + ' km - ' + c.inscrits + ' inscrit(s) - ' + c.interesses + ' interesse(s)</div>';
-      if(c.chronos.length > 0){
-        b += '<div class="cl">';
-        for(var k=0; k<c.chronos.length; k++){
-          b += '<div class="ci"><span>' + (k+1) + '. ' + c.chronos[k].nom + '</span><span class="ch">' + c.chronos[k].chrono + '</span></div>';
-        }
-        b += '</div>';
-      } else {
-        b += '<p style="font-size:9pt;color:#9e9e99;margin:0 0 8px 14px">Aucun chrono</p>';
-      }
-    }
-  }
-  b += '<h2>Palmares des coureurs</h2>';
-  if(s.palmares.length === 0){
-    b += '<p style="color:#9e9e99;font-style:italic">Aucun coureur actif.</p>';
-  } else {
-    b += '<table><tr><th>#</th><th>Coureur</th><th>Role</th><th>Courses</th><th>Chronos</th><th>Meilleur chrono</th></tr>';
-    for(var pi=0; pi<s.palmares.length; pi++){
-      var m = s.palmares[pi];
-      var sorted = m.chronos.slice().sort(function(a,b){return a.chrono.localeCompare(b.chrono);});
-      var best = sorted[0];
-      var bestTxt = best ? (best.course.length>22?best.course.slice(0,20)+'...':best.course)+' - '+best.chrono : '-';
-      var medal = pi===0?'[1] ':pi===1?'[2] ':pi===2?'[3] ':'';
-      b += '<tr>';
-      b += '<td style="color:#9e9e99">' + (pi+1) + '</td>';
-      b += '<td style="font-weight:' + (pi<3?'bold':'normal') + '">' + medal + m.nom + '</td>';
-      b += '<td style="color:#6b6b67">' + m.role + '</td>';
-      b += '<td class="gr" style="text-align:center">' + m.courses + '</td>';
-      b += '<td style="text-align:center;color:#185FA5">' + m.chronos.length + '</td>';
-      b += '<td class="ch">' + bestTxt + '</td>';
-      b += '</tr>';
-    }
-    b += '</table>';
-  }
-  b += '<div class="ft"><span>La Fraise Athletique du Taillan - Saison ' + s.saisonLabel + '</span><span>ludop-fraise-taillan.github.io/fat-qui-court-quand</span></div>';
+  const css=`*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:11pt;color:#1a1a18;padding:24px;background:#fff;max-width:900px;margin:0 auto}.np{margin-bottom:16px;display:flex;gap:10px}@media print{.np{display:none}}.rh{border-bottom:3px solid #C0001A;padding-bottom:14px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end}.rt{font-size:22pt;font-weight:900;color:#C0001A}.rs{font-size:10pt;color:#6b6b67;margin-top:4px}.rl{font-size:13pt;font-weight:700;text-align:right}.rd{font-size:9pt;color:#9e9e99;text-align:right;margin-top:3px}.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}.sb{border:1.5px solid #e0e0de;border-radius:8px;padding:12px;text-align:center}.sv{font-size:28pt;font-weight:900;line-height:1}.sl{font-size:9pt;color:#6b6b67;margin-top:4px}h2{font-size:13pt;font-weight:800;color:#1a1a18;margin:24px 0 10px;padding:8px 12px;background:#f0f0ec;border-left:4px solid #C0001A}.cb{margin-bottom:16px;border:1px solid #e0e0de;border-radius:8px;overflow:hidden}.ch{color:#fff;padding:8px 12px;display:flex;justify-content:space-between;align-items:center}.chn{font-size:10pt;font-weight:700}.chm{font-size:9pt;color:rgba(255,255,255,.65)}.ds{border-bottom:1px solid #f0f0ec}.dl{font-size:9pt;font-weight:700;color:#6b6b67;padding:6px 12px;background:#f8f8f6;border-bottom:1px solid #efefec;text-transform:uppercase;letter-spacing:.06em}.cr{display:flex;align-items:center;gap:8px;padding:5px 12px;border-bottom:1px solid #f5f5f3;font-size:10pt}.cr:last-child{border-bottom:none}.ck{font-size:12pt;min-width:26px}.cn{flex:1}.ct{font-weight:700;color:#185FA5;background:#E6F1FB;border:.5px solid #B5D4F4;border-radius:4px;padding:2px 8px}.cz{color:#9e9e99;font-style:italic;font-size:9pt}.nd{color:#9e9e99;font-style:italic;padding:8px 12px;font-size:9pt}.bg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}.bc{border:1.5px solid #e0e0de;border-radius:8px;overflow:hidden}.bch{padding:7px 12px;background:#185FA5;color:#fff;font-weight:700;font-size:10pt;display:flex;justify-content:space-between}.bcd{font-size:12pt;font-weight:900}.br{display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid #f5f5f3;font-size:10pt}.br:last-child{border-bottom:none}.bm{font-size:13pt;min-width:22px}.bn{flex:1}.bt{font-weight:700;color:#185FA5}.bs{font-size:8pt;color:#9e9e99}.st{width:100%;border-collapse:collapse;margin-bottom:10px}.st th{background:#1a1a18;color:#fff;padding:7px 10px;text-align:left;font-size:9pt}.st td{padding:6px 10px;border-bottom:1px solid #e0e0de;font-size:10pt}.st tr:nth-child(even) td{background:#f8f8f6}.sd{font-weight:700;font-size:11pt}.sw{width:100px}.sb2{height:6px;background:#E6F1FB;border-radius:99px;overflow:hidden}.sf{height:100%;background:#185FA5;border-radius:99px}.pt{width:100%;border-collapse:collapse}.pt th{background:#1a1a18;color:#fff;padding:7px 10px;text-align:left;font-size:9pt}.pt td{padding:6px 10px;border-bottom:1px solid #e0e0de;font-size:10pt;vertical-align:top}.pt tr:nth-child(even) td{background:#f8f8f6}.pm{font-size:13pt}.ft{margin-top:28px;padding-top:10px;border-top:1px solid #e0e0de;font-size:8pt;color:#9e9e99;display:flex;justify-content:space-between}`;
 
-  var html = '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Bilan FAT ' + s.saisonLabel + '</title><style>' + css + '</style></head><body>' + b + '</body></html>';
-  var w = window.open('', '_blank', 'width=900,height=700');
+  var b='';
+  // Boutons d'action
+  b+='<div class="np"><button onclick="window.print()" style="padding:7px 14px;background:#C0001A;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:11pt">🖨 Imprimer / PDF</button><button onclick="window.close()" style="padding:7px 14px;background:#f5f5f3;border:1px solid #ccc;border-radius:6px;cursor:pointer;font-size:11pt">✕ Fermer</button></div>';
+  // En-tête
+  b+='<div class="rh"><div><div class="rt">🍓 La Fraise Athlétique du Taillan</div><div class="rs">Bilan de saison · Rapport officiel du club</div></div><div><div class="rl">Saison '+s.saisonLabel+'</div><div class="rd">Généré le '+now+'</div></div></div>';
+  // Stats globales
+  b+='<div class="sg">';
+  b+='<div class="sb"><div class="sv" style="color:#C0001A">'+s.totalCourses+'</div><div class="sl">Courses réalisées</div></div>';
+  b+='<div class="sb"><div class="sv" style="color:#1D9E75">'+s.totalInscrits+'</div><div class="sl">Inscriptions</div></div>';
+  b+='<div class="sb"><div class="sv" style="color:#185FA5">'+s.totalChronos+'</div><div class="sl">Chronos enregistrés</div></div>';
+  b+='<div class="sb"><div class="sv" style="color:#EF9F27">'+s.palmares.length+'</div><div class="sl">Membres actifs</div></div>';
+  b+='</div>';
+
+  // Section 1 : Chronos par course
+  b+='<h2>📅 Chronos par course et par distance</h2>';
+  if(s.courses.length===0){b+='<p style="color:#9e9e99;font-style:italic">Aucune course cette saison.</p>';}
+  else{
+    s.courses.forEach(c=>{
+      const bgStyle=typeColor[c.type]||'background:#1a1a18';
+      b+='<div class="cb"><div class="ch" style="background:'+bgStyle+'"><span class="chn">'+c.nom+'</span><span class="chm">'+dateStr(c.date)+' · '+c.type+' · '+c.inscrits+' inscrit'+(c.inscrits>1?'s':'')+' · '+c.interesses+' intéressé'+(c.interesses>1?'s':'')+'</span></div>';
+      if(c.distChronos.length===0){b+='<div class="nd">Aucun participant enregistré</div>';}
+      c.distChronos.forEach(dg=>{
+        const distLabel=dg.dist==='0'?'Distance non renseignée':dg.dist+' km';
+        const total=dg.sorted.length+dg.noChronos.length;
+        b+='<div class="ds"><div class="dl">'+distLabel+' — '+total+' coureur'+(total>1?'s':'')+'</div>';
+        dg.sorted.forEach((p,i)=>{b+='<div class="cr"><span class="ck">'+(i<3?medals[i]:'<span style="color:#9e9e99;font-size:10pt">'+(i+1)+'</span>')+'</span><span class="cn">'+p.nom+'</span><span class="ct">'+p.chrono+'</span></div>';});
+        dg.noChronos.forEach(p=>{b+='<div class="cr"><span class="ck">—</span><span class="cn">'+p.nom+'</span><span class="cz">pas de chrono</span></div>';});
+        b+='</div>';
+      });
+      b+='</div>';
+    });
+  }
+
+  // Section 2 : Meilleurs chronos par distance
+  b+='<h2>🏅 Meilleurs chronos par distance (saison)</h2>';
+  const distKeys=Object.keys(s.bestByDist).sort((a,b)=>Number(a)-Number(b));
+  if(distKeys.length===0){b+='<p style="color:#9e9e99;font-style:italic">Aucun chrono enregistré.</p>';}
+  else{
+    b+='<div class="bg">';
+    distKeys.forEach(dist=>{
+      const top=s.bestByDist[dist].slice(0,3);
+      b+='<div class="bc"><div class="bch"><span>'+dist+' km</span><span class="bcd">🏃</span></div>';
+      top.forEach((p,i)=>{b+='<div class="br"><span class="bm">'+medals[i]+'</span><div><div class="bn">'+p.nom+'</div><div class="bs">'+p.course+' · '+dateStr(p.date)+'</div></div><span class="bt">'+p.chrono+'</span></div>';});
+      b+='</div>';
+    });
+    b+='</div>';
+  }
+
+  // Section 3 : Sorties par distance
+  b+='<h2>📏 Sorties réalisées par distance</h2>';
+  const sortieKeys=Object.keys(s.sortiesByDist).sort((a,b)=>Number(a)-Number(b));
+  if(sortieKeys.length===0){b+='<p style="color:#9e9e99;font-style:italic">Aucune sortie enregistrée.</p>';}
+  else{
+    const maxCoureurs=Math.max(...sortieKeys.map(d=>s.sortiesByDist[d].coureurs));
+    b+='<table class="st"><tr><th>Distance</th><th>Types</th><th>Nb sorties</th><th>Nb coureurs</th><th>Avec chrono</th><th>Progression</th></tr>';
+    sortieKeys.forEach(dist=>{
+      const sd=s.sortiesByDist[dist];
+      const types=[...sd.types].map(t=>'<span style="font-size:8pt;padding:1px 6px;border-radius:99px;margin-right:3px;'+typeBadge[t]+'">'+t+'</span>').join('');
+      const pct=Math.round(sd.coureurs/maxCoureurs*100);
+      b+='<tr><td><span class="sd">'+dist+' km</span></td><td>'+types+'</td><td style="text-align:center">'+sd.courses+'</td><td style="text-align:center;font-weight:600;color:#1D9E75">'+sd.coureurs+'</td><td style="text-align:center;color:#185FA5">'+sd.chronos+'</td><td><div class="sw"><div class="sb2"><div class="sf" style="width:'+pct+'%"></div></div></div></td></tr>';
+    });
+    b+='</table>';
+  }
+
+  // Section 4 : Palmarès membres
+  b+='<h2>👥 Palmarès des membres</h2>';
+  if(s.palmares.length===0){b+='<p style="color:#9e9e99;font-style:italic">Aucun coureur actif.</p>';}
+  else{
+    b+='<table class="pt"><tr><th>#</th><th>Membre</th><th>Rôle</th><th>Sorties</th><th>Chronos</th><th>Distances pratiquées</th></tr>';
+    s.palmares.forEach((m,i)=>{
+      const medal=i<3?'<span class="pm">'+medals[i]+'</span>':(i+1);
+      const dists=[...m.dists].sort((a,b)=>a-b).map(d=>d+' km').join(' · ')||'—';
+      b+='<tr><td>'+medal+'</td><td style="font-weight:'+(i<3?'bold':'normal')+'">'+m.nom+'</td><td style="color:#6b6b67">'+m.role+'</td><td style="text-align:center;font-weight:600;color:#1D9E75">'+m.courses+'</td><td style="text-align:center;color:#185FA5">'+m.chronos.length+'</td><td style="color:#6b6b67;font-size:9pt">'+dists+'</td></tr>';
+    });
+    b+='</table>';
+  }
+
+  b+='<div class="ft"><span>🍓 La Fraise Athlétique du Taillan — Saison '+s.saisonLabel+'</span><span>ludop-fraise-taillan.github.io/fat-qui-court-quand</span></div>';
+
+  var html='<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Bilan FAT '+s.saisonLabel+'</title><style>'+css+'</style></head><body>'+b+'</body></html>';
+  var w=window.open('','_blank','width=960,height=750');
   w.document.write(html);
   w.document.close();
-  showToast('Rapport genere !');
+  showToast('Rapport généré !');
 }
 
 
