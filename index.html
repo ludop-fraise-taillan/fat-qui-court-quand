@@ -837,24 +837,16 @@ function renderRaces(){
   _renderingRaces=true;
   const today=new Date(new Date().toDateString());
   const upcoming=[...races].filter(r=>!r.date_course||new Date(r.date_course)>=today).sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
-  const past=[...races].filter(r=>r.date_course&&new Date(r.date_course)<today).sort((a,b)=>new Date(b.date_course)-new Date(a.date_course));
-  const filtered=[...upcoming,...past];
+  const filtered=[...upcoming];
   const mnames=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   const MOIS_SHORT=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
   let currentMonth=null;
   let html='';
-  let pastSepAdded=false;
   const monthsList=[];
   filtered.forEach(r=>{
     const d=r.date_course?new Date(r.date_course):null;
     const isP=d&&d<today;
-    // Séparateur "Courses passées" une seule fois
-    if(isP&&!pastSepAdded){
-      pastSepAdded=true;
-      html+=`<div style="display:flex;align-items:center;gap:10px;margin:16px 0 10px"><div style="flex:1;height:1px;background:var(--border2)"></div><span style="font-size:10px;font-weight:700;color:var(--text3);white-space:nowrap;text-transform:uppercase;letter-spacing:.07em">🏁 Courses passées</span><div style="flex:1;height:1px;background:var(--border2)"></div></div>`;
-      currentMonth=null; // reset pour forcer un nouveau séparateur de mois
-    }
     // Séparateur de mois
     if(r.date_course){
       const monthKey=`${MOIS[d.getMonth()]} ${d.getFullYear()}`;
