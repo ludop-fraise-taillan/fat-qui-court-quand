@@ -1317,6 +1317,16 @@ function renderHistory(){
           ${r.url?('<a href="'+r.url+'" target="_blank" rel="noopener" class="btn-site">↗ '+(plat?plat.label:'Site')+'</a>'):'<span></span>'}
           ${r.url_results?('<a href="'+r.url_results+'" target="_blank" rel="noopener" class="btn-results">🏅 Résultats officiels</a>'):''}
         </div>
+        ${!myPart?`<div style="padding:0 14px 12px">
+          <button onclick="openModal('${r.id}')" style="width:100%;padding:11px;border-radius:var(--radius-md);border:1.5px dashed var(--border2);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
+            <span style="font-size:15px">🏅</span> J'ai participé à cette course
+          </button>
+        </div>`
+        :myPart&&!myPart.chrono?`<div style="padding:0 14px 12px">
+          <button onclick="openParticipantsModal('${r.id}')" style="width:100%;padding:11px;border-radius:var(--radius-md);border:1.5px dashed #B5D4F4;background:#E6F1FB;color:#185FA5;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
+            <span style="font-size:15px">⏱</span> Ajouter mon chrono
+          </button>
+        </div>`:''}
       </div>
     </div>`;
   });
