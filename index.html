@@ -122,42 +122,51 @@
     /* En-tête gradient */
     .card-head{display:flex;align-items:stretch;cursor:pointer;-webkit-tap-highlight-color:transparent;flex-direction:column}
     .card-head-inner{display:flex;align-items:stretch;flex:1}
-    .card-head.trail .card-head-inner,.card-head.trail{background:linear-gradient(135deg,#1a3a1a,#2d5a2d)}
-    .card-head.route .card-head-inner,.card-head.route{background:linear-gradient(135deg,#0d2a4a,#1a4a7a)}
-    .card-head.ultra .card-head-inner,.card-head.ultra{background:linear-gradient(135deg,#3a0d0d,#6a1a1a)}
+    .card-head.trail .card-head-inner,.card-head.trail{background:linear-gradient(135deg,#D6EFC7,#C0E3A5)}
+    .card-head.route .card-head-inner,.card-head.route{background:linear-gradient(135deg,#C8DEFA,#B0CFF7)}
+    .card-head.ultra .card-head-inner,.card-head.ultra{background:linear-gradient(135deg,#FAD9C8,#F5C4AE)}
     /* Colonne date */
-    .date-col{background:rgba(0,0,0,.22);padding:12px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:58px;flex-shrink:0;gap:1px}
-    .dc-day{font-size:9px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.07em}
-    .dc-dd{font-size:24px;font-weight:800;color:#fff;line-height:1}
-    .dc-mm{font-size:12px;font-weight:700;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.04em}
-    .dc-yy{font-size:9px;color:rgba(255,255,255,.45);margin-top:1px}
+    .date-col{background:rgba(0,0,0,.14);padding:12px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:58px;flex-shrink:0;gap:1px}
+    .dc-day{font-size:9px;font-weight:700;color:rgba(0,0,0,.45);text-transform:uppercase;letter-spacing:.07em}
+    .dc-dd{font-size:24px;font-weight:800;color:rgba(0,0,0,.75);line-height:1}
+    .dc-mm{font-size:12px;font-weight:700;color:rgba(0,0,0,.65);text-transform:uppercase;letter-spacing:.04em}
+    .dc-yy{font-size:9px;color:rgba(0,0,0,.35);margin-top:1px}
     /* Infos header */
     .head-info{flex:1;padding:11px 10px 11px 12px;display:flex;flex-direction:column;justify-content:center;gap:5px}
     .head-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
-    .race-name{font-size:16px;font-weight:700;color:#fff;line-height:1.25;flex:1}
+    .race-name{font-size:16px;font-weight:700;color:rgba(0,0,0,.78);line-height:1.25;flex:1}
+    .card-head.trail .race-name{color:#1E4A0A}
+    .card-head.route .race-name{color:#0B2D5C}
+    .card-head.ultra .race-name{color:#6B200A}
     .head-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
-    .race-type{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.18);color:#fff;white-space:nowrap}
-    .complet-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.92);color:#900f0f;white-space:nowrap}
+    .race-type{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(0,0,0,.12);color:rgba(0,0,0,.65);white-space:nowrap}
+    .card-head.trail .race-type{background:rgba(30,74,10,.15);color:#1E4A0A}
+    .card-head.route .race-type{background:rgba(11,45,92,.15);color:#0B2D5C}
+    .card-head.ultra .race-type{background:rgba(107,32,10,.15);color:#6B200A}
+    .complet-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.85);color:#900f0f;white-space:nowrap}
     .head-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
     .head-dists{display:flex;gap:5px;flex-wrap:wrap}
-    .dist-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;background:rgba(255,255,255,.18);color:#fff}
+    .dist-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;background:rgba(0,0,0,.10);color:rgba(0,0,0,.60)}
+    .card-head.trail .dist-tag{background:rgba(30,74,10,.13);color:#1E4A0A}
+    .card-head.route .dist-tag{background:rgba(11,45,92,.13);color:#0B2D5C}
+    .card-head.ultra .dist-tag{background:rgba(107,32,10,.13);color:#6B200A}
     /* Chevron */
-    .head-chev{display:flex;align-items:center;padding:0 10px;color:rgba(255,255,255,.4);font-size:13px;flex-shrink:0;transition:transform .25s}
+    .head-chev{display:flex;align-items:center;padding:0 10px;color:rgba(0,0,0,.30);font-size:13px;flex-shrink:0;transition:transform .25s}
     .head-chev.open{transform:rotate(180deg)}
     /* Barre statut D */
     .status-bar{padding:5px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-    .status-bar.c{background:rgba(159,225,203,.22);border-top:1px solid rgba(159,225,203,.28)}
-    .status-bar.i{background:rgba(250,199,117,.18);border-top:1px solid rgba(250,199,117,.25)}
-    .status-bar.none{background:rgba(255,255,255,.08);border-top:1px solid rgba(255,255,255,.12)}
+    .status-bar.c{background:rgba(16,120,80,.12);border-top:1px solid rgba(16,120,80,.18)}
+    .status-bar.i{background:rgba(180,120,0,.10);border-top:1px solid rgba(180,120,0,.15)}
+    .status-bar.none{background:rgba(0,0,0,.05);border-top:1px solid rgba(0,0,0,.08)}
     .status-bar-txt{font-size:11px;font-weight:600}
-    .status-bar-txt.c{color:#9FE1CB}
-    .status-bar-txt.i{color:#FAC775}
-    .status-bar-txt.none{color:rgba(255,255,255,.55);font-weight:400}
+    .status-bar-txt.c{color:#0A6B47}
+    .status-bar-txt.i{color:#8A6000}
+    .status-bar-txt.none{color:rgba(0,0,0,.38);font-weight:400}
     .status-bar-counts{display:flex;gap:8px;align-items:center}
-    .sbc-item{font-size:10px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:3px}
+    .sbc-item{font-size:10px;color:rgba(0,0,0,.40);display:flex;align-items:center;gap:3px}
     .sbc-val{font-size:12px;font-weight:700}
-    .sbc-val.green{color:#9FE1CB}
-    .sbc-val.amber{color:#FAC775}
+    .sbc-val.green{color:#0A6B47}
+    .sbc-val.amber{color:#8A6000}
     /* Zone déroulante */
     .card-expand{background:var(--bg);display:none;border-top:0.5px solid rgba(0,0,0,.06)}
     .card-expand.open{display:block}
@@ -312,7 +321,7 @@
     /* Bloc haut */
     .fv4-top-head{padding:10px 14px;display:flex;align-items:center;gap:8px;transition:background .2s}
     .fv4-top-head-icon{font-size:15px}
-    .fv4-top-head-title{font-size:11px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.07em}
+    .fv4-top-head-title{font-size:11px;font-weight:700;color:rgba(0,0,0,.65);text-transform:uppercase;letter-spacing:.07em}
     .fv4-top-body{background:var(--bg);display:flex;align-items:stretch}
     .fv4-top-left{flex:1;padding:14px;border-right:0.5px solid var(--border)}
     .fv4-top-right{width:90px;flex-shrink:0;padding:10px 10px;display:flex;flex-direction:column;gap:6px}
@@ -543,7 +552,7 @@
 
           <!-- BLOC HAUT : nom + type -->
           <div class="fv4-card">
-            <div class="fv4-top-head" id="fv4-head" style="background:linear-gradient(90deg,#1a3a1a,#2d5a2d)">
+            <div class="fv4-top-head" id="fv4-head" style="background:linear-gradient(90deg,#D6EFC7,#C0E3A5)">
               <span class="fv4-top-head-icon">🏁</span>
               <span class="fv4-top-head-title">Nouvelle course</span>
             </div>
@@ -1067,8 +1076,12 @@ function resetDistTags(){formDistances=[];renderDistTags();}
 function setUrl(u){document.getElementById('f-url').value=u;}
 function setUrlResults(u){document.getElementById('f-url-results').value=u;}
 function setFv4Type(type){
-  const colors={Trail:'linear-gradient(90deg,#1a3a1a,#2d5a2d)',Route:'linear-gradient(90deg,#0d2a4a,#1a4a7a)',Ultra:'linear-gradient(90deg,#3a0d0d,#6a1a1a)'};
-  document.getElementById('fv4-head').style.background=colors[type];
+  const colors={Trail:'linear-gradient(90deg,#D6EFC7,#C0E3A5)',Route:'linear-gradient(90deg,#C8DEFA,#B0CFF7)',Ultra:'linear-gradient(90deg,#FAD9C8,#F5C4AE)'};
+  const textColors={Trail:'#1E4A0A',Route:'#0B2D5C',Ultra:'#6B200A'};
+  const head=document.getElementById('fv4-head');
+  head.style.background=colors[type];
+  const title=head.querySelector('.fv4-top-head-title');
+  if(title)title.style.color=textColors[type];
   document.getElementById('f-type').value=type;
   ['Trail','Route','Ultra'].forEach(t=>{
     const btn=document.getElementById('fv4-'+t.toLowerCase());
