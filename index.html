@@ -403,6 +403,10 @@
     .dist-choice-list{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
     .dist-choice-btn{font-size:13px;padding:8px 14px;border-radius:99px;border:1.5px solid var(--border);cursor:pointer;background:none;color:var(--text2)}
     .dist-choice-btn.sel{border-color:#1A5FA8;background:#E6F1FB;color:#1A5FA8;font-weight:500}
+    .role-choice-btn{font-size:12px;font-weight:600;padding:8px 14px;border-radius:99px;border:1.5px solid var(--border);cursor:pointer;background:none;color:var(--text2);transition:all 0.15s}
+    .role-choice-btn.sel{border-color:#185FA5;background:#E6F1FB;color:#185FA5}
+    .rl-badge-benevole{font-size:9px;font-weight:700;padding:2px 6px;border-radius:99px;background:#F4C0D1;color:#72243E}
+    .rl-badge-les_deux{font-size:9px;font-weight:700;padding:2px 6px;border-radius:99px;background:#C0DD97;color:#27500A}
 
     /* Participants modal */
     .part-section-title{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);padding:14px 0 8px}
@@ -722,6 +726,15 @@
       <button class="choice-btn" id="btn-c" onclick="selectStatus('confirmed')"><span style="font-size:16px">✓</span>Inscrit(e)</button>
     </div>
     <p class="modal-hint">Intéressé = je pense y aller · Inscrit = dossard confirmé</p>
+    <!-- Sélecteur de rôle (visible seulement si Inscrit) -->
+    <div id="modal-role-section" style="display:none;margin-bottom:14px">
+      <div class="dist-choice-label" style="margin-bottom:8px">Quel est ton rôle ?</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="role-choice-btn" id="role-coureur" onclick="selectRole('coureur')">🏃 Coureur</button>
+        <button class="role-choice-btn" id="role-benevole" onclick="selectRole('benevole')">🙋 Bénévole</button>
+        <button class="role-choice-btn" id="role-les_deux" onclick="selectRole('les_deux')">🏃+🙋 Les deux</button>
+      </div>
+    </div>
     <div id="modal-dist-section" style="display:none;margin-bottom:16px">
       <div class="dist-choice-label">Sur quelle distance ?</div>
       <div class="dist-choice-list" id="modal-dist-list"></div>
@@ -763,7 +776,7 @@ const PLATFORMS=[{label:'Protiming',domain:'protiming.fr'},{label:'Finishers',do
 
 let members=[],races=[],participations=[];
 let currentUserId=localStorage.getItem('cr_uid')||null;
-let modalRaceId=null,modalStatus=null,modalDistSelected=null;
+let modalRaceId=null,modalStatus=null,modalDistSelected=null,modalRole='coureur';
 let formDistances=[]; // distances en cours de saisie
 
 function ci(name){let h=0;for(let c of name)h=(h*31+c.charCodeAt(0))%COLORS.length;return h;}
@@ -1616,10 +1629,18 @@ function _openParticipationModal(raceId){
   const myPart=participations.find(p=>p.membre_id===currentUserId&&p.course_id===raceId);
   modalStatus=myPart?.statut||null;
   modalDistSelected=myPart?.distance||null;
+  modalRole=myPart?.role_course||'coureur';
   document.getElementById('modal-race-name').textContent=r.nom;
   document.getElementById('modal-race-sub').textContent=`${r.type} · ${dateStr(r.date_course)}`;
   document.getElementById('btn-i').className='choice-btn'+(modalStatus==='interested'?' sel-i':'');
   document.getElementById('btn-c').className='choice-btn'+(modalStatus==='confirmed'?' sel-c':'');
+  // Init section rôle
+  const roleSection=document.getElementById('modal-role-section');
+  roleSection.style.display=modalStatus==='confirmed'?'block':'none';
+  ['coureur','benevole','les_deux'].forEach(r2=>{
+    const b=document.getElementById('role-'+r2);
+    if(b) b.className='role-choice-btn'+(modalRole===r2?' sel':'');
+  });
   // Distances
   const dists=parseDists(r.distances||r.distance);
   const distSection=document.getElementById('modal-dist-section');
@@ -1657,6 +1678,16 @@ function selectStatus(s){
   modalStatus=s;
   document.getElementById('btn-i').className='choice-btn'+(s==='interested'?' sel-i':'');
   document.getElementById('btn-c').className='choice-btn'+(s==='confirmed'?' sel-c':'');
+  // Afficher section rôle uniquement si Inscrit
+  document.getElementById('modal-role-section').style.display=s==='confirmed'?'block':'none';
+}
+
+function selectRole(r){
+  modalRole=r;
+  ['coureur','benevole','les_deux'].forEach(r2=>{
+    const b=document.getElementById('role-'+r2);
+    if(b) b.className='role-choice-btn'+(r===r2?' sel':'');
+  });
 }
 
 async function saveStatus(){
@@ -1672,11 +1703,17 @@ async function saveStatus(){
     const existing=participations.find(p=>p.membre_id===currentUserId&&p.course_id===modalRaceId);
     const payload={...(existing?{id:existing.id}:{}),membre_id:currentUserId,course_id:modalRaceId,statut:modalStatus};
     if(modalDistSelected)payload.distance=modalDistSelected;
+    if(modalStatus==='confirmed')payload.role_course=modalRole;
     const{error}=await db.from('participations').upsert(payload,{onConflict:'membre_id,course_id'});
     if(error){document.getElementById('btn-save-status').disabled=false;setSyncing('error');showToast('⚠️ Erreur');return;}
   }
   document.getElementById('btn-save-status').disabled=false;
-  setSyncing('ok');showToast('Enregistré ✓');
+  setSyncing('ok');
+  if(modalStatus==='confirmed'&&(modalRole==='benevole'||modalRole==='les_deux')){
+    showToast('🙏 Merci pour ton engagement bénévole ! La course ne serait rien sans toi 💚');
+  } else {
+    showToast('Enregistré ✓');
+  }
   await loadAll();closeModal('modal-part');
 }
 async function removeStatus(){
