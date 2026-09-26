@@ -2034,16 +2034,19 @@ function getSaisonData(){
   if(month>=8){saisonStart=new Date(year,8,1);saisonEnd=new Date(year+1,7,31);saisonLabel=year+' — '+(year+1);}
   else{saisonStart=new Date(year-1,8,1);saisonEnd=new Date(year,7,31);saisonLabel=(year-1)+' — '+year;}
   const pastRaces=races.filter(r=>{if(!r.date_course)return false;const d=new Date(r.date_course);return d>=saisonStart&&d<=saisonEnd&&d<today;}).sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
-  const stats={saisonLabel,totalCourses:pastRaces.length,totalInscrits:0,totalChronos:0,totalMembers:members.length,courses:[],palmares:[],bestByDist:{},sortiesByDist:{}};
+  const stats={saisonLabel,totalCourses:pastRaces.length,totalInscrits:0,totalChronos:0,totalBenev:0,totalMembers:members.length,courses:[],palmares:[],bestByDist:{},sortiesByDist:{}};
   pastRaces.forEach(r=>{
     const rParts=participations.filter(p=>p.course_id===r.id);
     const conf=rParts.filter(p=>p.statut==='confirmed');
     const inter=rParts.filter(p=>p.statut==='interested');
+    const benevParts=conf.filter(p=>p.role_course==='benevole'||p.role_course==='les_deux');
+    const coureurParts=conf.filter(p=>!p.role_course||p.role_course==='coureur'||p.role_course==='les_deux');
     const dists=parseDists(r.distances||r.distance);
-    stats.totalInscrits+=conf.length;
-    // Grouper par distance
+    stats.totalInscrits+=coureurParts.length;
+    stats.totalBenev+=benevParts.filter(p=>p.role_course==='benevole').length; // les_deux compté une seule fois
+    // Grouper coureurs par distance
     const distGroups={};
-    conf.forEach(p=>{const k=p.distance?String(p.distance):'0';if(!distGroups[k])distGroups[k]=[];distGroups[k].push(p);});
+    coureurParts.forEach(p=>{const k=p.distance?String(p.distance):'0';if(!distGroups[k])distGroups[k]=[];distGroups[k].push(p);});
     // Chronos par distance
     const distChronos=[];
     Object.entries(distGroups).sort((a,b)=>Number(a[0])-Number(b[0])).forEach(([dist,parts])=>{
@@ -2051,13 +2054,9 @@ function getSaisonData(){
       const noChronos=parts.filter(p=>!p.chrono);
       stats.totalChronos+=sorted.length;
       distChronos.push({dist,sorted:sorted.map(p=>({nom:members.find(x=>x.id===p.membre_id)?.nom||'?',chrono:p.chrono})),noChronos:noChronos.map(p=>({nom:members.find(x=>x.id===p.membre_id)?.nom||'?'}))});
-      // Meilleurs chronos par distance (toute la saison)
       if(dist!=='0'){
         if(!stats.bestByDist[dist])stats.bestByDist[dist]=[];
         sorted.forEach(p=>stats.bestByDist[dist].push({nom:members.find(x=>x.id===p.membre_id)?.nom||'?',chrono:p.chrono,course:r.nom,date:r.date_course}));
-      }
-      // Sorties par distance
-      if(dist!=='0'){
         if(!stats.sortiesByDist[dist])stats.sortiesByDist[dist]={courses:0,coureurs:0,chronos:0,types:new Set()};
         stats.sortiesByDist[dist].courses++;
         stats.sortiesByDist[dist].coureurs+=parts.length;
@@ -2065,34 +2064,43 @@ function getSaisonData(){
         stats.sortiesByDist[dist].types.add(r.type);
       }
     });
-    // Distance 0 = pas de distance renseignée
     if(distGroups['0']){
       distChronos.push({dist:'0',sorted:distGroups['0'].filter(p=>p.chrono).sort((a,b)=>a.chrono.localeCompare(b.chrono)).map(p=>({nom:members.find(x=>x.id===p.membre_id)?.nom||'?',chrono:p.chrono})),noChronos:distGroups['0'].filter(p=>!p.chrono).map(p=>({nom:members.find(x=>x.id===p.membre_id)?.nom||'?'}))});
     }
-    stats.courses.push({nom:r.nom,date:r.date_course,type:r.type,distances:dists,inscrits:conf.length,interesses:inter.length,distChronos});
+    const benevNames=benevParts.map(p=>members.find(x=>x.id===p.membre_id)?.nom||'?');
+    stats.courses.push({nom:r.nom,date:r.date_course,type:r.type,distances:dists,inscrits:coureurParts.length,interesses:inter.length,benevoles:benevNames,distChronos});
   });
-  // Trier meilleurs chronos par dist
   Object.keys(stats.bestByDist).forEach(d=>{stats.bestByDist[d].sort((a,b)=>a.chrono.localeCompare(b.chrono));});
-  // Palmarès membres
+  // Palmarès membres (séparé coureurs / bénévoles)
   const memberStats={};
-  members.forEach(m=>{memberStats[m.id]={nom:m.nom,role:m.role||'Coureur',courses:0,chronos:[],dists:new Set()};});
+  members.forEach(m=>{memberStats[m.id]={nom:m.nom,role:m.role||'Coureur',courses:0,benevoles:0,chronos:[],dists:new Set()};});
   pastRaces.forEach(r=>{
     const rParts=participations.filter(p=>p.course_id===r.id&&p.statut==='confirmed');
-    rParts.forEach(p=>{if(memberStats[p.membre_id]){memberStats[p.membre_id].courses++;if(p.chrono)memberStats[p.membre_id].chronos.push({course:r.nom,chrono:p.chrono});if(p.distance)memberStats[p.membre_id].dists.add(p.distance);}});
+    rParts.forEach(p=>{
+      if(!memberStats[p.membre_id])return;
+      const ms=memberStats[p.membre_id];
+      const isBenev=p.role_course==='benevole';
+      const isBoth=p.role_course==='les_deux';
+      const isCoureur=!p.role_course||p.role_course==='coureur';
+      if(isBenev){ms.benevoles++;}
+      else{ms.courses++;if(p.chrono)ms.chronos.push({course:r.nom,chrono:p.chrono,dist:p.distance});if(p.distance)ms.dists.add(p.distance);}
+      if(isBoth){ms.benevoles++;ms.courses++;if(p.chrono)ms.chronos.push({course:r.nom,chrono:p.chrono,dist:p.distance});if(p.distance)ms.dists.add(p.distance);}
+    });
   });
-  stats.palmares=Object.values(memberStats).filter(m=>m.courses>0).sort((a,b)=>b.courses-a.courses||a.nom.localeCompare(b.nom,'fr'));
+  stats.palmares=Object.values(memberStats).filter(m=>m.courses>0||m.benevoles>0).sort((a,b)=>(b.courses+b.benevoles)-(a.courses+a.benevoles)||a.nom.localeCompare(b.nom,'fr'));
   return stats;
 }
 
 function openBilanModal(){
   const s=getSaisonData();
   document.getElementById('bilan-preview').innerHTML=`
-    <div style="font-weight:600;color:var(--text);margin-bottom:8px">Saison ${s.saisonLabel}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
-      <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:#C0001A">${s.totalCourses}</div><div style="font-size:10px;color:var(--text3)">courses</div></div>
-      <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:#1D9E75">${s.totalInscrits}</div><div style="font-size:10px;color:var(--text3)">inscrits</div></div>
-      <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:#185FA5">${s.totalChronos}</div><div style="font-size:10px;color:var(--text3)">chronos</div></div>
-      <div style="text-align:center"><div style="font-size:20px;font-weight:700;color:#EF9F27">${s.palmares.length}</div><div style="font-size:10px;color:var(--text3)">actifs</div></div>
+    <div style="font-weight:700;color:var(--text);margin-bottom:10px;font-size:13px">Saison ${s.saisonLabel}</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+      <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#C0001A;line-height:1">${s.totalCourses}</div><div style="font-size:10px;color:var(--text3);margin-top:3px">courses</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#1D9E75;line-height:1">${s.totalInscrits}</div><div style="font-size:10px;color:var(--text3);margin-top:3px">inscrits</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#7C3AED;line-height:1">${s.totalBenev}</div><div style="font-size:10px;color:var(--text3);margin-top:3px">bénévoles</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#185FA5;line-height:1">${s.totalChronos}</div><div style="font-size:10px;color:var(--text3);margin-top:3px">chronos</div></div>
+      <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#EF9F27;line-height:1">${s.palmares.length}</div><div style="font-size:10px;color:var(--text3);margin-top:3px">actifs</div></div>
     </div>
   `;
   document.getElementById('modal-bilan').classList.add('open');
@@ -2102,92 +2110,152 @@ function genererBilan(){
   const s=getSaisonData();
   const now=new Date().toLocaleDateString('fr-FR');
   const medals=['🥇','🥈','🥉'];
-  const typeColor={Trail:'linear-gradient(90deg,#1a3a1a,#2d5a2d)',Route:'linear-gradient(90deg,#0d2a4a,#1a4a7a)',Ultra:'linear-gradient(90deg,#3a0d0d,#6a1a1a)'};
+  const typeColor={Trail:'#2d5a2d',Route:'#1a4a7a',Ultra:'#6a1a1a'};
+  const typeBg={Trail:'linear-gradient(135deg,#1a3a1a 0%,#2d5a2d 100%)',Route:'linear-gradient(135deg,#0d2a4a 0%,#1a4a7a 100%)',Ultra:'linear-gradient(135deg,#3a0d0d 0%,#6a1a1a 100%)'};
   const typeBadge={Trail:'background:#EAF3DE;color:#3B6D11;border:.5px solid #9FE1CB',Route:'background:#E6F1FB;color:#185FA5;border:.5px solid #B5D4F4',Ultra:'background:#FAECE7;color:#993C1D;border:.5px solid #F09595'};
 
-  const css=`*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:11pt;color:#1a1a18;padding:24px;background:#fff;max-width:900px;margin:0 auto}.np{margin-bottom:16px;display:flex;gap:10px}@media print{.np{display:none}}.rh{border-bottom:3px solid #C0001A;padding-bottom:14px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end}.rt{font-size:22pt;font-weight:900;color:#C0001A}.rs{font-size:10pt;color:#6b6b67;margin-top:4px}.rl{font-size:13pt;font-weight:700;text-align:right}.rd{font-size:9pt;color:#9e9e99;text-align:right;margin-top:3px}.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}.sb{border:1.5px solid #e0e0de;border-radius:8px;padding:12px;text-align:center}.sv{font-size:28pt;font-weight:900;line-height:1}.sl{font-size:9pt;color:#6b6b67;margin-top:4px}h2{font-size:13pt;font-weight:800;color:#1a1a18;margin:24px 0 10px;padding:8px 12px;background:#f0f0ec;border-left:4px solid #C0001A}.cb{margin-bottom:16px;border:1px solid #e0e0de;border-radius:8px;overflow:hidden}.ch{color:#fff;padding:8px 12px;display:flex;justify-content:space-between;align-items:center}.chn{font-size:10pt;font-weight:700}.chm{font-size:9pt;color:rgba(255,255,255,.65)}.ds{border-bottom:1px solid #f0f0ec}.dl{font-size:9pt;font-weight:700;color:#6b6b67;padding:6px 12px;background:#f8f8f6;border-bottom:1px solid #efefec;text-transform:uppercase;letter-spacing:.06em}.cr{display:flex;align-items:center;gap:8px;padding:5px 12px;border-bottom:1px solid #f5f5f3;font-size:10pt}.cr:last-child{border-bottom:none}.ck{font-size:12pt;min-width:26px}.cn{flex:1}.ct{font-weight:700;color:#185FA5;background:#E6F1FB;border:.5px solid #B5D4F4;border-radius:4px;padding:2px 8px}.cz{color:#9e9e99;font-style:italic;font-size:9pt}.nd{color:#9e9e99;font-style:italic;padding:8px 12px;font-size:9pt}.bg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}.bc{border:1.5px solid #e0e0de;border-radius:8px;overflow:hidden}.bch{padding:7px 12px;background:#185FA5;color:#fff;font-weight:700;font-size:10pt;display:flex;justify-content:space-between}.bcd{font-size:12pt;font-weight:900}.br{display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid #f5f5f3;font-size:10pt}.br:last-child{border-bottom:none}.bm{font-size:13pt;min-width:22px}.bn{flex:1}.bt{font-weight:700;color:#185FA5}.bs{font-size:8pt;color:#9e9e99}.st{width:100%;border-collapse:collapse;margin-bottom:10px}.st th{background:#1a1a18;color:#fff;padding:7px 10px;text-align:left;font-size:9pt}.st td{padding:6px 10px;border-bottom:1px solid #e0e0de;font-size:10pt}.st tr:nth-child(even) td{background:#f8f8f6}.sd{font-weight:700;font-size:11pt}.sw{width:100px}.sb2{height:6px;background:#E6F1FB;border-radius:99px;overflow:hidden}.sf{height:100%;background:#185FA5;border-radius:99px}.pt{width:100%;border-collapse:collapse}.pt th{background:#1a1a18;color:#fff;padding:7px 10px;text-align:left;font-size:9pt}.pt td{padding:6px 10px;border-bottom:1px solid #e0e0de;font-size:10pt;vertical-align:top}.pt tr:nth-child(even) td{background:#f8f8f6}.pm{font-size:13pt}.ft{margin-top:28px;padding-top:10px;border-top:1px solid #e0e0de;font-size:8pt;color:#9e9e99;display:flex;justify-content:space-between}`;
+  const css=`*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11pt;color:#1a1a18;background:#f6f6f3;padding:0}
+.wrap{max-width:940px;margin:0 auto;padding:20px 24px 40px}
+.np{margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap}@media print{.np{display:none}body{background:#fff}.wrap{padding:16px}}
+.rh{background:linear-gradient(135deg,#C0001A 0%,#8B0013 100%);color:#fff;border-radius:12px;padding:22px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.rh-l{display:flex;align-items:center;gap:16px}.rt{font-size:20pt;font-weight:900;letter-spacing:-.5px}.rs{font-size:9.5pt;opacity:.8;margin-top:4px}.rh-r{text-align:right;flex-shrink:0}.rl{font-size:14pt;font-weight:800;background:rgba(255,255,255,.18);border-radius:8px;padding:4px 12px}.rd{font-size:8.5pt;opacity:.7;margin-top:5px}
+.sg{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px}
+.sb{background:#fff;border:1.5px solid #e5e5e0;border-radius:10px;padding:14px 10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04)}.sv{font-size:24pt;font-weight:900;line-height:1.1}.sl{font-size:8.5pt;color:#6b6b67;margin-top:5px;font-weight:500}
+h2{font-size:12pt;font-weight:800;color:#1a1a18;margin:24px 0 12px;display:flex;align-items:center;gap:8px;padding:9px 14px;background:#fff;border-radius:8px;border-left:4px solid #C0001A;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.cb{margin-bottom:14px;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.ch{color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.chn{font-size:10.5pt;font-weight:800}.chm{font-size:8.5pt;opacity:.75;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ch-tag{background:rgba(255,255,255,.18);border-radius:20px;padding:2px 8px;font-size:8pt}
+.ch-benev{background:rgba(180,140,255,.35);border-radius:20px;padding:2px 8px;font-size:8pt}
+.ds{background:#fff;border-top:1px solid rgba(0,0,0,.08)}
+.dl{font-size:8.5pt;font-weight:700;color:#6b6b67;padding:6px 14px;background:#f8f8f5;border-bottom:1px solid #efefec;text-transform:uppercase;letter-spacing:.06em}
+.cr{display:flex;align-items:center;gap:10px;padding:6px 14px;border-bottom:1px solid #f5f5f3;font-size:10pt;transition:background .1s}.cr:last-child{border-bottom:none}
+.cr-top{background:#fffbf0}.ck{font-size:12pt;min-width:26px;text-align:center}.cn{flex:1;font-weight:500}.ct{font-weight:800;color:#185FA5;background:#EDF4FD;border:.5px solid #B5D4F4;border-radius:5px;padding:2px 9px;font-size:9.5pt}.cz{color:#b0b0a8;font-style:italic;font-size:9pt}
+.nd{color:#b0b0a8;font-style:italic;padding:9px 14px;font-size:9pt}
+.benev-row{background:#f5f0ff;display:flex;align-items:center;gap:8px;padding:6px 14px;border-top:1px solid #e5daff}
+.benev-tag{font-size:8pt;color:#7C3AED;background:#EDE9FE;border:.5px solid #C4B5FD;border-radius:20px;padding:2px 8px;font-weight:600}
+.bg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.bc{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.bch{padding:8px 14px;color:#fff;font-weight:800;font-size:10pt;display:flex;justify-content:space-between;align-items:center;background:#185FA5}
+.bcd{font-size:10pt;opacity:.8}
+.br{display:flex;align-items:center;gap:10px;padding:6px 12px;border-bottom:1px solid #f5f5f3;font-size:10pt}.br:last-child{border-bottom:none}
+.bm{font-size:13pt;min-width:24px;text-align:center}.bn{flex:1;font-weight:500}.bt{font-weight:800;color:#185FA5;font-size:9.5pt}.bs{font-size:8pt;color:#9e9e99;margin-top:1px}
+.st{width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.st th{background:#1a1a18;color:#fff;padding:8px 12px;text-align:left;font-size:9pt;font-weight:700}
+.st td{padding:7px 12px;border-bottom:1px solid #eeeee9;font-size:10pt;background:#fff}
+.st tr:last-child td{border-bottom:none}.st tr:nth-child(even) td{background:#f9f9f6}
+.sd{font-weight:800;font-size:11pt}.sw{width:90px}.sb2{height:5px;background:#E6F1FB;border-radius:99px;overflow:hidden;margin-top:2px}.sf{height:100%;background:#185FA5;border-radius:99px}
+.pt{width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.pt th{background:#1a1a18;color:#fff;padding:8px 12px;text-align:left;font-size:9pt;font-weight:700}
+.pt td{padding:7px 12px;border-bottom:1px solid #eeeee9;font-size:10pt;vertical-align:middle;background:#fff}
+.pt tr:last-child td{border-bottom:none}.pt tr:nth-child(even) td{background:#f9f9f6}
+.pt tr:first-child td{background:#fffbf0;font-weight:700}.pt tr:nth-child(2) td{background:#fffcf2}.pt tr:nth-child(3) td{background:#fffdf5}
+.pm{font-size:14pt}.pav{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-size:9pt;font-weight:800;flex-shrink:0}
+.pav-c{background:#D6F2E6;color:#085041}.pav-b{background:#EDE9FE;color:#7C3AED}
+.chrono-list{font-size:8.5pt;color:#6b6b67;margin-top:2px}.dist-tags{display:flex;gap:4px;flex-wrap:wrap}
+.dt{font-size:8pt;background:#f0f0ec;color:#6b6b67;border-radius:20px;padding:1px 7px}
+.bev-count{font-size:8.5pt;color:#7C3AED;background:#EDE9FE;border-radius:20px;padding:1px 8px;font-weight:600;display:inline-block}
+.ft{margin-top:28px;padding-top:12px;border-top:1px solid #e0e0de;font-size:8pt;color:#9e9e99;display:flex;justify-content:space-between}
+`;
 
   var b='';
-  // Boutons d'action
-  b+='<div class="np"><button onclick="window.print()" style="padding:7px 14px;background:#C0001A;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:11pt">🖨 Imprimer / PDF</button><button onclick="window.close()" style="padding:7px 14px;background:#f5f5f3;border:1px solid #ccc;border-radius:6px;cursor:pointer;font-size:11pt">✕ Fermer</button></div>';
+  b+='<div class="wrap">';
+  // Boutons
+  b+='<div class="np"><button onclick="window.print()" style="padding:8px 16px;background:#C0001A;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:10.5pt;font-weight:700;font-family:inherit">🖨 Imprimer / PDF</button><button onclick="window.close()" style="padding:8px 14px;background:#fff;border:1.5px solid #ddd;border-radius:8px;cursor:pointer;font-size:10.5pt;font-family:inherit;color:#444">✕ Fermer</button></div>';
   // En-tête
-  b+='<div class="rh"><div><div class="rt">🍓 La Fraise Athlétique du Taillan</div><div class="rs">Bilan de saison · Rapport officiel du club</div></div><div><div class="rl">Saison '+s.saisonLabel+'</div><div class="rd">Généré le '+now+'</div></div></div>';
+  b+='<div class="rh"><div class="rh-l"><div style="font-size:28pt;line-height:1">🍓</div><div><div class="rt">La Fraise Athlétique du Taillan</div><div class="rs">Bilan de saison — Rapport officiel du club</div></div></div><div class="rh-r"><div class="rl">Saison '+s.saisonLabel+'</div><div class="rd">Généré le '+now+'</div></div></div>';
   // Stats globales
   b+='<div class="sg">';
-  b+='<div class="sb"><div class="sv" style="color:#C0001A">'+s.totalCourses+'</div><div class="sl">Courses réalisées</div></div>';
-  b+='<div class="sb"><div class="sv" style="color:#1D9E75">'+s.totalInscrits+'</div><div class="sl">Inscriptions</div></div>';
-  b+='<div class="sb"><div class="sv" style="color:#185FA5">'+s.totalChronos+'</div><div class="sl">Chronos enregistrés</div></div>';
+  b+='<div class="sb"><div class="sv" style="color:#C0001A">'+s.totalCourses+'</div><div class="sl">Courses</div></div>';
+  b+='<div class="sb"><div class="sv" style="color:#1D9E75">'+s.totalInscrits+'</div><div class="sl">Inscriptions coureur</div></div>';
+  b+=(s.totalBenev>0?'<div class="sb"><div class="sv" style="color:#7C3AED">'+s.totalBenev+'</div><div class="sl">Bénévolats</div></div>':'<div class="sb"><div class="sv" style="color:#7C3AED">—</div><div class="sl">Bénévolats</div></div>');
+  b+='<div class="sb"><div class="sv" style="color:#185FA5">'+s.totalChronos+'</div><div class="sl">Chronos</div></div>';
   b+='<div class="sb"><div class="sv" style="color:#EF9F27">'+s.palmares.length+'</div><div class="sl">Membres actifs</div></div>';
   b+='</div>';
 
-  // Section 1 : Chronos par course
-  b+='<h2>📅 Chronos par course et par distance</h2>';
-  if(s.courses.length===0){b+='<p style="color:#9e9e99;font-style:italic">Aucune course cette saison.</p>';}
+  // Section 1 : Résultats par course
+  b+='<h2><span>📅</span> Résultats par course</h2>';
+  if(s.courses.length===0){b+='<p style="color:#9e9e99;font-style:italic;background:#fff;padding:12px 14px;border-radius:8px">Aucune course cette saison.</p>';}
   else{
     s.courses.forEach(c=>{
-      const bgStyle=typeColor[c.type]||'background:#1a1a18';
-      b+='<div class="cb"><div class="ch" style="background:'+bgStyle+'"><span class="chn">'+c.nom+'</span><span class="chm">'+dateStr(c.date)+' · '+c.type+' · '+c.inscrits+' inscrit'+(c.inscrits>1?'s':'')+' · '+c.interesses+' intéressé'+(c.interesses>1?'s':'')+'</span></div>';
-      if(c.distChronos.length===0){b+='<div class="nd">Aucun participant enregistré</div>';}
+      const bg=typeBg[c.type]||'linear-gradient(135deg,#2a2a2a,#1a1a18)';
+      const benev=c.benevoles.length;
+      b+='<div class="cb"><div class="ch" style="background:'+bg+'"><div><div class="chn">'+c.nom+'</div><div class="chm"><span class="ch-tag">📅 '+dateStr(c.date)+'</span><span class="ch-tag">'+c.type+'</span><span class="ch-tag">🟢 '+c.inscrits+' inscrit'+(c.inscrits!==1?'s':'')+'</span><span class="ch-tag">⭐ '+c.interesses+' intéressé'+(c.interesses!==1?'s':'')+'</span>'+(benev>0?'<span class="ch-benev">🙋 '+benev+' bénévole'+(benev!==1?'s':'')+'</span>':'')+'</div></div></div>';
+      if(c.distChronos.length===0&&benev===0){b+='<div class="nd">Aucun participant enregistré</div>';}
       c.distChronos.forEach(dg=>{
         const distLabel=dg.dist==='0'?'Distance non renseignée':dg.dist+' km';
         const total=dg.sorted.length+dg.noChronos.length;
-        b+='<div class="ds"><div class="dl">'+distLabel+' — '+total+' coureur'+(total>1?'s':'')+'</div>';
-        dg.sorted.forEach((p,i)=>{b+='<div class="cr"><span class="ck">'+(i<3?medals[i]:'<span style="color:#9e9e99;font-size:10pt">'+(i+1)+'</span>')+'</span><span class="cn">'+p.nom+'</span><span class="ct">'+p.chrono+'</span></div>';});
+        b+='<div class="ds"><div class="dl">'+distLabel+' — '+total+' coureur'+(total!==1?'s':'')+'</div>';
+        dg.sorted.forEach((p,i)=>{b+='<div class="cr'+(i<3?' cr-top':'')+'"><span class="ck">'+(i<3?medals[i]:'<span style="color:#b0b0a8;font-size:10pt">'+(i+1)+'</span>')+'</span><span class="cn">'+p.nom+'</span><span class="ct">'+p.chrono+'</span></div>';});
         dg.noChronos.forEach(p=>{b+='<div class="cr"><span class="ck">—</span><span class="cn">'+p.nom+'</span><span class="cz">pas de chrono</span></div>';});
         b+='</div>';
       });
+      if(benev>0){b+='<div class="benev-row"><span class="benev-tag">🙋 Bénévoles</span>'+c.benevoles.map(n=>'<span style="font-size:9.5pt;color:#5B21B6;font-weight:500">'+n+'</span>').join('<span style="color:#C4B5FD;margin:0 4px">·</span>')+'</div>';}
       b+='</div>';
     });
   }
 
   // Section 2 : Meilleurs chronos par distance
-  b+='<h2>🏅 Meilleurs chronos par distance (saison)</h2>';
+  b+='<h2><span>🏅</span> Meilleurs chronos de la saison par distance</h2>';
   const distKeys=Object.keys(s.bestByDist).sort((a,b)=>Number(a)-Number(b));
-  if(distKeys.length===0){b+='<p style="color:#9e9e99;font-style:italic">Aucun chrono enregistré.</p>';}
+  if(distKeys.length===0){b+='<p style="color:#9e9e99;font-style:italic;background:#fff;padding:12px 14px;border-radius:8px">Aucun chrono enregistré.</p>';}
   else{
     b+='<div class="bg">';
     distKeys.forEach(dist=>{
-      const top=s.bestByDist[dist].slice(0,3);
-      b+='<div class="bc"><div class="bch"><span>'+dist+' km</span><span class="bcd">🏃</span></div>';
-      top.forEach((p,i)=>{b+='<div class="br"><span class="bm">'+medals[i]+'</span><div><div class="bn">'+p.nom+'</div><div class="bs">'+p.course+' · '+dateStr(p.date)+'</div></div><span class="bt">'+p.chrono+'</span></div>';});
+      const all=s.bestByDist[dist];
+      const top=all.slice(0,5);
+      b+='<div class="bc"><div class="bch"><span>🏃 '+dist+' km</span><span class="bcd">'+all.length+' chrono'+(all.length!==1?'s':'')+'</span></div>';
+      top.forEach((p,i)=>{b+='<div class="br"><span class="bm">'+(i<3?medals[i]:'<span style="color:#b0b0a8;font-size:9pt">'+(i+1)+'</span>')+'</span><div style="flex:1"><div class="bn">'+p.nom+'</div><div class="bs">'+p.course+' · '+dateStr(p.date)+'</div></div><span class="bt">'+p.chrono+'</span></div>';});
       b+='</div>';
     });
     b+='</div>';
   }
 
   // Section 3 : Sorties par distance
-  b+='<h2>📏 Sorties réalisées par distance</h2>';
+  b+='<h2><span>📏</span> Sorties par distance</h2>';
   const sortieKeys=Object.keys(s.sortiesByDist).sort((a,b)=>Number(a)-Number(b));
-  if(sortieKeys.length===0){b+='<p style="color:#9e9e99;font-style:italic">Aucune sortie enregistrée.</p>';}
+  if(sortieKeys.length===0){b+='<p style="color:#9e9e99;font-style:italic;background:#fff;padding:12px 14px;border-radius:8px">Aucune sortie enregistrée.</p>';}
   else{
     const maxCoureurs=Math.max(...sortieKeys.map(d=>s.sortiesByDist[d].coureurs));
-    b+='<table class="st"><tr><th>Distance</th><th>Types</th><th>Nb sorties</th><th>Nb coureurs</th><th>Avec chrono</th><th>Progression</th></tr>';
+    b+='<table class="st"><tr><th>Distance</th><th>Types</th><th>Sorties</th><th>Coureurs</th><th>Chronos</th><th>Taux chrono</th><th style="width:110px">Popularité</th></tr>';
     sortieKeys.forEach(dist=>{
       const sd=s.sortiesByDist[dist];
-      const types=[...sd.types].map(t=>'<span style="font-size:8pt;padding:1px 6px;border-radius:99px;margin-right:3px;'+typeBadge[t]+'">'+t+'</span>').join('');
+      const types=[...sd.types].map(t=>'<span style="font-size:8pt;padding:2px 7px;border-radius:20px;margin-right:3px;'+typeBadge[t]+'">'+t+'</span>').join('');
       const pct=Math.round(sd.coureurs/maxCoureurs*100);
-      b+='<tr><td><span class="sd">'+dist+' km</span></td><td>'+types+'</td><td style="text-align:center">'+sd.courses+'</td><td style="text-align:center;font-weight:600;color:#1D9E75">'+sd.coureurs+'</td><td style="text-align:center;color:#185FA5">'+sd.chronos+'</td><td><div class="sw"><div class="sb2"><div class="sf" style="width:'+pct+'%"></div></div></div></td></tr>';
+      const tauxChrono=sd.coureurs>0?Math.round(sd.chronos/sd.coureurs*100):0;
+      b+='<tr><td><span class="sd">'+dist+' km</span></td><td>'+types+'</td><td style="text-align:center;font-weight:700">'+sd.courses+'</td><td style="text-align:center;font-weight:700;color:#1D9E75">'+sd.coureurs+'</td><td style="text-align:center;color:#185FA5;font-weight:700">'+sd.chronos+'</td><td style="text-align:center;font-size:9pt;color:#6b6b67">'+tauxChrono+'%</td><td><div class="sw"><div style="font-size:8pt;color:#9e9e99;margin-bottom:2px">'+sd.coureurs+' / '+maxCoureurs+'</div><div class="sb2"><div class="sf" style="width:'+pct+'%"></div></div></div></td></tr>';
     });
     b+='</table>';
   }
 
   // Section 4 : Palmarès membres
-  b+='<h2>👥 Palmarès des membres</h2>';
-  if(s.palmares.length===0){b+='<p style="color:#9e9e99;font-style:italic">Aucun coureur actif.</p>';}
+  b+='<h2><span>👥</span> Palmarès des membres</h2>';
+  if(s.palmares.length===0){b+='<p style="color:#9e9e99;font-style:italic;background:#fff;padding:12px 14px;border-radius:8px">Aucun membre actif.</p>';}
   else{
-    b+='<table class="pt"><tr><th>#</th><th>Membre</th><th>Rôle</th><th>Sorties</th><th>Chronos</th><th>Distances pratiquées</th></tr>';
+    b+='<table class="pt"><tr><th>#</th><th>Membre</th><th>Sorties coureur</th><th>Bénévolats</th><th>Chronos</th><th>Distances</th></tr>';
     s.palmares.forEach((m,i)=>{
-      const medal=i<3?'<span class="pm">'+medals[i]+'</span>':(i+1);
-      const dists=[...m.dists].sort((a,b)=>a-b).map(d=>d+' km').join(' · ')||'—';
-      b+='<tr><td>'+medal+'</td><td style="font-weight:'+(i<3?'bold':'normal')+'">'+m.nom+'</td><td style="color:#6b6b67">'+m.role+'</td><td style="text-align:center;font-weight:600;color:#1D9E75">'+m.courses+'</td><td style="text-align:center;color:#185FA5">'+m.chronos.length+'</td><td style="color:#6b6b67;font-size:9pt">'+dists+'</td></tr>';
+      const medal=i<3?'<span class="pm">'+medals[i]+'</span>':'<span style="color:#9e9e99;font-size:9pt">'+(i+1)+'</span>';
+      const dists=[...m.dists].sort((a,b)=>a-b).map(d=>'<span class="dt">'+d+' km</span>').join(' ');
+      const hasChronos=m.chronos.length>0;
+      const bestChrono=hasChronos?m.chronos.slice().sort((a,b)=>a.chrono.localeCompare(b.chrono))[0]:null;
+      const avClass=m.benevoles>0&&m.courses===0?'pav-b':'pav-c';
+      const avInits=m.nom.split(' ').map(x=>x[0]||'').join('').toUpperCase().slice(0,2);
+      b+='<tr><td>'+medal+'</td>';
+      b+='<td><div style="display:flex;align-items:center;gap:8px"><div class="pav '+avClass+'">'+avInits+'</div><div><div style="font-weight:'+(i<3?'800':'600')+'">'+m.nom+'</div>'+(m.role&&m.role!=='Coureur'?'<div style="font-size:8pt;color:#9e9e99">'+m.role+'</div>':'')+'</div></div></td>';
+      b+='<td style="text-align:center;font-weight:700;color:#1D9E75">'+m.courses+'</td>';
+      b+='<td style="text-align:center">'+(m.benevoles>0?'<span class="bev-count">'+m.benevoles+'</span>':'<span style="color:#ccc">—</span>')+'</td>';
+      b+='<td style="text-align:center;color:#185FA5;font-weight:700">'+m.chronos.length+(bestChrono?'<div style="font-size:8pt;color:#9e9e99;font-weight:400">meilleur: '+bestChrono.chrono+(bestChrono.dist?' sur '+bestChrono.dist+' km':'')+'</div>':'')+'</td>';
+      b+='<td><div class="dist-tags">'+(dists||'<span style="color:#ccc;font-size:9pt">—</span>')+'</div></td>';
+      b+='</tr>';
     });
     b+='</table>';
   }
 
-  b+='<div class="ft"><span>🍓 La Fraise Athlétique du Taillan — Saison '+s.saisonLabel+'</span><span>ludop-fraise-taillan.github.io/fat-qui-court-quand</span></div>';
+  b+='<div class="ft"><span>🍓 La Fraise Athlétique du Taillan — Saison '+s.saisonLabel+'</span><span>Généré le '+now+'</span></div>';
+  b+='</div>'; // .wrap
 
-  var html='<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Bilan FAT '+s.saisonLabel+'</title><style>'+css+'</style></head><body>'+b+'</body></html>';
-  var w=window.open('','_blank','width=960,height=750');
+  var html='<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bilan FAT '+s.saisonLabel+'</title><style>'+css+'</style></head><body>'+b+'</body></html>';
+  var w=window.open('','_blank','width=980,height=800');
   w.document.write(html);
   w.document.close();
   showToast('Rapport généré !');
