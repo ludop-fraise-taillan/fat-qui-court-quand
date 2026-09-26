@@ -2111,8 +2111,9 @@ function genererBilan(){
   const now=new Date().toLocaleDateString('fr-FR');
   const medals=['🥇','🥈','🥉'];
   const typeColor={Trail:'#2d5a2d',Route:'#1a4a7a',Ultra:'#6a1a1a'};
-  const typeBg={Trail:'linear-gradient(135deg,#1a3a1a 0%,#2d5a2d 100%)',Route:'linear-gradient(135deg,#0d2a4a 0%,#1a4a7a 100%)',Ultra:'linear-gradient(135deg,#3a0d0d 0%,#6a1a1a 100%)'};
-  const typeBadge={Trail:'background:#EAF3DE;color:#3B6D11;border:.5px solid #9FE1CB',Route:'background:#E6F1FB;color:#185FA5;border:.5px solid #B5D4F4',Ultra:'background:#FAECE7;color:#993C1D;border:.5px solid #F09595'};
+  const typeBg={Trail:'linear-gradient(135deg,#EAF4DE 0%,#D4EDBA 100%)',Route:'linear-gradient(135deg,#E6F1FB 0%,#CCDFF7 100%)',Ultra:'linear-gradient(135deg,#FAECE7 0%,#F5D4C8 100%)'};
+  const typeTextColor={Trail:'#2A5210',Route:'#0F3A6E',Ultra:'#7A2810'};
+  const typeBadge={Trail:'background:#D4EDBA;color:#2A5210;border:.5px solid #9FE1CB',Route:'background:#CCDFF7;color:#0F3A6E;border:.5px solid #B5D4F4',Ultra:'background:#F5D4C8;color:#7A2810;border:.5px solid #F09595'};
 
   const css=`*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:11pt;color:#1a1a18;background:#f6f6f3;padding:0}
 .wrap{max-width:940px;margin:0 auto;padding:20px 24px 40px}
@@ -2180,7 +2181,8 @@ h2{font-size:12pt;font-weight:800;color:#1a1a18;margin:24px 0 12px;display:flex;
     s.courses.forEach(c=>{
       const bg=typeBg[c.type]||'linear-gradient(135deg,#2a2a2a,#1a1a18)';
       const benev=c.benevoles.length;
-      b+='<div class="cb"><div class="ch" style="background:'+bg+'"><div><div class="chn">'+c.nom+'</div><div class="chm"><span class="ch-tag">📅 '+dateStr(c.date)+'</span><span class="ch-tag">'+c.type+'</span><span class="ch-tag">🟢 '+c.inscrits+' inscrit'+(c.inscrits!==1?'s':'')+'</span><span class="ch-tag">⭐ '+c.interesses+' intéressé'+(c.interesses!==1?'s':'')+'</span>'+(benev>0?'<span class="ch-benev">🙋 '+benev+' bénévole'+(benev!==1?'s':'')+'</span>':'')+'</div></div></div>';
+      const tc=typeTextColor[c.type]||'#1a1a18';
+      b+='<div class="cb"><div class="ch" style="background:'+bg+';color:'+tc+'"><div><div class="chn" style="color:'+tc+'">'+c.nom+'</div><div class="chm" style="color:'+tc+';opacity:.75"><span class="ch-tag" style="background:rgba(0,0,0,.07);color:'+tc+'">📅 '+dateStr(c.date)+'</span><span class="ch-tag" style="background:rgba(0,0,0,.07);color:'+tc+'">'+c.type+'</span><span class="ch-tag" style="background:rgba(0,0,0,.07);color:'+tc+'">🟢 '+c.inscrits+' inscrit'+(c.inscrits!==1?'s':'')+'</span><span class="ch-tag" style="background:rgba(0,0,0,.07);color:'+tc+'">⭐ '+c.interesses+' intéressé'+(c.interesses!==1?'s':'')+'</span>'+(benev>0?'<span class="ch-benev" style="background:rgba(124,58,237,.15);color:#5B21B6">🙋 '+benev+' bénévole'+(benev!==1?'s':'')+'</span>':'')+'</div></div></div>';
       if(c.distChronos.length===0&&benev===0){b+='<div class="nd">Aucun participant enregistré</div>';}
       c.distChronos.forEach(dg=>{
         const distLabel=dg.dist==='0'?'Distance non renseignée':dg.dist+' km';
