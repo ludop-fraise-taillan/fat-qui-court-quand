@@ -1045,6 +1045,7 @@ function renderRaces(){
     const rParts=participations.filter(p=>p.course_id===r.id);
     const conf=rParts.filter(p=>p.statut==='confirmed');
     const inter=rParts.filter(p=>p.statut==='interested');
+    const benev=conf.filter(p=>p.role_course==='benevole'||p.role_course==='les_deux');
     const dtl=daysUntil(r.date_limite),dto=daysUntil(r.date_ouverture);
     const myPart=rParts.find(p=>p.membre_id===currentUserId);
     const plat=detectPlat(r.url);
@@ -1129,6 +1130,7 @@ function renderRaces(){
           <div class="status-bar-counts">
             <div class="sbc-item"><span class="sbc-val green">${conf.length}</span> inscrit${conf.length>1?'s':''}</div>
             <div class="sbc-item"><span class="sbc-val amber">${inter.length}</span> int.</div>
+            ${benev.length>0?`<div class="sbc-item"><span class="sbc-val" style="color:#7C3AED">${benev.length}</span> bénév.</div>`:''}
           </div>
         </div>
       </div>
