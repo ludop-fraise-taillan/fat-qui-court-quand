@@ -728,10 +728,10 @@
     <!-- Sélecteur de rôle (visible seulement si Inscrit) -->
     <div id="modal-role-section" style="display:none;margin-bottom:12px;background:var(--bg2);border-radius:var(--radius-md);padding:12px">
       <div class="dist-choice-label" style="margin-bottom:8px;font-weight:600">Quel est ton rôle ?</div>
-      <div style="display:flex;gap:7px;flex-wrap:wrap">
-        <button type="button" class="role-choice-btn" id="role-coureur" onclick="event.stopPropagation();selectRole('coureur')">🏃 Coureur</button>
-        <button type="button" class="role-choice-btn" id="role-benevole" onclick="event.stopPropagation();selectRole('benevole')">🙋 Bénévole</button>
-        <button type="button" class="role-choice-btn" id="role-les_deux" onclick="event.stopPropagation();selectRole('les_deux')">🏃+🙋 Les deux</button>
+      <div style="display:flex;gap:7px;flex-wrap:wrap" id="role-btn-group">
+        <button type="button" class="role-choice-btn" data-role="coureur">🏃 Coureur</button>
+        <button type="button" class="role-choice-btn" data-role="benevole">🙋 Bénévole</button>
+        <button type="button" class="role-choice-btn" data-role="les_deux">🏃+🙋 Les deux</button>
       </div>
     </div>
     <p class="modal-hint">Intéressé = je pense y aller · Inscrit = dossard confirmé</p>
@@ -1637,9 +1637,8 @@ function _openParticipationModal(raceId){
   // Init section rôle
   const roleSection=document.getElementById('modal-role-section');
   roleSection.style.display=modalStatus==='confirmed'?'block':'none';
-  ['coureur','benevole','les_deux'].forEach(r2=>{
-    const b=document.getElementById('role-'+r2);
-    if(b) b.className='role-choice-btn'+(modalRole===r2?' sel':'');
+  document.querySelectorAll('#role-btn-group button').forEach(b=>{
+    b.className='role-choice-btn'+(b.dataset.role===modalRole?' sel':'');
   });
   // Distances
   const dists=parseDists(r.distances||r.distance);
@@ -1684,9 +1683,8 @@ function selectStatus(s){
 
 function selectRole(r){
   modalRole=r;
-  ['coureur','benevole','les_deux'].forEach(r2=>{
-    const b=document.getElementById('role-'+r2);
-    if(b) b.className='role-choice-btn'+(r===r2?' sel':'');
+  document.querySelectorAll('#role-btn-group button').forEach(b=>{
+    b.className='role-choice-btn'+(b.dataset.role===r?' sel':'');
   });
 }
 
@@ -2029,6 +2027,15 @@ function genererBilan(){
 function dismissInstall(){document.getElementById('install-banner').classList.remove('show');localStorage.setItem('cr_install_dismissed','1');}
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();if(!localStorage.getItem('cr_install_dismissed'))document.getElementById('install-banner').classList.add('show');});
 document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
+
+// Boutons rôle — event listeners directs (plus fiable que onclick inline)
+document.getElementById('role-btn-group').addEventListener('click',function(e){
+  const btn=e.target.closest('button[data-role]');
+  if(!btn)return;
+  e.preventDefault();
+  e.stopPropagation();
+  selectRole(btn.dataset.role);
+});
 document.addEventListener('click',e=>{
   const chip=document.getElementById('user-chip');
   if(chip&&!chip.contains(e.target))closeDropdown();
