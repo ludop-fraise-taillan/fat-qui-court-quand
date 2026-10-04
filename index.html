@@ -104,7 +104,7 @@
     .nav-item i{font-size:22px}
     .nav-item.active{color:var(--text);font-weight:500}
     .section{display:none}.section.active{display:block}
-    .evt-sticky-head{background:var(--bg);padding:8px 16px 8px;border-bottom:0.5px solid var(--border);flex-shrink:0;display:none}
+    .evt-sticky-head{background:var(--bg);padding:8px 16px 6px;border-bottom:0.5px solid var(--border);flex-shrink:0;display:none}
     .evt-sticky-head.visible{display:block}
     .evt-sticky-head .tab-sub{margin-bottom:0}
     .legend{display:flex;gap:14px;font-size:12px;color:var(--text2);margin-bottom:10px}
@@ -867,9 +867,9 @@
 
   <!-- ÉVÉNEMENTS CLUB -->
   <div id="s-evenements" class="section active">
-    <div style="margin-top:8px">
+    <div style="margin-top:0">
       <!-- Scroll horizontal événements à venir -->
-      <div id="evt-hscroll-wrap" style="display:none">
+      <div id="evt-hscroll-wrap" style="display:none;padding-top:6px">
         <div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.03em;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between">
           <span id="evt-upcoming-label"></span>
           <button id="evt-show-past-btn" onclick="toggleShowPastEvts()" style="font-size:10px;font-weight:600;color:var(--text3);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline">📁 Passés</button>
