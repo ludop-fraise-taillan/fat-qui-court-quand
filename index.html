@@ -334,43 +334,49 @@
     .form-field{margin-bottom:12px}
     .form-field label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px}
     .form-field input,.form-field select{width:100%;font-size:14px;padding:10px 12px;border-radius:var(--radius-md);border:0.5px solid var(--border2);background:var(--bg);color:var(--text)}
-    /* ── Nouveau formulaire V4 ── */
-    .fv4-wrap{display:flex;flex-direction:column;gap:10px}
-    .fv4-card{border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.1)}
-    /* Bloc haut */
-    .fv4-top-head{padding:10px 14px;display:flex;align-items:center;gap:8px;transition:background .2s}
-    .fv4-top-head-icon{font-size:15px}
-    .fv4-top-head-title{font-size:11px;font-weight:700;color:rgba(0,0,0,.65);text-transform:uppercase;letter-spacing:.07em}
-    .fv4-top-body{background:var(--bg);display:flex;align-items:stretch}
-    .fv4-top-left{flex:1;padding:14px;border-right:0.5px solid var(--border)}
-    .fv4-top-right{width:90px;flex-shrink:0;padding:10px 10px;display:flex;flex-direction:column;gap:6px}
-    .fv4-name-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px}
-    .fv4-name-input{width:100%;font-size:17px;font-weight:700;border:none;background:transparent;color:var(--text);outline:none;padding:0}
-    .fv4-name-input::placeholder{color:var(--text3);font-weight:400;font-size:15px}
-    .fv4-type-btn{width:100%;padding:8px 4px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
-    .fv4-type-btn.sel-trail{border-color:#3B6D11;background:#EAF3DE;color:#3B6D11}
-    .fv4-type-btn.sel-route{border-color:#185FA5;background:#E6F1FB;color:#185FA5}
-    .fv4-type-btn.sel-ultra{border-color:#993C1D;background:#FAECE7;color:#993C1D}
-    /* Blocs milieu et bas */
-    .fv4-head{padding:10px 14px;display:flex;align-items:center;gap:8px}
-    .fv4-head-icon{font-size:15px}
-    .fv4-head-title{font-size:11px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.07em}
-    .fv4-inner{background:var(--bg);display:flex;align-items:stretch}
-    .fv4-left{flex:1;padding:12px 14px;border-right:0.5px solid var(--border)}
-    .fv4-right{width:155px;flex-shrink:0;padding:12px 12px;display:flex;flex-direction:column;gap:8px}
-    .fv4-right-half{flex:1;padding:12px 12px}
-    .fv4-sect-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;display:block}
-    .fv4-dist-row{display:flex;gap:6px;margin-bottom:7px}
-    .fv4-dist-row input{flex:1;font-size:13px;padding:8px 10px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);outline:none}
-    .fv4-dist-row input:focus{border-color:#185FA5;background:var(--bg)}
-    .fv4-add-btn{font-size:12px;font-weight:700;padding:8px 12px;border-radius:9px;background:#185FA5;color:#fff;border:none;cursor:pointer}
-    .fv4-date-field{display:flex;flex-direction:column;gap:3px}
-    .fv4-date-field label{font-size:10px;font-weight:600;color:var(--text3)}
-    .fv4-date-field input{width:100%;font-size:12px;padding:7px 9px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);outline:none}
-    .fv4-date-field input:focus{border-color:#EF9F27;background:var(--bg)}
-    .fv4-link-input{width:100%;font-size:12px;padding:8px 10px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);outline:none;margin-bottom:5px}
-    .fv4-link-input:focus{border-color:#C0001A;background:var(--bg)}
-    .fv4-link-input.results:focus{border-color:#085041}
+    /* ── Nouveau formulaire V5 — smartphone-first ── */
+    .fv4-wrap{display:flex;flex-direction:column;gap:14px;padding-top:10px}
+    .fv4-card{border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.05);background:#fff}
+    /* Bandeau coloré 4px en haut de chaque bloc (cohérent avec les cartes courses) */
+    .fv4-card::before{content:'';display:block;height:4px}
+    .fv4-card.fc-type::before{background:linear-gradient(90deg,#3A8F2A,#5CB648)}
+    .fv4-card.fc-dates::before{background:linear-gradient(90deg,#1A5FBF,#3B82F6)}
+    .fv4-card.fc-links::before{background:linear-gradient(90deg,#C04A1A,#E8703A)}
+    /* Header de bloc — léger, lisible */
+    .fv4-block-head{padding:12px 16px 0;display:flex;align-items:center;gap:7px}
+    .fv4-block-icon{font-size:17px;line-height:1}
+    .fv4-block-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+    /* Corps du bloc en colonne unique */
+    .fv4-block-body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:14px}
+    /* Nom de course */
+    .fv4-name-lbl{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+    .fv4-name-input{width:100%;font-size:18px;font-weight:700;border:none;border-bottom:2px solid var(--border2);background:transparent;color:var(--text);outline:none;padding:4px 0 8px}
+    .fv4-name-input::placeholder{color:var(--text3);font-weight:400;font-size:16px}
+    .fv4-name-input:focus{border-bottom-color:#3A8F2A}
+    /* Boutons type — ligne horizontale */
+    .fv4-type-row{display:flex;gap:8px}
+    .fv4-type-btn{flex:1;padding:10px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent}
+    .fv4-type-btn:active{opacity:.8}
+    .fv4-type-btn.sel-trail{border-color:#3A8F2A;background:#EBF7E6;color:#2A7A18}
+    .fv4-type-btn.sel-route{border-color:#1A5FBF;background:#E8F0FD;color:#1546A0}
+    .fv4-type-btn.sel-ultra{border-color:#C04A1A;background:#FDF0E8;color:#B03A10}
+    /* Champs de date — colonne unique, labels lisibles */
+    .fv4-field{display:flex;flex-direction:column;gap:5px}
+    .fv4-field label{font-size:12px;font-weight:600;color:var(--text2)}
+    .fv4-field input,.fv4-field select{width:100%;font-size:15px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);outline:none;-webkit-appearance:none}
+    .fv4-field input:focus{border-color:#1A5FBF;background:#fff}
+    /* Distances */
+    .fv4-dist-row{display:flex;gap:8px}
+    .fv4-dist-row input{flex:1;font-size:15px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);outline:none}
+    .fv4-dist-row input:focus{border-color:#1A5FBF;background:#fff}
+    .fv4-add-btn{font-size:15px;font-weight:700;padding:11px 16px;border-radius:10px;background:#1A5FBF;color:#fff;border:none;cursor:pointer;flex-shrink:0}
+    /* Liens */
+    .fv4-link-input{width:100%;font-size:14px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);outline:none;box-sizing:border-box}
+    .fv4-link-input:focus{border-color:#C04A1A;background:#fff}
+    .fv4-link-input.results:focus{border-color:#0A7A50}
+    .fv4-sect-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;display:block}
+    /* Séparateur entre Inscription et Résultats */
+    .fv4-links-sep{height:0.5px;background:var(--border);margin:2px 0}
     .fv4-shortcuts{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
     .fv4-pbtn{font-size:10px;padding:3px 8px;border-radius:99px;border:0.5px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer}
     .fv4-hint{font-size:10px;color:var(--text3);margin-top:4px}
@@ -570,69 +576,70 @@
       <div id="sub-s-course">
         <div class="fv4-wrap">
 
-          <!-- BLOC HAUT : nom + type -->
-          <div class="fv4-card">
-            <div class="fv4-top-head" id="fv4-head" style="background:linear-gradient(90deg,#D6EFC7,#C0E3A5)">
-              <span class="fv4-top-head-icon">🏁</span>
-              <span class="fv4-top-head-title">Nouvelle course</span>
+          <!-- BLOC 1 : nom + type -->
+          <div class="fv4-card fc-type">
+            <div class="fv4-block-head">
+              <span class="fv4-block-icon">🏁</span>
+              <span class="fv4-block-title">Nouvelle course</span>
             </div>
-            <div class="fv4-top-body">
-              <div class="fv4-top-left">
+            <div class="fv4-block-body">
+              <div>
                 <div class="fv4-name-lbl">Nom de la course *</div>
-                <input class="fv4-name-input" type="text" id="f-name" placeholder="ex. Trail des Landes">
+                <input class="fv4-name-input" type="text" id="f-name" placeholder="ex. Trail des Landes" autocomplete="off">
               </div>
-              <div class="fv4-top-right">
-                <button class="fv4-type-btn sel-trail" id="fv4-trail" onclick="setFv4Type('Trail')">🌿 Trail</button>
-                <button class="fv4-type-btn" id="fv4-route" onclick="setFv4Type('Route')">🛣 Route</button>
-                <button class="fv4-type-btn" id="fv4-ultra" onclick="setFv4Type('Ultra')">⚡ Ultra</button>
+              <div>
+                <div class="fv4-name-lbl" style="margin-bottom:8px">Type</div>
+                <div class="fv4-type-row">
+                  <button class="fv4-type-btn sel-trail" id="fv4-trail" onclick="setFv4Type('Trail')">🌿 Trail</button>
+                  <button class="fv4-type-btn" id="fv4-route" onclick="setFv4Type('Route')">🛣 Route</button>
+                  <button class="fv4-type-btn" id="fv4-ultra" onclick="setFv4Type('Ultra')">⚡ Ultra</button>
+                </div>
                 <input type="hidden" id="f-type" value="Trail">
               </div>
             </div>
           </div>
 
-          <!-- BLOC MILIEU : distances + dates -->
-          <div class="fv4-card">
-            <div class="fv4-head" style="background:linear-gradient(90deg,#0d2a4a,#185FA5)">
-              <span class="fv4-head-icon">📏</span>
-              <span class="fv4-head-title">Distances &amp; Dates</span>
+          <!-- BLOC 2 : distances + dates -->
+          <div class="fv4-card fc-dates">
+            <div class="fv4-block-head">
+              <span class="fv4-block-icon">📅</span>
+              <span class="fv4-block-title">Distances &amp; Dates</span>
             </div>
-            <div class="fv4-inner">
-              <div class="fv4-left">
-                <span class="fv4-sect-label">Distances (km)</span>
+            <div class="fv4-block-body">
+              <div>
+                <div class="fv4-name-lbl" style="margin-bottom:8px">Distances (km)</div>
                 <div class="fv4-dist-row">
                   <input type="number" id="f-dist-input" placeholder="ex. 21" inputmode="numeric" onkeydown="if(event.key==='Enter'){event.preventDefault();addDistTag()}">
                   <button class="fv4-add-btn" onclick="addDistTag()" type="button">＋</button>
                 </div>
-                <div class="dist-tags-list" id="f-dist-tags"></div>
+                <div class="dist-tags-list" id="f-dist-tags" style="margin-top:8px"></div>
               </div>
-              <div class="fv4-right">
-                <div class="fv4-date-field">
-                  <label>📅 Date course *</label>
-                  <input type="date" id="f-date">
-                </div>
-                <div class="fv4-date-field">
-                  <label>Limite inscr.</label>
-                  <input type="date" id="f-limit">
-                </div>
-                <div class="fv4-date-field">
-                  <label>Ouverture inscr.</label>
-                  <input type="date" id="f-open">
-                </div>
+              <div class="fv4-field">
+                <label>📅 Date de la course *</label>
+                <input type="date" id="f-date">
+              </div>
+              <div class="fv4-field">
+                <label>⏳ Limite d'inscription</label>
+                <input type="date" id="f-limit">
+              </div>
+              <div class="fv4-field">
+                <label>🔓 Ouverture des inscriptions</label>
+                <input type="date" id="f-open">
               </div>
             </div>
           </div>
 
-          <!-- BLOC BAS : liens -->
-          <div class="fv4-card">
-            <div class="fv4-head" style="background:linear-gradient(90deg,#3a0a12,#C0001A)">
-              <span class="fv4-head-icon">🔗</span>
-              <span class="fv4-head-title">Liens</span>
+          <!-- BLOC 3 : liens -->
+          <div class="fv4-card fc-links">
+            <div class="fv4-block-head">
+              <span class="fv4-block-icon">🔗</span>
+              <span class="fv4-block-title">Liens</span>
             </div>
-            <div class="fv4-inner">
-              <div class="fv4-left">
-                <span class="fv4-sect-label">Inscription</span>
+            <div class="fv4-block-body">
+              <div>
+                <div class="fv4-name-lbl" style="margin-bottom:6px">Inscription</div>
                 <input class="fv4-link-input" type="url" id="f-url" placeholder="https://..." inputmode="url">
-                <div class="fv4-shortcuts">
+                <div class="fv4-shortcuts" style="margin-top:7px">
                   <button class="fv4-pbtn" onclick="setUrl('https://www.protiming.fr')">Protiming</button>
                   <button class="fv4-pbtn" onclick="setUrl('https://www.finishers.com')">Finishers</button>
                   <button class="fv4-pbtn" onclick="setUrl('https://www.time-to.com')">TimeToRun</button>
@@ -640,15 +647,16 @@
                   <button class="fv4-pbtn" onclick="setUrl('https://www.utmb.world')">UTMB</button>
                 </div>
               </div>
-              <div class="fv4-right-half">
-                <span class="fv4-sect-label">🏅 Résultats</span>
+              <div class="fv4-links-sep"></div>
+              <div>
+                <div class="fv4-name-lbl" style="margin-bottom:6px">🏅 Résultats</div>
                 <input class="fv4-link-input results" type="url" id="f-url-results" placeholder="https://..." inputmode="url">
-                <div class="fv4-shortcuts">
+                <div class="fv4-shortcuts" style="margin-top:7px">
                   <button class="fv4-pbtn" onclick="setUrlResults('https://www.protiming.fr')">Protiming</button>
                   <button class="fv4-pbtn" onclick="setUrlResults('https://www.finishers.com')">Finishers</button>
                   <button class="fv4-pbtn" onclick="setUrlResults('https://www.time-to.com')">TimeToRun</button>
                 </div>
-                <div class="fv4-hint">À renseigner après la course</div>
+                <div class="fv4-hint" style="margin-top:6px">À renseigner après la course</div>
               </div>
             </div>
           </div>
