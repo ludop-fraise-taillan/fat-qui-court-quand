@@ -740,41 +740,46 @@
       </div>
 
       <div id="sub-s-membre" style="display:none">
-        <!-- Design B : avatar centré + gradient -->
-        <div class="fb-card">
-          <!-- Zone gradient avec avatar + aperçu -->
-          <div class="fb-top" id="fb-top">
-            <div class="fb-avatar-wrap" id="prev-av">👤</div>
-            <div>
-              <div class="fb-name-preview" id="prev-name">Nouveau membre</div>
-              <div class="fb-role-preview" id="prev-role">Aperçu en temps réel</div>
-            </div>
-          </div>
-          <!-- Formulaire -->
-          <div class="fb-body">
-            <div class="fb-row">
-              <div class="fb-field">
-                <label>Prénom *</label>
-                <input type="text" id="m-prenom" placeholder="ex. Lucas" oninput="updatePreview()">
+        <div style="display:flex;gap:0;position:relative">
+          <div style="flex:1;min-width:0">
+            <!-- Design B : avatar centré + gradient -->
+            <div class="fb-card">
+              <!-- Zone gradient avec avatar + aperçu -->
+              <div class="fb-top" id="fb-top">
+                <div class="fb-avatar-wrap" id="prev-av">👤</div>
+                <div>
+                  <div class="fb-name-preview" id="prev-name">Nouveau membre</div>
+                  <div class="fb-role-preview" id="prev-role">Aperçu en temps réel</div>
+                </div>
               </div>
-              <div class="fb-field">
-                <label>Nom (2-3 lettres) *</label>
-                <input type="text" id="m-nom" placeholder="ex. Mar" oninput="updatePreview()">
+              <!-- Formulaire -->
+              <div class="fb-body">
+                <div class="fb-row">
+                  <div class="fb-field">
+                    <label>Prénom *</label>
+                    <input type="text" id="m-prenom" placeholder="ex. Lucas" oninput="updatePreview()">
+                  </div>
+                  <div class="fb-field">
+                    <label>Nom (2-3 lettres) *</label>
+                    <input type="text" id="m-nom" placeholder="ex. Mar" oninput="updatePreview()">
+                  </div>
+                </div>
+                <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px">Rôle</div>
+                <div class="fb-role-row">
+                  <button class="fb-role-btn sel" id="role-coureur" onclick="setRole('Coureur',this)">🏃 Coureur</button>
+                  <button class="fb-role-btn" id="role-bureau" onclick="setRole('Bureau',this)">🏅 Bureau</button>
+                  <button class="fb-role-btn" id="role-benevole" onclick="setRole('Bénévole',this)">🙌 Bénévole</button>
+                  <button class="fb-role-btn" id="role-coach" onclick="setRole('Coach',this)">📋 Coach</button>
+                </div>
+                <input type="hidden" id="m-role" value="Coureur">
+                <button class="fb-submit" id="btn-add-member" onclick="addMember()">＋ Ajouter au club</button>
+                <div class="dupli-alert" id="dupli-alert">⚠️ <span id="dupli-msg"></span></div>
               </div>
             </div>
-            <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px">Rôle</div>
-            <div class="fb-role-row">
-              <button class="fb-role-btn sel" id="role-coureur" onclick="setRole('Coureur',this)">🏃 Coureur</button>
-              <button class="fb-role-btn" id="role-bureau" onclick="setRole('Bureau',this)">🏅 Bureau</button>
-              <button class="fb-role-btn" id="role-benevole" onclick="setRole('Bénévole',this)">🙌 Bénévole</button>
-              <button class="fb-role-btn" id="role-coach" onclick="setRole('Coach',this)">📋 Coach</button>
-            </div>
-            <input type="hidden" id="m-role" value="Coureur">
-            <button class="fb-submit" id="btn-add-member" onclick="addMember()">＋ Ajouter au club</button>
-            <div class="dupli-alert" id="dupli-alert">⚠️ <span id="dupli-msg"></span></div>
+            <div id="member-list-preview"></div>
           </div>
+          <div id="alpha-sidebar-add" style="width:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:4px;gap:1px;position:sticky;top:60px;align-self:flex-start;max-height:calc(100vh - 120px);overflow-y:auto"></div>
         </div>
-        <div id="member-list-preview"></div>
       </div>
     </div>
   </div>
@@ -2057,6 +2062,28 @@ function renderMemberListPreview(){
     });
   });
   document.getElementById('member-list-preview').innerHTML=html;
+  // Sidebar A-Z pour la vue +Membre
+  const sidebarAdd=document.getElementById('alpha-sidebar-add');
+  if(sidebarAdd){
+    const ALPHABET='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    sidebarAdd.innerHTML=ALPHABET.map(l=>{
+      const has=groups[l];
+      return '<div class="alpha-sb-letter'+(has?' has':'')+'" onclick="scrollToLetterAdd(\''+l+'\')" id="sbadd-'+l+'">'+l+'</div>';
+    }).join('');
+  }
+}
+
+function scrollToLetterAdd(letter){
+  const el=document.getElementById('alph-'+letter);
+  if(!el)return;
+  const content=document.querySelector('.content');
+  if(content){
+    const top=el.offsetTop+(el.closest('#sub-s-membre')?.offsetTop||0)-60;
+    content.scrollTo({top,behavior:'smooth'});
+  }
+  document.querySelectorAll('#alpha-sidebar-add .alpha-sb-letter').forEach(b=>b.classList.remove('active'));
+  const sb=document.getElementById('sbadd-'+letter);
+  if(sb){sb.classList.add('active');setTimeout(()=>sb.classList.remove('active'),1500);}
 }
 
 function updateHeader(){
