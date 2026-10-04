@@ -2036,18 +2036,30 @@ function goToRace(raceId){
   },100);
 }
 
-function renderMemberListPreview(){
-  const sorted=[...members].sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
-  // Grouper par première lettre du nom
+function renderMemberListPreview(filterLetter){
+  // Si filterLetter fourni : ne montrer que les membres dont le prénom commence par cette lettre
+  const normFirst=s=>(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'')[0]?.toUpperCase()||'?';
+  const allSorted=[...members].sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
+  const filtered=filterLetter
+    ?allSorted.filter(m=>normFirst(m.nom)===filterLetter)
+    :allSorted;
+  const sorted=filtered;
+  // Grouper par première lettre du prénom (= première lettre du nom stocké)
   const groups={};
   sorted.forEach(m=>{
-    const letter=(m.nom||'?')[0].toUpperCase();
+    const letter=normFirst(m.nom);
     if(!groups[letter])groups[letter]=[];
     groups[letter].push(m);
   });
-  const letters=Object.keys(groups).sort((a,b)=>a.localeCompare(b,'fr'));
   // Liste groupée
-  let html=`<div style="font-size:12px;color:var(--text2);margin-bottom:6px">${members.length} membre${members.length>1?'s':''} dans le club</div>`;
+  const letters=Object.keys(groups).sort();
+  const filterBanner=filterLetter
+    ?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:7px 10px;background:#EFF6FF;border:1.5px solid #B0CFF5;border-radius:10px;font-size:12px;color:#1A5FBF;font-weight:600">
+        <span>Membres commençant par « ${filterLetter} »</span>
+        <span style="margin-left:auto;font-weight:400;color:var(--text3)">${sorted.length} résultat${sorted.length>1?'s':''}</span>
+      </div>`
+    :'';
+  let html=filterBanner+`<div style="font-size:12px;color:var(--text2);margin-bottom:6px">${members.length} membre${members.length>1?'s':''} dans le club</div>`;
   letters.forEach(letter=>{
     html+=`<div id="alph-${letter}" class="alpha-group-label">${letter}</div>`;
     groups[letter].forEach(m=>{
@@ -2067,13 +2079,17 @@ function renderMemberListPreview(){
 }
 
 function scrollToLetterAdd(letter){
-  const el=document.getElementById('alph-'+letter);
-  if(!el)return;
-  const content=document.querySelector('.content');
-  if(content){
-    const top=el.offsetTop+(el.closest('#sub-s-membre')?.offsetTop||0)-60;
-    content.scrollTo({top,behavior:'smooth'});
-  }
+  // Filtrer la liste sur cette lettre, puis scroller vers le groupe
+  renderMemberListPreview(letter);
+  setTimeout(()=>{
+    const el=document.getElementById('alph-'+letter);
+    if(!el)return;
+    const content=document.querySelector('.content');
+    if(content){
+      const top=el.offsetTop+(el.closest('#sub-s-membre')?.offsetTop||0)-60;
+      content.scrollTo({top,behavior:'smooth'});
+    }
+  },30);
   document.querySelectorAll('#alpha-sidebar-add .alpha-sb-letter').forEach(b=>b.classList.remove('active'));
   const sb=document.getElementById('sbadd-'+letter);
   if(sb){sb.classList.add('active');setTimeout(()=>sb.classList.remove('active'),1500);}
@@ -2736,6 +2752,14 @@ function setRole(role, btn){
 function updatePreview(){
   const p=document.getElementById('m-prenom').value.trim();
   const n=document.getElementById('m-nom').value.trim();
+  // Filtrer la liste par initiale du prénom dès qu'il est saisi
+  if(p.length>=1){
+    const normFirst=s=>(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'')[0]?.toUpperCase()||null;
+    const firstLetter=normFirst(p);
+    renderMemberListPreview(firstLetter);
+  } else {
+    renderMemberListPreview();
+  }
   const role=document.getElementById('m-role').value||'Coureur';
   const _t3=n.length>=3?n.slice(0,1).toUpperCase()+n.slice(1,3).toLowerCase():n.length===2?n.slice(0,1).toUpperCase()+n.slice(1,2).toLowerCase():n.charAt(0).toUpperCase();
   const full=p&&n?p+'.'+_t3:'';
