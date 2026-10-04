@@ -811,7 +811,7 @@
       </div>
       <div>
         <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Type *</label>
-        <select id="nevt-type" style="width:100%;border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg2);outline:none;box-sizing:border-box">
+        <select id="nevt-type" onchange="onEvtTypeChange()" style="width:100%;border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg2);outline:none;box-sizing:border-box">
           <option value="repas">🍽 Repas / Soirée</option>
           <option value="ag">📋 AG / Réunion</option>
           <option value="benevole">🙌 Bénévolat</option>
@@ -835,6 +835,12 @@
       <div>
         <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Description</label>
         <textarea id="nevt-desc" placeholder="Infos complémentaires…" rows="3" style="width:100%;border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg2);outline:none;box-sizing:border-box;resize:none"></textarea>
+      </div>
+      <div id="nevt-course-wrap" style="display:none">
+        <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">🏁 Course liée (bénévolat)</label>
+        <select id="nevt-course-id" style="width:100%;border:1.5px solid #B0CFF5;border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:#F0F6FF;outline:none;box-sizing:border-box">
+          <option value="">— Aucune course liée —</option>
+        </select>
       </div>
       <button id="nevt-submit-btn" onclick="submitNewEvt()" style="width:100%;padding:13px;border-radius:var(--radius-md);border:none;background:var(--text);color:var(--bg);font-size:15px;font-weight:700;cursor:pointer">＋ Créer l'événement</button>
       <button onclick="closeModal('modal-new-evt')" style="width:100%;padding:11px;border-radius:var(--radius-md);border:1.5px solid var(--border2);background:none;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">Annuler</button>
@@ -2120,12 +2126,7 @@ function renderEvts(){
         <div class="evt-body" id="evtbody-${evt.id}">
           <div class="evt-participants">
             ${evt.type==='benevole'?(()=>{
-              // Cherche la course dont le nom ressemble à l'événement
-              const evtWords=evt.titre.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(w=>w.length>3);
-              const linkedRace=races.find(r=>{
-                const rName=r.nom.toLowerCase();
-                return evtWords.some(w=>rName.includes(w));
-              });
+              const linkedRace=evt.course_id?races.find(r=>r.id===evt.course_id):null;
               return `<div style="background:#F0F6FF;border:1.5px dashed #B0CFF5;border-radius:12px;padding:14px;text-align:center;margin-bottom:12px">
                 <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">🙌 Tu veux être bénévole ?</div>
                 <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5">L'inscription se fait depuis l'onglet <strong>Courses</strong> en cliquant sur la course et en choisissant le rôle <strong>Bénévole</strong>.</div>
@@ -2236,7 +2237,8 @@ async function saveEvtToSupabase(evt){
     await sb.from('club_events').upsert({
       id:evt.id,titre:evt.titre,type:evt.type,date:evt.date,
       heure:evt.heure||null,lieu:evt.lieu||null,description:evt.description||null,
-      participants:evt.participants||[],comments:evt.comments||[]
+      participants:evt.participants||[],comments:evt.comments||[],
+      course_id:evt.course_id||null
     });
   }catch(e){console.warn('saveEvt',e);}
 }
@@ -2270,6 +2272,11 @@ function openEditEvtModal(evtId){
   document.getElementById('nevt-desc').value=evt.description||'';
   document.getElementById('nevt-modal-title').textContent='✏️ Modifier l\'événement';
   document.getElementById('nevt-submit-btn').textContent='💾 Enregistrer';
+  const courseWrap=document.getElementById('nevt-course-wrap');
+  if(courseWrap){
+    courseWrap.style.display=evt.type==='benevole'?'block':'none';
+    if(evt.type==='benevole') populateEvtCourseSelect(evt.course_id||'');
+  }
   document.getElementById('modal-new-evt').dataset.editId=evtId;
   document.getElementById('modal-new-evt').classList.add('open');
 }
@@ -2284,8 +2291,41 @@ async function deleteEvt(evtId){
 }
 
 // Modal ajout événement (simple, admin only)
+function onEvtTypeChange(){
+  const type=document.getElementById('nevt-type').value;
+  const wrap=document.getElementById('nevt-course-wrap');
+  if(!wrap)return;
+  wrap.style.display=type==='benevole'?'block':'none';
+  if(type==='benevole') populateEvtCourseSelect();
+}
+
+function populateEvtCourseSelect(selectedId=''){
+  const sel=document.getElementById('nevt-course-id');
+  if(!sel)return;
+  const today=new Date(new Date().toDateString());
+  const upcoming=races.filter(r=>r.date_course&&new Date(r.date_course)>=today)
+    .sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
+  sel.innerHTML='<option value="">— Aucune course liée —</option>';
+  upcoming.forEach(r=>{
+    const d=new Date(r.date_course);
+    const label=`${r.nom} — ${d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})}`;
+    sel.innerHTML+=`<option value="${r.id}" ${r.id===selectedId?'selected':''}>${label}</option>`;
+  });
+}
+
 function openEvtModal(){
-  document.getElementById('modal-new-evt').classList.add('open');
+  const modal=document.getElementById('modal-new-evt');
+  delete modal.dataset.editId;
+  document.getElementById('nevt-titre').value='';
+  document.getElementById('nevt-type').value='repas';
+  document.getElementById('nevt-date').value='';
+  document.getElementById('nevt-heure').value='';
+  document.getElementById('nevt-lieu').value='';
+  document.getElementById('nevt-desc').value='';
+  document.getElementById('nevt-modal-title').textContent='🎉 Nouvel événement';
+  document.getElementById('nevt-submit-btn').textContent='＋ Créer l\'événement';
+  document.getElementById('nevt-course-wrap').style.display='none';
+  modal.classList.add('open');
 }
 async function submitNewEvt(){
   const titre=document.getElementById('nevt-titre').value.trim();
@@ -2294,18 +2334,20 @@ async function submitNewEvt(){
   const heure=document.getElementById('nevt-heure').value;
   const lieu=document.getElementById('nevt-lieu').value.trim();
   const desc=document.getElementById('nevt-desc').value.trim();
+  const courseIdEl=document.getElementById('nevt-course-id');
+  const courseId=(type==='benevole'&&courseIdEl)?courseIdEl.value||null:null;
   if(!titre||!date){alert('Titre et date obligatoires');return;}
   const modal=document.getElementById('modal-new-evt');
   const editId=modal.dataset.editId;
   if(editId){
     // Modification
     const evt=clubEvents.find(e=>e.id===editId);
-    if(evt){Object.assign(evt,{titre,type,date,heure:heure||null,lieu:lieu||null,description:desc||null});}
+    if(evt){Object.assign(evt,{titre,type,date,heure:heure||null,lieu:lieu||null,description:desc||null,course_id:courseId});}
     await saveEvtToSupabase(evt);
     delete modal.dataset.editId;
   } else {
     // Création
-    const newEvt={id:'evt-'+Date.now(),titre,type,date,heure:heure||null,lieu:lieu||null,description:desc||null,participants:[],comments:[]};
+    const newEvt={id:'evt-'+Date.now(),titre,type,date,heure:heure||null,lieu:lieu||null,description:desc||null,participants:[],comments:[],course_id:courseId};
     clubEvents.push(newEvt);
     await saveEvtToSupabase(newEvt);
   }
