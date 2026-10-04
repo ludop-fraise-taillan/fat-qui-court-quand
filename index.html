@@ -2680,17 +2680,18 @@ async function addMember(){
   const role=document.getElementById('m-role').value;
   if(!prenom||!nom){alert('Merci de renseigner prénom et nom.');return;}
   const _n3=nom.length>=3?nom.slice(0,1).toUpperCase()+nom.slice(1,3).toLowerCase():nom.length===2?nom.slice(0,1).toUpperCase()+nom.slice(1,2).toLowerCase():nom.charAt(0).toUpperCase();const fullName=prenom+'.'+_n3;
-  // Doublon exact
-  if(members.find(m=>m.nom===fullName)){
-    showToast('⚠️ Ce membre existe déjà : '+fullName);
-    document.getElementById('dupli-alert').classList.add('show');
-    document.getElementById('dupli-msg').textContent='Ce membre existe déjà dans le club ('+fullName+'). Inscription annulée.';
+  // Normalise pour comparaison : retire espaces, points, tirets → lowercase
+  const norm=s=>(s||'').toLowerCase().replace(/[\s.\-_]/g,'');
+  const newNorm=norm(fullName);
+  const dupli=members.find(m=>{const mn=norm(m.nom);return mn===newNorm||mn.startsWith(newNorm)||newNorm.startsWith(mn);});
+  if(dupli){
+    const alertEl=document.getElementById('dupli-alert');
+    const msgEl=document.getElementById('dupli-msg');
+    if(alertEl)alertEl.classList.add('show');
+    if(msgEl)msgEl.textContent='Ce membre est déjà présent dans la liste des membres. Doublon non autorisé.';
+    showToast('⚠️ Ce membre est déjà présent dans la liste des membres. Doublon non autorisé.');
     return;
   }
-  // Doublon similaire — demande confirmation
-  const pLow=prenom.toLowerCase();const nLow=_n3.toLowerCase();
-  const similar=members.find(m=>{const pts=(m.nom||'').toLowerCase().split('.');return pts[0]===pLow&&pts[1]&&pts[1][0]===nLow[0];});
-  if(similar&&!confirm(`Un membre similaire existe déjà : ${similar.nom} (${similar.role||'Coureur'}).\nConfirmer quand même l'ajout de ${fullName} ?`))return;
   document.getElementById('btn-add-member').disabled=true;setSyncing('syncing');
   const{error}=await db.from('membres').insert({nom:fullName,role});
   document.getElementById('btn-add-member').disabled=false;
