@@ -273,6 +273,15 @@
     .top3-sub{font-size:9px;color:var(--text3);text-align:right}
     /* ── Événements Club ── */
     .evt-card{border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.06);background:#fff;border-top:4px solid #888}
+    /* Vue condensée pour événements passés */
+    .evt-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:var(--bg2);margin-bottom:5px;cursor:pointer;border:1px solid var(--border);opacity:.7}
+    .evt-row:hover{opacity:1;background:var(--bg3)}
+    .evt-row-date{font-size:10px;font-weight:700;color:var(--text3);min-width:38px;text-align:center;line-height:1.2}
+    .evt-row-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .evt-row-title{font-size:13px;font-weight:600;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .evt-row-count{font-size:11px;color:var(--text3);flex-shrink:0}
+    .evt-past-section{margin-bottom:8px}
+    .evt-past-toggle{font-size:11px;font-weight:600;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 0;display:flex;align-items:center;gap:4px}
     .evt-card.repas{border-top-color:#E85D04}
     .evt-card.ag{border-top-color:#3A7BD5}
     .evt-card.benevole{border-top-color:#1A9E75}
@@ -802,12 +811,15 @@
         <button class="btn btn-primary" onclick="openEvtModal()" id="btn-add-evt" style="display:none"><span style="font-size:15px">＋</span> Créer</button>
       </div>
       <!-- Filtres type -->
-      <div class="tab-sub">
-        <button class="tab-sub-btn active" id="evt-filter-all" onclick="filterEvts('all')">Tous</button>
-        <button class="tab-sub-btn" id="evt-filter-repas" onclick="filterEvts('repas')">🍽 Repas</button>
-        <button class="tab-sub-btn" id="evt-filter-ag" onclick="filterEvts('ag')">📋 AG</button>
-        <button class="tab-sub-btn" id="evt-filter-benevole" onclick="filterEvts('benevole')">🙌 Bénév.</button>
-        <button class="tab-sub-btn" id="evt-filter-sortie" onclick="filterEvts('sortie')">🏃 Sorties</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+        <div class="tab-sub" style="margin-bottom:0;flex:1">
+          <button class="tab-sub-btn active" id="evt-filter-all" onclick="filterEvts('all')">Tous</button>
+          <button class="tab-sub-btn" id="evt-filter-repas" onclick="filterEvts('repas')">🍽 Repas</button>
+          <button class="tab-sub-btn" id="evt-filter-ag" onclick="filterEvts('ag')">📋 AG</button>
+          <button class="tab-sub-btn" id="evt-filter-benevole" onclick="filterEvts('benevole')">🙌 Bénév.</button>
+          <button class="tab-sub-btn" id="evt-filter-sortie" onclick="filterEvts('sortie')">🏃 Sorties</button>
+        </div>
+        <button id="evt-show-past-btn" onclick="toggleShowPastEvts()" style="flex-shrink:0;font-size:10px;font-weight:600;color:var(--text3);background:var(--bg2);border:1px solid var(--border2);border-radius:99px;padding:4px 9px;cursor:pointer;white-space:nowrap">📁 Passés</button>
       </div>
     </div>
     <div style="display:flex;gap:0;position:relative;margin-top:8px">
@@ -2138,6 +2150,13 @@ function renderAll(){updateHeader();renderRaces();renderMembers();}
 // ── Événements Club ─────────────────────────────────────────────────────────
 let clubEvents=[];
 let evtFilter='all';
+let showPastEvts=false;
+function toggleShowPastEvts(){
+  showPastEvts=!showPastEvts;
+  const btn=document.getElementById('evt-show-past-btn');
+  if(btn)btn.style.color=showPastEvts?'var(--text)':'var(--text3)';
+  renderEvts();
+}
 
 const EVT_TYPES={
   repas:{label:'🍽 Repas / Soirée',key:'repas'},
@@ -2163,8 +2182,11 @@ function renderEvts(){
   const MOIS=['Jan.','Fév.','Mar.','Avr.','Mai','Juin','Juil.','Août','Sep.','Oct.','Nov.','Déc.'];
   const JOURS=['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
   const now=new Date(new Date().toDateString());
+  const EVT_COLORS={repas:'#E85D04',ag:'#3A7BD5',benevole:'#1A9E75',sortie:'#7C3AED'};
   const filtered=evtFilter==='all'?clubEvents:clubEvents.filter(e=>e.type===evtFilter);
   const sorted=filtered.filter(e=>e.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const upcoming=sorted.filter(e=>new Date(e.date)>=now);
+  const past=sorted.filter(e=>new Date(e.date)<now).reverse(); // plus récent en premier
 
   const sidebar=document.getElementById('evt-month-sidebar');
 
@@ -2178,7 +2200,9 @@ function renderEvts(){
   const monthsList=[];
   let currentMonthKey=null;
 
-  sorted.forEach(evt=>{
+  // N'afficher que les événements à venir dans la vue principale
+  const toDisplay=upcoming.length?upcoming:sorted; // fallback si tout est passé
+  toDisplay.forEach(evt=>{
       const d=new Date(evt.date);
       // Séparateur de mois
       const monthKey=`${MOIS_LONG[d.getMonth()]} ${d.getFullYear()}`;
@@ -2279,6 +2303,33 @@ function renderEvts(){
         </div>
       </div>`;
   });
+
+  // Événements passés condensés
+  if(past.length){
+    if(!upcoming.length && !sorted.length){
+      // déjà géré
+    } else {
+      html+=`<div class="evt-past-section">`;
+      if(showPastEvts){
+        html+=`<div style="font-size:11px;font-weight:600;color:var(--text3);margin:12px 0 6px;display:flex;align-items:center;gap:6px"><span style="flex:1;height:1px;background:var(--border)"></span>📁 Événements passés (${past.length})<span style="flex:1;height:1px;background:var(--border)"></span></div>`;
+        past.forEach(evt=>{
+          const d=new Date(evt.date);
+          const partCount=evt.type==='benevole'?0:(evt.participants||[]).length;
+          const color=EVT_COLORS[evt.type]||'#888';
+          const typeInfo=EVT_TYPES[evt.type]||{label:'Événement'};
+          html+=`<div class="evt-row" onclick="toggleEvtCard('${evt.id}')">
+            <div class="evt-row-date">${MOIS_SHORT[d.getMonth()]}<br>${d.getDate()}</div>
+            <div class="evt-row-dot" style="background:${color}"></div>
+            <div class="evt-row-title">${evt.titre}</div>
+            <div class="evt-row-count">${partCount>0?partCount+' 👤':''}</div>
+          </div>`;
+        });
+      } else {
+        html+=`<div style="text-align:center;padding:6px 0;font-size:11px;color:var(--text3)">📁 ${past.length} événement${past.length>1?'s':''} passé${past.length>1?'s':''} — <button onclick="toggleShowPastEvts()" style="border:none;background:none;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline">voir</button></div>`;
+      }
+      html+=`</div>`;
+    }
+  }
 
   container.innerHTML=html;
   // Sidebar mois
