@@ -73,7 +73,7 @@
     }
     html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent}
     .app-shell{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;background:var(--bg)}
-    .header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10}
+    .header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 16px;border-bottom:0.5px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10}
     .header-title{font-size:17px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
     .header-title-wrap{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
     .fb-link{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:#1877F2;text-decoration:none;background:rgba(24,119,242,0.1);border-radius:20px;padding:2px 8px 2px 5px;border:1px solid rgba(24,119,242,0.2);transition:background 0.15s}
@@ -565,6 +565,9 @@
       </div>
       </div>
     </div>
+    <button id="btn-new-member" onclick="goToNewMember()" style="display:none;align-items:center;gap:6px;background:#185FA5;color:#fff;border:none;border-radius:99px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">
+      <span style="font-size:15px;line-height:1">＋</span> Nouveau Membre
+    </button>
     <div class="user-chip" id="user-chip" onclick="toggleDropdown(event)">
       <div class="av-xs" id="hdr-av"></div>
       <span id="hdr-name"></span>
@@ -2082,6 +2085,15 @@ function updateHeader(){
   el.style.cssText=avStyle(name,22,22,9)+'border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;';
   el.textContent=initials(name);
   document.getElementById('hdr-name').textContent=name.split(' ')[0];
+  const me=members.find(m=>m.id===currentUserId);
+  const isAdmin=me&&(me.role==='Bureau'||me.role==='Admin');
+  const btnNM=document.getElementById('btn-new-member');
+  if(btnNM)btnNM.style.display=isAdmin?'inline-flex':'none';
+}
+
+function goToNewMember(){
+  switchTab('ajouter');
+  setTimeout(()=>switchSub('membre'),80);
 }
 function renderAll(){updateHeader();renderRaces();renderMembers();}
 
@@ -2668,7 +2680,17 @@ async function addMember(){
   const role=document.getElementById('m-role').value;
   if(!prenom||!nom){alert('Merci de renseigner prénom et nom.');return;}
   const _n3=nom.length>=3?nom.slice(0,1).toUpperCase()+nom.slice(1,3).toLowerCase():nom.length===2?nom.slice(0,1).toUpperCase()+nom.slice(1,2).toLowerCase():nom.charAt(0).toUpperCase();const fullName=prenom+'.'+_n3;
-  if(members.find(m=>m.nom===fullName)){alert('Ce membre existe déjà.');return;}
+  // Doublon exact
+  if(members.find(m=>m.nom===fullName)){
+    showToast('⚠️ Ce membre existe déjà : '+fullName);
+    document.getElementById('dupli-alert').classList.add('show');
+    document.getElementById('dupli-msg').textContent='Ce membre existe déjà dans le club ('+fullName+'). Inscription annulée.';
+    return;
+  }
+  // Doublon similaire — demande confirmation
+  const pLow=prenom.toLowerCase();const nLow=_n3.toLowerCase();
+  const similar=members.find(m=>{const pts=(m.nom||'').toLowerCase().split('.');return pts[0]===pLow&&pts[1]&&pts[1][0]===nLow[0];});
+  if(similar&&!confirm(`Un membre similaire existe déjà : ${similar.nom} (${similar.role||'Coureur'}).\nConfirmer quand même l'ajout de ${fullName} ?`))return;
   document.getElementById('btn-add-member').disabled=true;setSyncing('syncing');
   const{error}=await db.from('membres').insert({nom:fullName,role});
   document.getElementById('btn-add-member').disabled=false;
