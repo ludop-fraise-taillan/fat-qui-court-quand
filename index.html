@@ -273,6 +273,39 @@
     .top3-sub{font-size:9px;color:var(--text3);text-align:right}
     /* ── Événements Club ── */
     .evt-card{border-radius:12px;overflow:hidden;margin-bottom:8px;box-shadow:0 1px 6px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.05);background:#fff;border-top:3px solid #888}
+    /* ── Scroll horizontal événements à venir ── */
+    .evt-hscroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 0 10px;margin:0 -2px}
+    .evt-hscroll::-webkit-scrollbar{display:none}
+    .evt-hcard{flex-shrink:0;width:102px;border-radius:10px;background:var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.06);overflow:hidden;cursor:pointer;transition:transform .12s;-webkit-tap-highlight-color:transparent}
+    .evt-hcard:active{transform:scale(.96)}
+    .evt-hcard.selected{box-shadow:0 0 0 2.5px var(--hcard-accent),0 3px 12px rgba(0,0,0,.15)}
+    .evt-hcard-top{height:50px;display:flex;flex-direction:column;justify-content:flex-end;padding:6px 7px}
+    .evt-hcard-top.repas{background:linear-gradient(135deg,#FF7A2A,#E85D04)}
+    .evt-hcard-top.ag{background:linear-gradient(135deg,#5B9BF5,#3A7BD5)}
+    .evt-hcard-top.benevole{background:linear-gradient(135deg,#34C988,#1A9E75)}
+    .evt-hcard-top.sortie{background:linear-gradient(135deg,#A78BFA,#7C3AED)}
+    .evt-hcard-top.default{background:linear-gradient(135deg,#aaa,#666)}
+    .evt-hcard-emoji{font-size:15px;margin-bottom:1px;line-height:1}
+    .evt-hcard-date{font-size:8px;font-weight:700;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.03em;line-height:1}
+    .evt-hcard-body{padding:5px 7px 7px}
+    .evt-hcard-title{font-size:10px;font-weight:800;color:var(--text);margin-bottom:2px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .evt-hcard-count{font-size:9px;color:var(--text3);font-weight:500;display:flex;align-items:center;gap:2px}
+    .evt-hcard-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+    /* Panneau détail */
+    .evt-detail-panel{border-radius:12px;background:var(--bg);box-shadow:0 2px 12px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.05);overflow:hidden;margin-bottom:10px}
+    .evt-detail-banner{height:4px}
+    .evt-detail-body{padding:12px 14px}
+    .evt-detail-eyebrow{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+    .evt-detail-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:7px;line-height:1.2}
+    .evt-detail-meta{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+    .evt-detail-chip{font-size:10px;color:var(--text2);font-weight:500;background:var(--bg2);border-radius:7px;padding:3px 7px}
+    .evt-detail-desc{font-size:12px;color:var(--text2);line-height:1.45;margin-bottom:10px}
+    .evt-detail-stats{display:flex;gap:6px;margin-bottom:10px}
+    .evt-detail-stat{flex:1;background:var(--bg2);border-radius:8px;padding:6px 8px;text-align:center}
+    .evt-detail-stat-val{font-size:17px;font-weight:800;color:var(--text)}
+    .evt-detail-stat-lbl{font-size:9px;color:var(--text3);font-weight:600}
+    .evt-detail-join{width:100%;padding:10px;border-radius:10px;border:none;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;color:#fff;margin-bottom:0}
+    .evt-detail-join.joined{background:var(--bg2)!important;color:var(--text2);border:1.5px solid var(--border2)}
     /* Vue condensée pour événements passés */
     .evt-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:var(--bg2);margin-bottom:5px;cursor:pointer;border:1px solid var(--border);opacity:.7}
     .evt-row:hover{opacity:1;background:var(--bg3)}
@@ -822,9 +855,18 @@
         <button id="evt-show-past-btn" onclick="toggleShowPastEvts()" style="flex-shrink:0;font-size:10px;font-weight:600;color:var(--text3);background:var(--bg2);border:1px solid var(--border2);border-radius:99px;padding:4px 9px;cursor:pointer;white-space:nowrap">📁 Passés</button>
       </div>
     </div>
-    <div style="display:flex;gap:0;position:relative;margin-top:8px">
+    <div style="margin-top:6px">
+      <!-- Scroll horizontal événements à venir -->
+      <div id="evt-hscroll-wrap" style="display:none">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px" id="evt-upcoming-label"></div>
+        <div class="evt-hscroll" id="evt-hscroll"></div>
+        <!-- Panneau détail de l'événement sélectionné -->
+        <div id="evt-detail-panel"></div>
+        <!-- Passés -->
+        <div id="evt-past-wrap"></div>
+      </div>
+      <!-- Fallback liste verticale (filtre actif ou tout passé) -->
       <div id="evt-list" style="flex:1;min-width:0"></div>
-      <div id="evt-month-sidebar" style="width:44px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:4px;gap:4px;position:sticky;top:100px;align-self:flex-start;max-height:calc(100vh - 160px);overflow-y:auto;scrollbar-width:none"></div>
     </div>
   </div>
 
@@ -2174,53 +2216,90 @@ function filterEvts(type){
   renderEvts();
 }
 
+let selectedEvtId=null;
+
 function renderEvts(){
   const container=document.getElementById('evt-list');
+  const hscrollWrap=document.getElementById('evt-hscroll-wrap');
+  const hscroll=document.getElementById('evt-hscroll');
+  const detailPanel=document.getElementById('evt-detail-panel');
+  const pastWrap=document.getElementById('evt-past-wrap');
+  const upcomingLabel=document.getElementById('evt-upcoming-label');
   if(!container)return;
-  const MOIS_LONG=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   const MOIS_SHORT=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
   const MOIS=['Jan.','Fév.','Mar.','Avr.','Mai','Juin','Juil.','Août','Sep.','Oct.','Nov.','Déc.'];
   const JOURS=['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
+  const JOURS_COURT=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
   const now=new Date(new Date().toDateString());
   const EVT_COLORS={repas:'#E85D04',ag:'#3A7BD5',benevole:'#1A9E75',sortie:'#7C3AED'};
+  const EVT_EMOJI={repas:'🍽',ag:'📋',benevole:'🙌',sortie:'🏃'};
   const filtered=evtFilter==='all'?clubEvents:clubEvents.filter(e=>e.type===evtFilter);
   const sorted=filtered.filter(e=>e.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
   const upcoming=sorted.filter(e=>new Date(e.date)>=now);
-  const past=sorted.filter(e=>new Date(e.date)<now).reverse(); // plus récent en premier
+  const past=sorted.filter(e=>new Date(e.date)<now).reverse();
 
-  const sidebar=document.getElementById('evt-month-sidebar');
+  // Mode scroll horizontal uniquement si filtre=all et il y a des événements à venir
+  const useHScroll=(evtFilter==='all' && upcoming.length>0);
 
-  if(!sorted.length){
-    container.innerHTML=`<div class="evt-empty">🎉<br><br>Aucun événement pour l'instant.<br><span style="font-size:12px">Les prochains événements du club apparaîtront ici.</span></div>`;
-    if(sidebar)sidebar.innerHTML='';
-    return;
-  }
+  if(useHScroll){
+    container.innerHTML='';
+    container.style.display='none';
+    hscrollWrap.style.display='block';
 
-  let html='';
-  const monthsList=[];
-  let currentMonthKey=null;
+    // Label
+    if(upcomingLabel) upcomingLabel.textContent=`À venir · ${upcoming.length} événement${upcoming.length>1?'s':''}`;
 
-  // N'afficher que les événements à venir dans la vue principale
-  const toDisplay=upcoming.length?upcoming:sorted; // fallback si tout est passé
-  toDisplay.forEach(evt=>{
+    // S'assurer qu'on a un selectedEvtId valide
+    if(!selectedEvtId || !upcoming.find(e=>e.id===selectedEvtId)){
+      selectedEvtId=upcoming[0].id;
+    }
+
+    // Render h-cards
+    hscroll.innerHTML=upcoming.map(evt=>{
       const d=new Date(evt.date);
-      // Séparateur de mois
-      const monthKey=`${MOIS_LONG[d.getMonth()]} ${d.getFullYear()}`;
-      const monthId='evtm-'+d.getFullYear()+'-'+d.getMonth();
-      if(monthKey!==currentMonthKey){
-        currentMonthKey=monthKey;
-        monthsList.push({key:monthKey,id:monthId,short:MOIS_SHORT[d.getMonth()]+'\n'+d.getFullYear().toString().slice(2)});
-        html+=`<div class="month-sep" id="${monthId}"><span class="month-sep-label">${monthKey}</span><div class="month-sep-line"></div></div>`;
-      }
+      const color=EVT_COLORS[evt.type]||'#888';
+      const emoji=EVT_EMOJI[evt.type]||'🎉';
+      const linkedRaceForCount=evt.type==='benevole'&&evt.course_id?races.find(r=>r.id===evt.course_id):null;
+      const benevParts=linkedRaceForCount?participations.filter(p=>p.course_id===linkedRaceForCount.id&&(p.role_course==='benevole'||p.role_course==='les_deux')):[];
+      const partCount=evt.type==='benevole'?benevParts.length:(evt.participants||[]).length;
+      const sel=evt.id===selectedEvtId;
+      return `<div class="evt-hcard ${sel?'selected':''}" style="--hcard-accent:${color}" onclick="selectEvt('${evt.id}')">
+        <div class="evt-hcard-top ${evt.type||'default'}">
+          <div class="evt-hcard-emoji">${emoji}</div>
+          <div class="evt-hcard-date">${JOURS_COURT[d.getDay()]} ${d.getDate()} ${MOIS_SHORT[d.getMonth()]}</div>
+        </div>
+        <div class="evt-hcard-body">
+          <div class="evt-hcard-title">${evt.titre}</div>
+          <div class="evt-hcard-count"><span class="evt-hcard-dot" style="background:${color}"></span>${partCount} ${evt.type==='benevole'?'bénév.':'part.'}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    // Render detail panel
+    renderEvtDetail(selectedEvtId, upcoming, EVT_COLORS, EVT_EMOJI, MOIS, JOURS);
+
+    // Render past
+    renderEvtPast(past, pastWrap, EVT_COLORS, MOIS_SHORT, showPastEvts);
+
+  } else {
+    // Mode liste verticale (filtre actif ou tout passé)
+    hscrollWrap.style.display='none';
+    container.style.display='block';
+
+    if(!sorted.length){
+      container.innerHTML=`<div class="evt-empty">🎉<br><br>Aucun événement pour l'instant.<br><span style="font-size:12px">Les prochains événements du club apparaîtront ici.</span></div>`;
+      return;
+    }
+
+    let html='';
+    const toDisplay=upcoming.length?upcoming:sorted;
+    toDisplay.forEach(evt=>{
+      const d=new Date(evt.date);
       const typeInfo=EVT_TYPES[evt.type]||{label:'Événement',key:'repas'};
       const joined=(evt.participants||[]).includes(currentUserId);
       const comments=evt.comments||[];
-      const myName=currentName();
-      // Pour bénévolat : compter depuis participations de la course liée
       const linkedRaceForCount=evt.type==='benevole'&&evt.course_id?races.find(r=>r.id===evt.course_id):null;
-      const benevParts=linkedRaceForCount
-        ?participations.filter(p=>p.course_id===linkedRaceForCount.id&&(p.role_course==='benevole'||p.role_course==='les_deux'))
-        :[];
+      const benevParts=linkedRaceForCount?participations.filter(p=>p.course_id===linkedRaceForCount.id&&(p.role_course==='benevole'||p.role_course==='les_deux')):[];
       const partCount=evt.type==='benevole'?benevParts.length:(evt.participants||[]).length;
       const amIBenevole=evt.type==='benevole'&&benevParts.some(p=>p.membre_id===currentUserId);
       html+=`<div class="evt-card ${evt.type}">
@@ -2237,105 +2316,150 @@ function renderEvts(){
             <div class="evt-stat"><span class="evt-stat-val">${partCount}</span> ${evt.type==='benevole'?`bénévole${partCount>1?'s':''}`:`participant${partCount>1?'s':''}`}</div>
             ${comments.length?`<div class="evt-stat"><span class="evt-stat-val">${comments.length}</span> 💬</div>`:''}
             ${amIBenevole?'<span style="font-size:11px;color:rgba(255,255,255,.9);font-weight:700">🙌 Je suis bénévole</span>':joined?'<span style="font-size:11px;color:rgba(255,255,255,.9);font-weight:700">✓ Je participe</span>':''}
-            ${window._evtIsAdmin?`<div style="display:flex;gap:6px;margin-left:auto">
-              <button onclick="event.stopPropagation();openEditEvtModal('${evt.id}')" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;cursor:pointer;font-weight:600">✏️ Modifier</button>
-              <button onclick="event.stopPropagation();deleteEvt('${evt.id}')" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,0,0,.25);color:#fff;cursor:pointer;font-weight:600">🗑</button>
-            </div>`:''}
+            ${window._evtIsAdmin?`<div style="display:flex;gap:6px;margin-left:auto"><button onclick="event.stopPropagation();openEditEvtModal('${evt.id}')" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;cursor:pointer;font-weight:600">✏️ Modifier</button><button onclick="event.stopPropagation();deleteEvt('${evt.id}')" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,0,0,.25);color:#fff;cursor:pointer;font-weight:600">🗑</button></div>`:''}
           </div>
         </div>
         <div class="evt-body" id="evtbody-${evt.id}">
-          <div class="evt-participants">
-            ${evt.type==='benevole'?(()=>{
-              const linkedRace=evt.course_id?races.find(r=>r.id===evt.course_id):null;
-              // Liste des bénévoles inscrits sur la course liée
-              const bList=linkedRace?participations.filter(p=>p.course_id===linkedRace.id&&(p.role_course==='benevole'||p.role_course==='les_deux')):[];
-              const bListHtml=bList.length
-                ?bList.map(p=>{const m=members.find(x=>x.id===p.membre_id);const n=m?.nom||'?';return `<div class="evt-part-chip"><div class="av-md" style="${avStyle(n,22,22,9)};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:9px">${initials(n)}</div>${n.split(' ')[0]||n}</div>`;}).join('')
-                :'<span style="font-size:12px;color:var(--text3);font-style:italic">Aucun bénévole inscrit pour l\'instant</span>';
-              return `
-              ${bList.length?`<div style="margin-bottom:12px">
-                <div class="evt-part-title">🙌 Bénévoles inscrits (${bList.length})</div>
-                <div class="evt-part-list">${bListHtml}</div>
-              </div>`:''}
-              <div style="background:#F0F6FF;border:1.5px dashed #B0CFF5;border-radius:12px;padding:14px;text-align:center;margin-bottom:12px">
-                <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">🙌 Tu veux être bénévole ?</div>
-                <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5">L'inscription se fait depuis l'onglet <strong>Courses</strong> en cliquant sur la course et en choisissant le rôle <strong>Bénévole</strong>.</div>
-                <button onclick="goToCourse('${linkedRace?.id||''}')" style="width:100%;padding:11px;border-radius:var(--radius-md);border:none;background:#1A5FBF;color:#fff;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
-                  📅 ${linkedRace?`Voir "${linkedRace.nom}"` : 'Aller sur l\'onglet Courses'}
-                </button>
-              </div>`;
-            })():`
-            <div class="evt-part-title">👥 Participants (${partCount})</div>
-            <div class="evt-part-list" id="evtparts-${evt.id}">
-              ${(evt.participants||[]).map(uid=>{
-                const m=members.find(x=>x.id===uid);
-                const n=m?.nom||uid;
-                return `<div class="evt-part-chip"><div class="av-md" style="${avStyle(n,22,22,9)};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:9px">${initials(n)}</div>${n.split('.')[0]||n}</div>`;
-              }).join('')}
-              ${!partCount?'<span style="font-size:12px;color:var(--text3);font-style:italic">Aucun participant pour l\'instant</span>':''}
-            </div>
-            <div class="evt-actions">
-              <button class="evt-join-btn ${joined?'joined':''}" id="evtjoin-${evt.id}" onclick="toggleJoinEvt('${evt.id}')">
-                ${joined?'✓ Je participe':'✋ Je participe'}
-              </button>
-            </div>`}
-          </div>
-          <div class="evt-comment-box">
-            <div class="evt-comment-title">💬 Commentaires</div>
-            <div id="evtcomments-${evt.id}">
-              ${comments.length?comments.map(c=>`
-                <div class="evt-comment-item">
-                  <div style="flex:1">
-                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
-                      <span class="evt-comment-author">${c.author}</span>
-                      <span class="evt-comment-date">${c.date}</span>
-                    </div>
-                    <div class="evt-comment-text">${c.text}</div>
-                  </div>
-                </div>`).join('')
-              :'<div style="font-size:12px;color:var(--text3);font-style:italic;padding:4px 0">Aucun commentaire</div>'}
-            </div>
-            <div class="evt-comment-input-row">
-              <input class="evt-comment-input" id="evtci-${evt.id}" type="text" placeholder="Laisser un message…" onkeydown="if(event.key==='Enter')postEvtComment('${evt.id}')">
-              <button class="evt-comment-send" onclick="postEvtComment('${evt.id}')">↑</button>
-            </div>
-          </div>
+          ${buildEvtBody(evt)}
         </div>
       </div>`;
-  });
-
-  // Événements passés condensés
-  if(past.length){
-    if(!upcoming.length && !sorted.length){
-      // déjà géré
-    } else {
-      html+=`<div class="evt-past-section">`;
+    });
+    // Passés
+    if(past.length && upcoming.length){
       if(showPastEvts){
-        html+=`<div style="font-size:11px;font-weight:600;color:var(--text3);margin:12px 0 6px;display:flex;align-items:center;gap:6px"><span style="flex:1;height:1px;background:var(--border)"></span>📁 Événements passés (${past.length})<span style="flex:1;height:1px;background:var(--border)"></span></div>`;
+        html+=`<div style="font-size:11px;font-weight:600;color:var(--text3);margin:12px 0 6px;display:flex;align-items:center;gap:6px"><span style="flex:1;height:1px;background:var(--border)"></span>📁 Passés (${past.length})<span style="flex:1;height:1px;background:var(--border)"></span></div>`;
         past.forEach(evt=>{
           const d=new Date(evt.date);
           const partCount=evt.type==='benevole'?0:(evt.participants||[]).length;
           const color=EVT_COLORS[evt.type]||'#888';
-          const typeInfo=EVT_TYPES[evt.type]||{label:'Événement'};
-          html+=`<div class="evt-row" onclick="toggleEvtCard('${evt.id}')">
-            <div class="evt-row-date">${MOIS_SHORT[d.getMonth()]}<br>${d.getDate()}</div>
-            <div class="evt-row-dot" style="background:${color}"></div>
-            <div class="evt-row-title">${evt.titre}</div>
-            <div class="evt-row-count">${partCount>0?partCount+' 👤':''}</div>
-          </div>`;
+          html+=`<div class="evt-row" onclick="toggleEvtCard('${evt.id}')"><div class="evt-row-date">${MOIS_SHORT[d.getMonth()]}<br>${d.getDate()}</div><div class="evt-row-dot" style="background:${color}"></div><div class="evt-row-title">${evt.titre}</div><div class="evt-row-count">${partCount>0?partCount+' 👤':''}</div></div>`;
         });
       } else {
         html+=`<div style="text-align:center;padding:6px 0;font-size:11px;color:var(--text3)">📁 ${past.length} événement${past.length>1?'s':''} passé${past.length>1?'s':''} — <button onclick="toggleShowPastEvts()" style="border:none;background:none;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline">voir</button></div>`;
       }
-      html+=`</div>`;
     }
+    container.innerHTML=html;
   }
+}
 
-  container.innerHTML=html;
-  // Sidebar mois
-  if(sidebar){
-    sidebar.innerHTML=monthsList.map(m=>`<div class="month-sb-item" id="msb-evt-${m.id}" onclick="scrollToEvtMonth('${m.id}')"><span class="msb-month">${m.short.split('\n')[0]}</span><span class="msb-year">${m.short.split('\n')[1]}</span></div>`).join('');
+function selectEvt(id){
+  selectedEvtId=id;
+  // Mettre à jour les hcards sélectionnées
+  document.querySelectorAll('.evt-hcard').forEach(el=>{
+    const sel=el.getAttribute('onclick')===`selectEvt('${id}')`;
+    el.classList.toggle('selected',sel);
+  });
+  // Render detail
+  const MOIS=['Jan.','Fév.','Mar.','Avr.','Mai','Juin','Juil.','Août','Sep.','Oct.','Nov.','Déc.'];
+  const JOURS=['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
+  const EVT_COLORS={repas:'#E85D04',ag:'#3A7BD5',benevole:'#1A9E75',sortie:'#7C3AED'};
+  const EVT_EMOJI={repas:'🍽',ag:'📋',benevole:'🙌',sortie:'🏃'};
+  const now=new Date(new Date().toDateString());
+  const upcoming=clubEvents.filter(e=>e.date&&new Date(e.date)>=now).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  renderEvtDetail(id, upcoming, EVT_COLORS, EVT_EMOJI, MOIS, JOURS);
+}
+
+function renderEvtDetail(id, upcoming, EVT_COLORS, EVT_EMOJI, MOIS, JOURS){
+  const panel=document.getElementById('evt-detail-panel');
+  if(!panel)return;
+  const evt=upcoming.find(e=>e.id===id);
+  if(!evt){panel.innerHTML='';return;}
+  const d=new Date(evt.date);
+  const color=EVT_COLORS[evt.type]||'#888';
+  const emoji=EVT_EMOJI[evt.type]||'🎉';
+  const typeInfo=EVT_TYPES[evt.type]||{label:'Événement'};
+  const joined=(evt.participants||[]).includes(currentUserId);
+  const comments=evt.comments||[];
+  const linkedRaceForCount=evt.type==='benevole'&&evt.course_id?races.find(r=>r.id===evt.course_id):null;
+  const benevParts=linkedRaceForCount?participations.filter(p=>p.course_id===linkedRaceForCount.id&&(p.role_course==='benevole'||p.role_course==='les_deux')):[];
+  const partCount=evt.type==='benevole'?benevParts.length:(evt.participants||[]).length;
+  const amIBenevole=evt.type==='benevole'&&benevParts.some(p=>p.membre_id===currentUserId);
+  const now=new Date();
+  const daysUntil=Math.ceil((d-now)/(1000*60*60*24));
+  panel.innerHTML=`<div class="evt-detail-panel">
+    <div class="evt-detail-banner" style="background:linear-gradient(90deg,${color},${color}88)"></div>
+    <div class="evt-detail-body">
+      <div class="evt-detail-eyebrow" style="color:${color}">${emoji} ${typeInfo.label}</div>
+      <div class="evt-detail-title">${evt.titre}</div>
+      <div class="evt-detail-meta">
+        <span class="evt-detail-chip">📅 ${JOURS[d.getDay()]} ${d.getDate()} ${MOIS[d.getMonth()]} ${d.getFullYear()}</span>
+        ${evt.heure?`<span class="evt-detail-chip">🕐 ${evt.heure}</span>`:''}
+        ${evt.lieu?`<span class="evt-detail-chip">📍 ${evt.lieu}</span>`:''}
+      </div>
+      ${evt.description?`<div class="evt-detail-desc">${evt.description}</div>`:''}
+      <div class="evt-detail-stats">
+        <div class="evt-detail-stat">
+          <div class="evt-detail-stat-val">${partCount}</div>
+          <div class="evt-detail-stat-lbl">${evt.type==='benevole'?'Bénévoles':'Participants'}</div>
+        </div>
+        ${comments.length?`<div class="evt-detail-stat"><div class="evt-detail-stat-val">${comments.length}</div><div class="evt-detail-stat-lbl">Messages</div></div>`:''}
+        <div class="evt-detail-stat">
+          <div class="evt-detail-stat-val">${daysUntil<=0?'Auj.':daysUntil+'j'}</div>
+          <div class="evt-detail-stat-lbl">Dans</div>
+        </div>
+      </div>
+      ${evt.type!=='benevole'?`
+      <button class="evt-detail-join ${joined?'joined':''}" id="evtjoin-${evt.id}" onclick="toggleJoinEvt('${evt.id}')" style="background:${color}">
+        ${amIBenevole?'🙌 Je suis bénévole':joined?'✓ Je participe':'✋ Je participe'}
+      </button>`:`
+      <button onclick="goToCourse('${linkedRaceForCount?.id||''}')" class="evt-detail-join" style="background:${color}">
+        📅 S'inscrire comme bénévole
+      </button>`}
+      ${window._evtIsAdmin?`<div style="display:flex;gap:6px;margin-top:8px">
+        <button onclick="openEditEvtModal('${evt.id}')" style="flex:1;font-size:11px;padding:6px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;font-weight:600">✏️ Modifier</button>
+        <button onclick="deleteEvt('${evt.id}')" style="font-size:11px;padding:6px 10px;border-radius:8px;border:1px solid rgba(220,50,50,.3);background:rgba(220,50,50,.08);color:#c03030;cursor:pointer;font-weight:600">🗑</button>
+      </div>`:''}
+      <!-- Corps dépliable commentaires -->
+      <div class="evt-comment-box">
+        <div class="evt-comment-title">💬 Commentaires</div>
+        <div id="evtcomments-${evt.id}">
+          ${comments.length?comments.map(c=>`<div class="evt-comment-item"><div style="flex:1"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><span class="evt-comment-author">${c.author}</span><span class="evt-comment-date">${c.date}</span></div><div class="evt-comment-text">${c.text}</div></div></div>`).join('')
+          :'<div style="font-size:12px;color:var(--text3);font-style:italic;padding:4px 0">Aucun commentaire</div>'}
+        </div>
+        <div class="evt-comment-input-row">
+          <input class="evt-comment-input" id="evtci-${evt.id}" type="text" placeholder="Laisser un message…" onkeydown="if(event.key==='Enter')postEvtComment('${evt.id}')">
+          <button class="evt-comment-send" onclick="postEvtComment('${evt.id}')">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderEvtPast(past, wrap, EVT_COLORS, MOIS_SHORT, show){
+  if(!wrap)return;
+  if(!past.length){wrap.innerHTML='';return;}
+  if(show){
+    let h=`<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin:4px 0 6px;display:flex;align-items:center;gap:6px"><span style="flex:1;height:1px;background:var(--border)"></span>📁 Passés (${past.length})<span style="flex:1;height:1px;background:var(--border)"></span></div>`;
+    past.forEach(evt=>{
+      const d=new Date(evt.date);
+      const partCount=evt.type==='benevole'?0:(evt.participants||[]).length;
+      const color=EVT_COLORS[evt.type]||'#888';
+      h+=`<div class="evt-row" onclick="toggleEvtCard('${evt.id}')"><div class="evt-row-date">${MOIS_SHORT[d.getMonth()]}<br>${d.getDate()}</div><div class="evt-row-dot" style="background:${color}"></div><div class="evt-row-title">${evt.titre}</div><div class="evt-row-count">${partCount>0?partCount+' 👤':''}</div></div>`;
+    });
+    wrap.innerHTML=h;
+  } else {
+    wrap.innerHTML=`<div style="text-align:center;padding:4px 0 8px;font-size:11px;color:var(--text3)">📁 ${past.length} événement${past.length>1?'s':''} passé${past.length>1?'s':''} — <button onclick="toggleShowPastEvts()" style="border:none;background:none;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline">voir</button></div>`;
   }
+}
+
+function buildEvtBody(evt){
+  const linkedRace=evt.course_id?races.find(r=>r.id===evt.course_id):null;
+  const joined=(evt.participants||[]).includes(currentUserId);
+  const comments=evt.comments||[];
+  const linkedRaceForCount=evt.type==='benevole'&&evt.course_id?races.find(r=>r.id===evt.course_id):null;
+  const benevParts=linkedRaceForCount?participations.filter(p=>p.course_id===linkedRaceForCount.id&&(p.role_course==='benevole'||p.role_course==='les_deux')):[];
+  const partCount=evt.type==='benevole'?benevParts.length:(evt.participants||[]).length;
+  let html='<div class="evt-participants">';
+  if(evt.type==='benevole'){
+    const bList=linkedRace?participations.filter(p=>p.course_id===linkedRace.id&&(p.role_course==='benevole'||p.role_course==='les_deux')):[];
+    const bListHtml=bList.length?bList.map(p=>{const m=members.find(x=>x.id===p.membre_id);const n=m?.nom||'?';return `<div class="evt-part-chip"><div class="av-md" style="${avStyle(n,22,22,9)};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:9px">${initials(n)}</div>${n.split(' ')[0]||n}</div>`;}).join(''):'<span style="font-size:12px;color:var(--text3);font-style:italic">Aucun bénévole inscrit</span>';
+    if(bList.length) html+=`<div style="margin-bottom:12px"><div class="evt-part-title">🙌 Bénévoles (${bList.length})</div><div class="evt-part-list">${bListHtml}</div></div>`;
+    html+=`<div style="background:#F0F6FF;border:1.5px dashed #B0CFF5;border-radius:12px;padding:14px;text-align:center;margin-bottom:12px"><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">🙌 Tu veux être bénévole ?</div><div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5">Inscription depuis l'onglet <strong>Courses</strong>, rôle <strong>Bénévole</strong>.</div><button onclick="goToCourse('${linkedRace?.id||''}')" style="width:100%;padding:11px;border-radius:var(--radius-md);border:none;background:#1A5FBF;color:#fff;font-size:13px;font-weight:700;cursor:pointer">📅 ${linkedRace?`Voir "${linkedRace.nom}"`:'Aller sur Courses'}</button></div>`;
+  } else {
+    html+=`<div class="evt-part-title">👥 Participants (${partCount})</div><div class="evt-part-list" id="evtparts-${evt.id}">${(evt.participants||[]).map(uid=>{const m=members.find(x=>x.id===uid);const n=m?.nom||uid;return `<div class="evt-part-chip"><div class="av-md" style="${avStyle(n,22,22,9)};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:9px">${initials(n)}</div>${n.split('.')[0]||n}</div>`;}).join('')}${!partCount?'<span style="font-size:12px;color:var(--text3);font-style:italic">Aucun participant</span>':''}</div><div class="evt-actions"><button class="evt-join-btn ${joined?'joined':''}" id="evtjoin-${evt.id}" onclick="toggleJoinEvt('${evt.id}')">${joined?'✓ Je participe':'✋ Je participe'}</button></div>`;
+  }
+  html+=`</div><div class="evt-comment-box"><div class="evt-comment-title">💬 Commentaires</div><div id="evtcomments-${evt.id}">${comments.length?comments.map(c=>`<div class="evt-comment-item"><div style="flex:1"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><span class="evt-comment-author">${c.author}</span><span class="evt-comment-date">${c.date}</span></div><div class="evt-comment-text">${c.text}</div></div></div>`).join(''):'<div style="font-size:12px;color:var(--text3);font-style:italic;padding:4px 0">Aucun commentaire</div>'}</div><div class="evt-comment-input-row"><input class="evt-comment-input" id="evtci-${evt.id}" type="text" placeholder="Laisser un message…" onkeydown="if(event.key===\'Enter\')postEvtComment(\'${evt.id}\')"><button class="evt-comment-send" onclick="postEvtComment(\'${evt.id}\')">↑</button></div></div>`;
+  return html;
 }
 
 function scrollToEvtMonth(monthId){
