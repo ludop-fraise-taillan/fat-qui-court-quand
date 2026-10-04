@@ -265,18 +265,18 @@
     .top3-bar-fill{height:100%;border-radius:99px;transition:width .5s ease}
     .top3-count{font-size:12px;font-weight:600;min-width:28px;text-align:right}
     .top3-sub{font-size:9px;color:var(--text3);text-align:right}
-    /* ── Bandeau partenaires ── */
-    .partners-strip{overflow:hidden;margin-bottom:12px;border-radius:12px;border:0.5px solid var(--border);background:var(--bg2)}
-    .partners-strip-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;padding:6px 12px 2px;opacity:.8}
-    .partners-track-wrap{overflow:hidden;padding:6px 0 8px}
-    .partners-track{display:flex;gap:12px;will-change:transform;width:max-content}
-    .partners-track.no-anim{animation:none!important}
-    @keyframes scroll-partners{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-    .partner-chip{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;user-select:none;padding:0 6px}
-    .partner-chip:active{opacity:.7}
-    .partner-logo{width:52px;height:52px;border-radius:10px;object-fit:contain;background:#fff;border:0.5px solid var(--border);padding:4px}
-    .partner-logo-placeholder{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,var(--bg),var(--bg2));border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--text3);text-align:center;padding:4px;line-height:1.2}
-    .partner-name{font-size:9px;color:var(--text3);max-width:58px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    /* ── Bandeau partenaires global ── */
+    .partners-bar{background:var(--bg2);border-bottom:0.5px solid var(--border);overflow:hidden;height:38px;display:none;align-items:center}
+    .partners-bar.visible{display:flex}
+    .partners-bar-track{display:flex;gap:0;will-change:transform;width:max-content;align-items:center;height:38px}
+    .partners-bar-track.no-anim{animation:none!important}
+    @keyframes scroll-partners-bar{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .partner-bar-chip{display:flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0;padding:0 16px;border-right:0.5px solid var(--border);height:38px;-webkit-tap-highlight-color:transparent}
+    .partner-bar-chip:active{opacity:.7}
+    .partner-bar-logo{width:24px;height:24px;border-radius:5px;object-fit:contain;background:#fff;border:0.5px solid var(--border);flex-shrink:0}
+    .partner-bar-placeholder{width:24px;height:24px;border-radius:5px;background:var(--bg);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:var(--text3);flex-shrink:0}
+    .partner-bar-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:0 14px;white-space:nowrap;border-right:0.5px solid var(--border);height:38px;display:flex;align-items:center;background:var(--bg2);flex-shrink:0}
+    .partner-bar-name{font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap}
     /* Membres cards B */
     .member-card{background:var(--bg);border-radius:14px;margin-bottom:8px;overflow:hidden;border:0.5px solid var(--border);cursor:pointer}
     .member-card.me{border-color:#185FA5;border-width:1.5px}
@@ -522,6 +522,11 @@
     </div>
   </div>
 
+  <!-- Bandeau partenaires global -->
+  <div class="partners-bar" id="partners-bar">
+    <div class="partners-bar-track" id="partners-bar-track"></div>
+  </div>
+
   <div class="content">
 
     <!-- COURSES -->
@@ -567,7 +572,6 @@
       <div style="display:flex;justify-content:flex-end;margin-bottom:6px">
         <button type="button" onclick="document.getElementById('modal-help-membres').classList.add('open')" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text3);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit">?</button>
       </div>
-      <div id="partners-strip-wrap"></div>
       <div class="stats-grid" id="stats-grid"></div>
       <div style="display:flex;gap:0;position:relative">
         <div id="runner-list" style="flex:1;min-width:0"></div>
@@ -1126,46 +1130,34 @@ function setFv4Type(type){
   });
 }
 
-// ── Bandeau partenaires ────────────────────────────────────────────────────
+// ── Bandeau partenaires global ─────────────────────────────────────────────
 let partners=[];
 function renderPartnersStrip(){
-  const wrap=document.getElementById('partners-strip-wrap');
-  if(!wrap)return;
+  const bar=document.getElementById('partners-bar');
+  const track=document.getElementById('partners-bar-track');
+  if(!bar||!track)return;
   const active=partners.filter(p=>p.actif!==false);
-  if(!active.length){wrap.innerHTML='';return;}
+  if(!active.length){bar.classList.remove('visible');return;}
   const makeChip=p=>{
     const logo=p.logo_url
-      ?`<img class="partner-logo" src="${p.logo_url}" alt="${p.nom}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      ?`<img class="partner-bar-logo" src="${p.logo_url}" alt="${p.nom}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
       :'';
-    const ph=`<div class="partner-logo-placeholder" ${p.logo_url?'style="display:none"':''}>${p.nom}</div>`;
-    return `<div class="partner-chip" onclick="window.open('${p.lien_url||'#'}','_blank')" title="${p.nom}">${logo}${ph}<span class="partner-name">${p.nom}</span></div>`;
+    const ph=`<div class="partner-bar-placeholder" ${p.logo_url?'style="display:none"':''}>${p.nom.slice(0,2)}</div>`;
+    return `<div class="partner-bar-chip" onclick="window.open('${p.lien_url||'#'}','_blank')" title="${p.nom}">${logo}${ph}<span class="partner-bar-name">${p.nom}</span></div>`;
   };
-  // Duplique la liste pour le défilement sans-fin
+  const label=`<div class="partner-bar-label">🤝 Partenaires</div>`;
   const chips=active.map(makeChip).join('');
-  const needScroll=active.length>3;
-  wrap.innerHTML=`<div class="partners-strip">
-    <div class="partners-strip-label">🤝 Nos partenaires</div>
-    <div class="partners-track-wrap">
-      <div class="partners-track${needScroll?'':' no-anim'}" id="partners-track">
-        ${chips}${needScroll?chips:''}
-      </div>
-    </div>
-  </div>`;
-  if(needScroll){
-    const track=document.getElementById('partners-track');
-    // Calcule la largeur de la moitié (originale) pour l'animation
-    requestAnimationFrame(()=>{
-      const half=track.scrollWidth/2;
-      track.style.animation=`scroll-partners ${active.length*3}s linear infinite`;
-      track.style.setProperty('--half',half+'px');
-      // Réécrit l'animation avec la vraie largeur
-      track.style.animation='none';
-      const style=document.createElement('style');
-      style.textContent=`@keyframes scroll-partners-dyn{0%{transform:translateX(0)}100%{transform:translateX(-${half}px)}}`;
-      document.head.appendChild(style);
-      track.style.animation=`scroll-partners-dyn ${active.length*3}s linear infinite`;
-    });
-  }
+  // Toujours dupliquer pour un défilement continu sans-fin
+  track.innerHTML=label+chips+label+chips;
+  bar.classList.add('visible');
+  requestAnimationFrame(()=>{
+    const half=track.scrollWidth/2;
+    const dur=Math.max(active.length*4,12);
+    const style=document.createElement('style');
+    style.textContent=`@keyframes scroll-partners-bar{0%{transform:translateX(0)}100%{transform:translateX(-${half}px)}}`;
+    document.head.appendChild(style);
+    track.style.animation=`scroll-partners-bar ${dur}s linear infinite`;
+  });
 }
 
 // ── Chargement ─────────────────────────────────────────────────────────────
