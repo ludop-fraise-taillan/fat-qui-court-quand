@@ -314,7 +314,7 @@
     .evt-empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px}
 
     /* ── Bandeau partenaires global ── */
-    .partners-bar{background:var(--bg2);border-bottom:0.5px solid var(--border);overflow:hidden;height:38px;display:none;align-items:center}
+    .partners-bar{background:var(--bg2);border-bottom:0.5px solid var(--border);overflow:hidden;height:38px;display:none;align-items:center;flex-shrink:0}
     .partners-bar.visible{display:flex}
     .partners-bar-track{display:flex;gap:0;will-change:transform;width:max-content;align-items:center;height:38px}
     .partners-bar-track.no-anim{animation:none!important}
@@ -2367,7 +2367,7 @@ function switchTab(tab){
     if(n)n.classList.toggle('active',t===tab);
   });
   if(tab==='historique')renderHistory();
-  if(tab==='evenements'){loadClubEvents();}
+  if(tab==='evenements'){loadClubEvents();renderPartnersStrip();}
 }
 function switchSub(sub){
   document.getElementById('sub-s-course').style.display=sub==='course'?'block':'none';
