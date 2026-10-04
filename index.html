@@ -2119,9 +2119,15 @@ function renderEvts(){
       }
       const typeInfo=EVT_TYPES[evt.type]||{label:'Événement',key:'repas'};
       const joined=(evt.participants||[]).includes(currentUserId);
-      const partCount=(evt.participants||[]).length;
       const comments=evt.comments||[];
       const myName=currentName();
+      // Pour bénévolat : compter depuis participations de la course liée
+      const linkedRaceForCount=evt.type==='benevole'&&evt.course_id?races.find(r=>r.id===evt.course_id):null;
+      const benevParts=linkedRaceForCount
+        ?participations.filter(p=>p.course_id===linkedRaceForCount.id&&(p.role_course==='benevole'||p.role_course==='les_deux'))
+        :[];
+      const partCount=evt.type==='benevole'?benevParts.length:(evt.participants||[]).length;
+      const amIBenevole=evt.type==='benevole'&&benevParts.some(p=>p.membre_id===currentUserId);
       html+=`<div class="evt-card ${evt.type}">
         <div class="evt-head" onclick="toggleEvtCard('${evt.id}')">
           <div class="evt-type-pill ${evt.type}">${typeInfo.label}</div>
@@ -2133,9 +2139,9 @@ function renderEvts(){
           </div>
           ${evt.description?`<div class="evt-desc">${evt.description}</div>`:''}
           <div class="evt-status-bar">
-            <div class="evt-stat"><span class="evt-stat-val">${partCount}</span> participant${partCount>1?'s':''}</div>
+            <div class="evt-stat"><span class="evt-stat-val">${partCount}</span> bénévole${partCount>1?'s':''}</div>
             ${comments.length?`<div class="evt-stat"><span class="evt-stat-val">${comments.length}</span> 💬</div>`:''}
-            ${joined?'<span style="font-size:11px;color:rgba(255,255,255,.9);font-weight:700">✓ Je participe</span>':''}
+            ${amIBenevole?'<span style="font-size:11px;color:rgba(255,255,255,.9);font-weight:700">🙌 Je suis bénévole</span>':joined?'<span style="font-size:11px;color:rgba(255,255,255,.9);font-weight:700">✓ Je participe</span>':''}
             ${window._evtIsAdmin?`<div style="display:flex;gap:6px;margin-left:auto">
               <button onclick="event.stopPropagation();openEditEvtModal('${evt.id}')" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;cursor:pointer;font-weight:600">✏️ Modifier</button>
               <button onclick="event.stopPropagation();deleteEvt('${evt.id}')" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,0,0,.25);color:#fff;cursor:pointer;font-weight:600">🗑</button>
@@ -2146,7 +2152,17 @@ function renderEvts(){
           <div class="evt-participants">
             ${evt.type==='benevole'?(()=>{
               const linkedRace=evt.course_id?races.find(r=>r.id===evt.course_id):null;
-              return `<div style="background:#F0F6FF;border:1.5px dashed #B0CFF5;border-radius:12px;padding:14px;text-align:center;margin-bottom:12px">
+              // Liste des bénévoles inscrits sur la course liée
+              const bList=linkedRace?participations.filter(p=>p.course_id===linkedRace.id&&(p.role_course==='benevole'||p.role_course==='les_deux')):[];
+              const bListHtml=bList.length
+                ?bList.map(p=>{const m=members.find(x=>x.id===p.membre_id);const n=m?.nom||'?';return `<div class="evt-part-chip"><div class="av-md" style="${avStyle(n,22,22,9)};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:9px">${initials(n)}</div>${n.split(' ')[0]||n}</div>`;}).join('')
+                :'<span style="font-size:12px;color:var(--text3);font-style:italic">Aucun bénévole inscrit pour l\'instant</span>';
+              return `
+              ${bList.length?`<div style="margin-bottom:12px">
+                <div class="evt-part-title">🙌 Bénévoles inscrits (${bList.length})</div>
+                <div class="evt-part-list">${bListHtml}</div>
+              </div>`:''}
+              <div style="background:#F0F6FF;border:1.5px dashed #B0CFF5;border-radius:12px;padding:14px;text-align:center;margin-bottom:12px">
                 <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">🙌 Tu veux être bénévole ?</div>
                 <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5">L'inscription se fait depuis l'onglet <strong>Courses</strong> en cliquant sur la course et en choisissant le rôle <strong>Bénévole</strong>.</div>
                 <button onclick="goToCourse('${linkedRace?.id||''}')" style="width:100%;padding:11px;border-radius:var(--radius-md);border:none;background:#1A5FBF;color:#fff;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
