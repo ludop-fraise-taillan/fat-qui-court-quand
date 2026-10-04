@@ -116,57 +116,64 @@
     .chip-dist:active{opacity:.7}
     .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
 
-    /* ── Cartes course — design V3 gradient + barre statut D ── */
-    .race-card{border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 2px 14px rgba(0,0,0,.1);position:relative}
-    .race-card.sold-out .card-head{background:linear-gradient(135deg,#5a0a0a,#900f0f) !important}
-    /* En-tête gradient */
-    .card-head{display:flex;align-items:stretch;cursor:pointer;-webkit-tap-highlight-color:transparent;flex-direction:column}
+    /* ── Cartes course — design V4 smartphone-first ── */
+    .race-card{border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.05);position:relative;background:#fff}
+    /* Barre colorée en haut de chaque carte (4px) */
+    .race-card::before{content:'';display:block;height:4px;width:100%}
+    .race-card.trail::before{background:linear-gradient(90deg,#3A8F2A,#5CB648)}
+    .race-card.route::before{background:linear-gradient(90deg,#1A5FBF,#3B82F6)}
+    .race-card.ultra::before{background:linear-gradient(90deg,#C04A1A,#E8703A)}
+    .race-card.sold-out::before{background:linear-gradient(90deg,#900f0f,#C0392B)!important}
+    /* En-tête : fond blanc */
+    .card-head{display:flex;align-items:stretch;cursor:pointer;-webkit-tap-highlight-color:transparent;flex-direction:column;background:#fff}
+    .race-card.sold-out .card-head{background:#fff!important}
     .card-head-inner{display:flex;align-items:stretch;flex:1}
-    .card-head.trail .card-head-inner,.card-head.trail{background:linear-gradient(135deg,#D6EFC7,#C0E3A5)}
-    .card-head.route .card-head-inner,.card-head.route{background:linear-gradient(135deg,#C8DEFA,#B0CFF7)}
-    .card-head.ultra .card-head-inner,.card-head.ultra{background:linear-gradient(135deg,#FAD9C8,#F5C4AE)}
-    /* Colonne date */
-    .date-col{background:rgba(0,0,0,.14);padding:12px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:58px;flex-shrink:0;gap:1px}
-    .dc-day{font-size:9px;font-weight:700;color:rgba(0,0,0,.45);text-transform:uppercase;letter-spacing:.07em}
-    .dc-dd{font-size:24px;font-weight:800;color:rgba(0,0,0,.75);line-height:1}
-    .dc-mm{font-size:12px;font-weight:700;color:rgba(0,0,0,.65);text-transform:uppercase;letter-spacing:.04em}
-    .dc-yy{font-size:9px;color:rgba(0,0,0,.35);margin-top:1px}
+    /* Colonne date — fond coloré par type */
+    .date-col{padding:14px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:62px;flex-shrink:0;gap:2px}
+    .race-card.trail .date-col{background:#EBF7E6}
+    .race-card.route .date-col{background:#E8F0FD}
+    .race-card.ultra .date-col{background:#FDF0E8}
+    .race-card.sold-out .date-col{background:#FDECEC!important}
+    .dc-day{font-size:10px;font-weight:700;color:rgba(0,0,0,.40);text-transform:uppercase;letter-spacing:.07em}
+    .dc-dd{font-size:28px;font-weight:800;color:#111;line-height:1}
+    .dc-mm{font-size:13px;font-weight:700;color:#333;text-transform:uppercase;letter-spacing:.04em}
+    .dc-yy{font-size:10px;color:rgba(0,0,0,.35);margin-top:2px}
+    /* Séparateur vertical entre date et infos */
+    .date-col-sep{width:1px;background:rgba(0,0,0,.07);flex-shrink:0}
     /* Infos header */
-    .head-info{flex:1;padding:11px 10px 11px 12px;display:flex;flex-direction:column;justify-content:center;gap:5px}
+    .head-info{flex:1;padding:12px 10px 12px 14px;display:flex;flex-direction:column;justify-content:center;gap:6px}
     .head-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
-    .race-name{font-size:16px;font-weight:700;color:rgba(0,0,0,.78);line-height:1.25;flex:1}
-    .card-head.trail .race-name{color:#1E4A0A}
-    .card-head.route .race-name{color:#0B2D5C}
-    .card-head.ultra .race-name{color:#6B200A}
+    .race-name{font-size:17px;font-weight:800;color:#111;line-height:1.2;flex:1;letter-spacing:-.01em}
     .head-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
-    .race-type{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(0,0,0,.12);color:rgba(0,0,0,.65);white-space:nowrap}
-    .card-head.trail .race-type{background:rgba(30,74,10,.15);color:#1E4A0A}
-    .card-head.route .race-type{background:rgba(11,45,92,.15);color:#0B2D5C}
-    .card-head.ultra .race-type{background:rgba(107,32,10,.15);color:#6B200A}
-    .complet-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.85);color:#900f0f;white-space:nowrap}
+    .race-type{font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;white-space:nowrap}
+    .race-card.trail .race-type{background:#DCF2D5;color:#2A7A18}
+    .race-card.route .race-type{background:#DDEAFC;color:#1546A0}
+    .race-card.ultra .race-type{background:#FCE8DC;color:#B03A10}
+    .race-card.sold-out .race-type{background:#FCDCDC;color:#900f0f}
+    .complet-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:#FCDCDC;color:#900f0f;white-space:nowrap}
     .head-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
     .head-dists{display:flex;gap:5px;flex-wrap:wrap}
-    .dist-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;background:rgba(0,0,0,.10);color:rgba(0,0,0,.60)}
-    .card-head.trail .dist-tag{background:rgba(30,74,10,.13);color:#1E4A0A}
-    .card-head.route .dist-tag{background:rgba(11,45,92,.13);color:#0B2D5C}
-    .card-head.ultra .dist-tag{background:rgba(107,32,10,.13);color:#6B200A}
+    .dist-tag{font-size:12px;font-weight:600;padding:4px 11px;border-radius:99px}
+    .race-card.trail .dist-tag{background:#EAF5E4;color:#2A7A18;border:1px solid #C5E8B8}
+    .race-card.route .dist-tag{background:#E4EEFB;color:#1546A0;border:1px solid #B8D2F5}
+    .race-card.ultra .dist-tag{background:#FBF0E4;color:#B03A10;border:1px solid #F5CEB8}
     /* Chevron */
-    .head-chev{display:flex;align-items:center;padding:0 10px;color:rgba(0,0,0,.30);font-size:13px;flex-shrink:0;transition:transform .25s}
+    .head-chev{display:flex;align-items:center;padding:0 12px;color:rgba(0,0,0,.25);font-size:15px;flex-shrink:0;transition:transform .25s}
     .head-chev.open{transform:rotate(180deg)}
-    /* Barre statut D */
-    .status-bar{padding:5px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.55);border-top:1px solid rgba(255,255,255,.7)}
-    .status-bar.c{background:rgba(220,245,232,.70);border-top:1px solid rgba(180,225,200,.60)}
-    .status-bar.i{background:rgba(255,243,210,.65);border-top:1px solid rgba(230,200,130,.40)}
-    .status-bar.none{background:rgba(255,255,255,.50);border-top:1px solid rgba(0,0,0,.07)}
-    .status-bar-txt{font-size:11px;font-weight:600}
-    .status-bar-txt.c{color:#0A6B47}
-    .status-bar-txt.i{color:#8A6000}
-    .status-bar-txt.none{color:rgba(0,0,0,.38);font-weight:400}
-    .status-bar-counts{display:flex;gap:8px;align-items:center}
-    .sbc-item{font-size:10px;color:rgba(0,0,0,.40);display:flex;align-items:center;gap:3px}
-    .sbc-val{font-size:12px;font-weight:700}
-    .sbc-val.green{color:#0A6B47}
-    .sbc-val.amber{color:#8A6000}
+    /* Barre statut */
+    .status-bar{padding:7px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid rgba(0,0,0,.06);background:#FAFAFA}
+    .status-bar.c{background:#F0FBF5;border-top-color:rgba(16,120,80,.12)}
+    .status-bar.i{background:#FFFBF0;border-top-color:rgba(180,120,0,.12)}
+    .status-bar.none{background:#FAFAFA}
+    .status-bar-txt{font-size:12px;font-weight:600}
+    .status-bar-txt.c{color:#0A7A50}
+    .status-bar-txt.i{color:#7A5800}
+    .status-bar-txt.none{color:rgba(0,0,0,.35);font-weight:400}
+    .status-bar-counts{display:flex;gap:10px;align-items:center}
+    .sbc-item{font-size:11px;color:rgba(0,0,0,.45);display:flex;align-items:center;gap:3px}
+    .sbc-val{font-size:13px;font-weight:700}
+    .sbc-val.green{color:#0A7A50}
+    .sbc-val.amber{color:#7A5800}
     /* Zone déroulante */
     .card-expand{background:var(--bg);display:none;border-top:0.5px solid rgba(0,0,0,.06)}
     .card-expand.open{display:block}
@@ -204,7 +211,7 @@
     .chrono-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:500;color:#185FA5;background:#E6F1FB;border:0.5px solid #B5D4F4;border-radius:99px;padding:2px 7px}
     .sold-out-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);pointer-events:none;z-index:5;user-select:none}
     /* Historique */
-    .hcard{border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 2px 14px rgba(0,0,0,.1)}
+    .hcard{border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.08),0  0 0 1px rgba(0,0,0,.05);background:#fff}
     .hcard-expand{background:var(--bg);display:none}
     .hcard-expand.open{display:block}
     .stats-bar{padding:6px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.18)}
@@ -1089,8 +1096,8 @@ function resetDistTags(){formDistances=[];renderDistTags();}
 function setUrl(u){document.getElementById('f-url').value=u;}
 function setUrlResults(u){document.getElementById('f-url-results').value=u;}
 function setFv4Type(type){
-  const colors={Trail:'linear-gradient(90deg,#D6EFC7,#C0E3A5)',Route:'linear-gradient(90deg,#C8DEFA,#B0CFF7)',Ultra:'linear-gradient(90deg,#FAD9C8,#F5C4AE)'};
-  const textColors={Trail:'#1E4A0A',Route:'#0B2D5C',Ultra:'#6B200A'};
+  const colors={Trail:'#EBF7E6',Route:'#E8F0FD',Ultra:'#FDF0E8'};
+  const textColors={Trail:'#2A7A18',Route:'#1546A0',Ultra:'#B03A10'};
   const head=document.getElementById('fv4-head');
   head.style.background=colors[type];
   const title=head.querySelector('.fv4-top-head-title');
@@ -1272,8 +1279,8 @@ function renderRaces(){
     if(!inscritsList) inscritsList='<div style="font-size:11px;color:var(--text3);font-style:italic;padding:4px 0">Aucune participation pour l\'instant</div>';
 
     const cardId='card-'+r.id;
-    html+=`<div class="race-card${isSoldOut?' sold-out':''}">
-      <div class="card-head ${tc}${isSoldOut?' sold-out':''}" onclick="toggleCard('${cardId}')">
+    html+=`<div class="race-card ${tc.toLowerCase()}${isSoldOut?' sold-out':''}">
+      <div class="card-head" onclick="toggleCard('${cardId}')">
         <div class="card-head-inner">
           <div class="date-col">
             <span class="dc-day">${dcDay}</span>
@@ -1281,6 +1288,7 @@ function renderRaces(){
             <span class="dc-mm">${dcMM}</span>
             <span class="dc-yy">${dcYY}</span>
           </div>
+          <div class="date-col-sep"></div>
           <div class="head-info">
             <div class="head-top">
               <span class="race-name">${r.nom}</span>
@@ -1638,8 +1646,8 @@ function renderHistory(){
     if(!chronoHtml) chronoHtml='<div style="font-size:11px;color:var(--text3);font-style:italic;padding:8px 0">Aucun participant enregistré</div>';
 
     const cardId='hcard-'+r.id;
-    html+=`<div class="hcard">
-      <div class="card-head ${tc}" onclick="toggleCard('${cardId}')">
+    html+=`<div class="hcard race-card ${tc.toLowerCase()}">
+      <div class="card-head" onclick="toggleCard('${cardId}')">
         <div class="card-head-inner">
           <div class="date-col">
             <span class="dc-day">${dcDay}</span>
@@ -1647,6 +1655,7 @@ function renderHistory(){
             <span class="dc-mm">${dcMM}</span>
             <span class="dc-yy">${dcYY}</span>
           </div>
+          <div class="date-col-sep"></div>
           <div class="head-info">
             <div class="head-top">
               <span class="race-name">${r.nom}</span>
