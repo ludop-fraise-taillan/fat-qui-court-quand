@@ -109,13 +109,12 @@
     .evt-sticky-head .tab-sub{margin-bottom:0}
     .legend{display:flex;gap:14px;font-size:12px;color:var(--text2);margin-bottom:10px}
     .month-sep{display:flex;align-items:center;gap:10px;margin:16px 0 10px}
-    .month-sep:first-child{margin-top:0}
-    .month-sep-label{font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;text-transform:uppercase;letter-spacing:0.08em}
-    .month-sep-line{flex:1;height:0.5px;background:var(--border2)}
-    .month-sb-item{font-size:10px;font-weight:700;padding:5px 6px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;text-align:center;line-height:1.2;white-space:nowrap;min-width:38px;box-shadow:0 1px 4px rgba(0,0,0,.08);-webkit-tap-highlight-color:transparent;user-select:none}
+    .month-sep:first-child{margin-top:4px}
+    .month-sep-label{font-size:10px;font-weight:800;color:var(--text3);white-space:nowrap;text-transform:uppercase;letter-spacing:0.12em}
+    .month-sep-line{flex:1;height:0.5px;background:var(--border)}
     .month-sb-item .msb-month{font-size:10px;font-weight:700;display:block}
-    .month-sb-item .msb-year{font-size:8px;color:var(--text3);display:block;margin-top:1px}
-    .month-sb-item.active{background:#185FA5;color:#fff;border-color:#185FA5}
+    .month-sb-item .msb-year{font-size:8px;color:var(--text3);display:block;margin-top:1px;font-weight:500}
+    .month-sb-item.active{background:#185FA5;color:#fff;border-color:#185FA5;box-shadow:0 2px 8px rgba(24,95,165,.3)}
     .month-sb-item.active .msb-year{color:rgba(255,255,255,.7)}
     .chip-dist:active{opacity:.7}
     .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
@@ -165,15 +164,24 @@
     .head-chev{display:flex;align-items:center;padding:0 12px;color:rgba(0,0,0,.25);font-size:15px;flex-shrink:0;transition:transform .25s}
     .head-chev.open{transform:rotate(180deg)}
     /* Barre statut */
-    .status-bar{padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:none;background:#555}
-    .status-bar.c{background:#1A7A50}
-    .status-bar.i{background:#A06010}
-    .status-bar.none{background:#555}
+    .status-bar{padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:none;background:#444}
+    .status-bar.c{background:#135F3E}
+    .status-bar.i{background:#7A4808}
+    .status-bar.none{background:#444}
     .status-bar-txt{font-size:12px;font-weight:700;color:#fff}
-    .status-bar-txt.c{color:#fff}
-    .status-bar-txt.i{color:#fff}
-    .status-bar-txt.none{color:#eee;font-weight:600}
-    .status-bar-counts{display:flex;gap:10px;align-items:center}
+    .status-bar-txt.c{color:#6EF0B8}
+    .status-bar-txt.i{color:#FFD27A}
+    .status-bar-txt.none{color:rgba(255,255,255,.65);font-weight:500}
+    .status-bar-right{display:flex;align-items:center;gap:8px}
+    .sbc-avatars{display:flex;align-items:center}
+    .sbc-av{width:22px;height:22px;border-radius:50%;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.35);margin-left:-6px;flex-shrink:0}
+    .sbc-av:first-child{margin-left:0}
+    .sbc-more{font-size:10px;font-weight:700;color:rgba(255,255,255,.7);margin-left:4px;white-space:nowrap}
+    .btn-join-bar{font-size:11px;font-weight:700;padding:5px 13px;border-radius:99px;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;letter-spacing:.01em}
+    .btn-join-bar.none{background:rgba(255,255,255,.15);color:#fff}
+    .btn-join-bar.none:hover{background:rgba(255,255,255,.25)}
+    .btn-join-bar.c{background:rgba(255,255,255,.15);color:#6EF0B8}
+    .btn-join-bar.i{background:rgba(255,255,255,.15);color:#FFD27A}
     .sbc-item{font-size:12px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:3px;font-weight:600}
     .sbc-val{font-size:14px;font-weight:800;color:#fff}
     .sbc-val.green{color:#ADFFD6}
@@ -213,7 +221,15 @@
     .btn-join-card.i{background:var(--amber-bg);color:var(--amber-text);border:0.5px solid var(--amber-border)}
     /* Chrono & sold-out stamp */
     .chrono-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:500;color:#185FA5;background:#E6F1FB;border:0.5px solid #B5D4F4;border-radius:99px;padding:2px 7px}
-    .sold-out-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg);pointer-events:none;z-index:5;user-select:none}
+    .sold-out-stamp{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:4;overflow:hidden;border-radius:14px}
+    .sold-out-stamp::after{content:'COMPLET';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-18deg);font-size:28px;font-weight:900;letter-spacing:.12em;color:rgba(144,15,15,.18);white-space:nowrap;pointer-events:none}
+    .race-card.sold-out .card-head{opacity:.82}
+    .race-card.sold-out .head-info{opacity:.75}
+    /* Urgence : course dans moins de 7 jours */
+    .urgency-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;white-space:nowrap}
+    .urgency-pill.today{background:#FEE2E2;color:#991B1B;border-color:#FCA5A5}
+    /* Piste 4 — mini-calendrier amélioré */
+    .month-sb-item{font-size:10px;font-weight:700;padding:6px 5px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;text-align:center;line-height:1.2;white-space:nowrap;min-width:40px;-webkit-tap-highlight-color:transparent;user-select:none;transition:all .15s}
     /* Historique */
     .hcard{border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.08),0  0 0 1px rgba(0,0,0,.05);background:#fff}
     .hcard-expand{background:var(--bg);display:none}
@@ -1457,7 +1473,26 @@ function renderRaces(){
 
     // Barre statut
     const statusClass=myS==='confirmed'?'c':myS==='interested'?'i':'none';
-    const statusTxt=myS==='confirmed'?`✓ Inscrit${myPart?.distance?' — '+myPart.distance+' km':''}`:myS==='interested'?'★ Intéressé':isPastRace?'+ Ajouter ma participation':'Participer ?';
+    const statusTxt=myS==='confirmed'?`✓ Inscrit${myPart?.distance?' — '+myPart.distance+' km':''}`:myS==='interested'?'★ Intéressé':isPastRace?'+ Ma participation':'Participer ?';
+    const statusBtnTxt=myS==='confirmed'?'✓ Inscrit':myS==='interested'?'★ Intéressé':isPastRace?'+ Participer':'＋ Je participe';
+
+    // Avatars inscrits (max 4 visible)
+    const confParts=conf.slice(0,4);
+    const confMore=conf.length>4?conf.length-4:0;
+    const avatarHtml=confParts.map(p=>{
+      const mbr=members.find(x=>x.id===p.membre_id);
+      const name=mbr?.nom||'?';
+      const style=avStyle(name,22,22,8);
+      return `<div class="sbc-av" style="${style}">${initials(name)}</div>`;
+    }).join('');
+    const moreHtml=confMore>0?`<span class="sbc-more">+${confMore}</span>`:'';
+    const noConfHtml=conf.length===0?`<span style="font-size:11px;color:rgba(255,255,255,.45);font-style:italic">Aucun inscrit</span>`:'';
+
+    // Urgence
+    const daysToRace=dc?Math.round((dc-today)/(1000*60*60*24)):null;
+    const urgencyPill=daysToRace!==null&&daysToRace>=0&&daysToRace<=6
+      ? `<span class="urgency-pill${daysToRace===0?' today':''}">${daysToRace===0?'🔥 Aujourd\'hui !':daysToRace===1?'🔥 Demain !':'🔥 Dans '+daysToRace+' jours'}</span>`
+      : '';
 
     // Zone médiane
     const limiteLeft=dtl!==null&&dtl>=0&&dtl<14
@@ -1516,10 +1551,12 @@ function renderRaces(){
           <div class="date-col-sep"></div>
           <div class="head-info">
             <div class="head-top">
-              <span class="race-name">${r.nom}</span>
+              <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0">
+                <span class="race-name">${r.nom}</span>
+                ${urgencyPill}
+              </div>
               <div class="head-right">
                 <span class="race-type">${r.type}</span>
-                ${isSoldOut?'<span class="complet-badge">COMPLET</span>':''}
                 ${isPastRace?'<span class="past-pill">Passée</span>':''}
               </div>
             </div>
@@ -1529,13 +1566,18 @@ function renderRaces(){
           </div>
           <div class="head-chev" id="chev-${cardId}">▾</div>
         </div>
-        <div class="status-bar ${statusClass}">
-          <span class="status-bar-txt ${statusClass}">${statusTxt}</span>
-          <div class="status-bar-counts">
-            <div class="sbc-item"><span class="sbc-val green">${conf.length}</span> inscrit${conf.length>1?'s':''}</div>
-            <div class="sbc-item"><span class="sbc-val amber">${inter.length}</span> int.</div>
-            ${benev.length>0?`<div class="sbc-item"><span class="sbc-val" style="color:#7C3AED">${benev.length}</span> bénév.</div>`:''}
+        ${isSoldOut?'<div class="sold-out-stamp"></div>':''}
+        <div class="status-bar ${statusClass}" onclick="event.stopPropagation()">
+          <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+            <span class="status-bar-txt ${statusClass}">${statusTxt}</span>
+            <div style="display:flex;align-items:center;gap:6px">
+              ${conf.length>0?`<div class="sbc-avatars">${avatarHtml}${moreHtml}</div>`:''}
+              ${noConfHtml}
+              ${inter.length>0?`<span style="font-size:10px;color:rgba(255,255,255,.55)">· ${inter.length} int.</span>`:''}
+              ${benev.length>0?`<span style="font-size:10px;color:rgba(124,58,237,.7)">· ${benev.length} bénév.</span>`:''}
+            </div>
           </div>
+          <button class="btn-join-bar ${statusClass}" onclick="openModal('${r.id}')">${statusBtnTxt}</button>
         </div>
       </div>
       <div class="card-expand" id="${cardId}">
@@ -1555,10 +1597,7 @@ function renderRaces(){
           </div>
           <div class="bot-actions">
             ${r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="btn-site">↗ ${plat?plat.label:'Site'}</a>`:'<span></span>'}
-            <div style="display:flex;gap:6px;align-items:center">
-              <button class="btn btn-sm" style="padding:6px 10px;font-size:12px" onclick="event.stopPropagation();openEditRace('${r.id}')" title="Modifier la course">✏️ Modifier</button>
-              <button class="btn-join-card ${statusClass==='c'?'c':statusClass==='i'?'i':'none'}" onclick="openModal('${r.id}')">${statusTxt}</button>
-            </div>
+            <button class="btn btn-sm" style="padding:6px 10px;font-size:12px" onclick="event.stopPropagation();openEditRace('${r.id}')" title="Modifier la course">✏️ Modifier</button>
           </div>
         </div>
       </div>
@@ -1573,7 +1612,11 @@ function renderRaces(){
   const sidebar=document.getElementById('month-sidebar');
   if(sidebar){
     sidebar.style.width='44px';
-    sidebar.innerHTML=monthsList.map(m=>`<div class="month-sb-item" id="msb-${m.id}" onclick="scrollToMonth('${m.id}')"><span class="msb-month">${m.short.split('\n')[0]}</span><span class="msb-year">${m.short.split('\n')[1]}</span></div>`).join('');
+    sidebar.innerHTML=monthsList.map(m=>{
+      const parts=m.short.split('\n');
+      const fullYear='20'+parts[1];
+      return `<div class="month-sb-item" id="msb-${m.id}" onclick="scrollToMonth('${m.id}')"><span class="msb-month">${parts[0]}</span><span class="msb-year">${fullYear}</span></div>`;
+    }).join('');
   }
 
   _renderingRaces=false;
