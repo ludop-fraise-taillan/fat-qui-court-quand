@@ -268,6 +268,51 @@
     .top3-bar-fill{height:100%;border-radius:99px;transition:width .5s ease}
     .top3-count{font-size:12px;font-weight:600;min-width:28px;text-align:right}
     .top3-sub{font-size:9px;color:var(--text3);text-align:right}
+    /* ── Événements Club ── */
+    .evt-card{border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.06);background:#fff;border-top:4px solid #888}
+    .evt-card.repas{border-top-color:#E85D04}
+    .evt-card.ag{border-top-color:#3A7BD5}
+    .evt-card.benevole{border-top-color:#1A9E75}
+    .evt-card.sortie{border-top-color:#7C3AED}
+    .evt-head{padding:14px 14px 10px;cursor:pointer}
+    .evt-type-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+    .evt-type-pill.repas{background:#FEE8D6;color:#B84000}
+    .evt-type-pill.ag{background:#DDEAFF;color:#1A4FA0}
+    .evt-type-pill.benevole{background:#D4F5E9;color:#0A6040}
+    .evt-type-pill.sortie{background:#EDE9FE;color:#5B21B6}
+    .evt-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px}
+    .evt-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+    .evt-meta-item{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px}
+    .evt-desc{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+    .evt-status-bar{padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#555}
+    .evt-card.repas .evt-status-bar{background:#A03800}
+    .evt-card.ag .evt-status-bar{background:#1A4FA0}
+    .evt-card.benevole .evt-status-bar{background:#1A7A50}
+    .evt-card.sortie .evt-status-bar{background:#5B21B6}
+    .evt-stat{font-size:12px;color:rgba(255,255,255,.85);font-weight:600;display:flex;align-items:center;gap:4px}
+    .evt-stat-val{font-size:14px;font-weight:800;color:#fff}
+    .evt-body{padding:0 14px 14px;border-top:.5px solid var(--border);display:none}
+    .evt-body.open{display:block}
+    .evt-participants{margin-top:12px}
+    .evt-part-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+    .evt-part-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+    .evt-part-chip{display:flex;align-items:center;gap:6px;background:var(--bg2);border-radius:99px;padding:4px 10px 4px 4px;font-size:12px;color:var(--text)}
+    .evt-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .evt-join-btn{flex:1;padding:11px;border-radius:var(--radius-md);border:none;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;background:#1A7A50;color:#fff}
+    .evt-join-btn.joined{background:#E8F7EF;color:#0A6040;border:1.5px solid #B5E4CC}
+    .evt-comment-box{margin-top:12px;border-top:.5px solid var(--border);padding-top:12px}
+    .evt-comment-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+    .evt-comment-item{display:flex;gap:8px;padding:6px 0;border-bottom:.5px solid var(--border)}
+    .evt-comment-item:last-child{border:none}
+    .evt-comment-text{font-size:13px;color:var(--text);flex:1}
+    .evt-comment-author{font-size:11px;color:var(--text3);font-weight:600}
+    .evt-comment-date{font-size:10px;color:var(--text3)}
+    .evt-comment-input-row{display:flex;gap:8px;margin-top:8px}
+    .evt-comment-input{flex:1;border:1.5px solid var(--border2);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--text);background:var(--bg2);outline:none;font-family:inherit}
+    .evt-comment-input:focus{border-color:var(--text);background:#fff}
+    .evt-comment-send{padding:9px 14px;border-radius:10px;background:var(--text);color:var(--bg);border:none;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0}
+    .evt-empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px}
+
     /* ── Bandeau partenaires global ── */
     .partners-bar{background:var(--bg2);border-bottom:0.5px solid var(--border);overflow:hidden;height:38px;display:none;align-items:center}
     .partners-bar.visible{display:flex}
@@ -728,12 +773,73 @@
     </div>
   </div>
 
+  <!-- ÉVÉNEMENTS CLUB -->
+  <div id="s-evenements" class="section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:18px;font-weight:800;color:var(--text)">🎉 Événements Club</div>
+      <button class="btn btn-primary" onclick="openEvtModal()" id="btn-add-evt" style="display:none"><span style="font-size:15px">＋</span> Créer</button>
+    </div>
+    <!-- Filtres type -->
+    <div class="tab-sub" style="margin-bottom:14px">
+      <button class="tab-sub-btn active" id="evt-filter-all" onclick="filterEvts('all')">Tous</button>
+      <button class="tab-sub-btn" id="evt-filter-repas" onclick="filterEvts('repas')">🍽 Repas / Soirée</button>
+      <button class="tab-sub-btn" id="evt-filter-ag" onclick="filterEvts('ag')">📋 AG / Réunion</button>
+      <button class="tab-sub-btn" id="evt-filter-benevole" onclick="filterEvts('benevole')">🙌 Bénévolat</button>
+      <button class="tab-sub-btn" id="evt-filter-sortie" onclick="filterEvts('sortie')">🏃 Sorties</button>
+    </div>
+    <div id="evt-list"></div>
+  </div>
+
   <nav class="bottom-nav">
+    <button class="nav-item" id="nav-evenements" onclick="switchTab('evenements')"><span>🎉</span><span>Évènements</span></button>
     <button class="nav-item active" id="nav-courses" onclick="switchTab('courses')"><span>📅</span><span>Courses</span></button>
     <button class="nav-item" id="nav-historique" onclick="switchTab('historique')"><span>🏆</span><span>Historique</span></button>
     <button class="nav-item" id="nav-membres" onclick="switchTab('membres')"><span>👥</span><span>Membres</span></button>
     <button class="nav-item" id="nav-ajouter" onclick="switchTab('ajouter')"><span>＋</span><span>Ajouter</span></button>
   </nav>
+</div>
+
+<!-- Modal : Nouvel événement club -->
+<div class="modal-overlay" id="modal-new-evt">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="nevt-modal-title">🎉 Nouvel événement</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+      <div>
+        <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Titre *</label>
+        <input id="nevt-titre" type="text" placeholder="Nom de l'événement…" style="width:100%;border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg2);outline:none;box-sizing:border-box">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Type *</label>
+        <select id="nevt-type" style="width:100%;border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg2);outline:none;box-sizing:border-box">
+          <option value="repas">🍽 Repas / Soirée</option>
+          <option value="ag">📋 AG / Réunion</option>
+          <option value="benevole">🙌 Bénévolat</option>
+          <option value="sortie">🏃 Sortie Club</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1">
+          <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Date *</label>
+          <input id="nevt-date" type="date" style="width:100%;border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg2);outline:none;box-sizing:border-box">
+        </div>
+        <div style="flex:0 0 90px">
+          <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Heure</label>
+          <input id="nevt-heure" type="text" placeholder="19h30" style="width:100%;border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg2);outline:none;box-sizing:border-box">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Lieu</label>
+        <input id="nevt-lieu" type="text" placeholder="Salle des fêtes, restaurant…" style="width:100%;border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg2);outline:none;box-sizing:border-box">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px">Description</label>
+        <textarea id="nevt-desc" placeholder="Infos complémentaires…" rows="3" style="width:100%;border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg2);outline:none;box-sizing:border-box;resize:none"></textarea>
+      </div>
+      <button id="nevt-submit-btn" onclick="submitNewEvt()" style="width:100%;padding:13px;border-radius:var(--radius-md);border:none;background:var(--text);color:var(--bg);font-size:15px;font-weight:700;cursor:pointer">＋ Créer l'événement</button>
+      <button onclick="closeModal('modal-new-evt')" style="width:100%;padding:11px;border-radius:var(--radius-md);border:1.5px solid var(--border2);background:none;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">Annuler</button>
+    </div>
+  </div>
 </div>
 
 <!-- Modal : liste des participants -->
@@ -1293,7 +1399,7 @@ function renderRaces(){
     if(!inscritsList) inscritsList='<div style="font-size:11px;color:var(--text3);font-style:italic;padding:4px 0">Aucune participation pour l\'instant</div>';
 
     const cardId='card-'+r.id;
-    html+=`<div class="race-card ${tc.toLowerCase()}${isSoldOut?' sold-out':''}">
+    html+=`<div class="race-card ${tc.toLowerCase()}${isSoldOut?' sold-out':''}" data-id="${r.id}" id="rcard-${r.id}">
       <div class="card-head" onclick="toggleCard('${cardId}')">
         <div class="card-head-inner">
           <div class="date-col">
@@ -1945,10 +2051,281 @@ function updateHeader(){
 }
 function renderAll(){updateHeader();renderRaces();renderMembers();}
 
+// ── Événements Club ─────────────────────────────────────────────────────────
+let clubEvents=[];
+let evtFilter='all';
+
+const EVT_TYPES={
+  repas:{label:'🍽 Repas / Soirée',key:'repas'},
+  ag:{label:'📋 AG / Réunion',key:'ag'},
+  benevole:{label:'🙌 Bénévolat',key:'benevole'},
+  sortie:{label:'🏃 Sortie Club',key:'sortie'}
+};
+
+function filterEvts(type){
+  evtFilter=type;
+  ['all','repas','ag','benevole','sortie'].forEach(t=>{
+    const btn=document.getElementById('evt-filter-'+t);
+    if(btn)btn.classList.toggle('active',t===type);
+  });
+  renderEvts();
+}
+
+function renderEvts(){
+  const container=document.getElementById('evt-list');
+  if(!container)return;
+  const MOIS=['Jan.','Fév.','Mar.','Avr.','Mai','Juin','Juil.','Août','Sep.','Oct.','Nov.','Déc.'];
+  const JOURS=['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'];
+  const now=new Date();
+  const filtered=evtFilter==='all'?clubEvents:clubEvents.filter(e=>e.type===evtFilter);
+  const upcoming=filtered.filter(e=>new Date(e.date)>=now).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const past=filtered.filter(e=>new Date(e.date)<now).sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  if(!filtered.length){
+    container.innerHTML=`<div class="evt-empty">🎉<br><br>Aucun événement pour l'instant.<br><span style="font-size:12px">Les prochains événements du club apparaîtront ici.</span></div>`;
+    return;
+  }
+
+  let html='';
+  const renderGroup=(evts,label)=>{
+    if(!evts.length)return;
+    html+=`<div class="month-sep"><span class="month-sep-label">${label}</span><div class="month-sep-line"></div></div>`;
+    evts.forEach(evt=>{
+      const d=new Date(evt.date);
+      const typeInfo=EVT_TYPES[evt.type]||{label:'Événement',key:'repas'};
+      const joined=(evt.participants||[]).includes(currentUserId);
+      const partCount=(evt.participants||[]).length;
+      const comments=evt.comments||[];
+      const myName=currentName();
+      html+=`<div class="evt-card ${evt.type}">
+        <div class="evt-head" onclick="toggleEvtCard('${evt.id}')">
+          <div class="evt-type-pill ${evt.type}">${typeInfo.label}</div>
+          <div class="evt-title">${evt.titre}</div>
+          <div class="evt-meta">
+            <span class="evt-meta-item">📅 ${JOURS[d.getDay()]} ${d.getDate()} ${MOIS[d.getMonth()]} ${d.getFullYear()}</span>
+            ${evt.heure?`<span class="evt-meta-item">🕐 ${evt.heure}</span>`:''}
+            ${evt.lieu?`<span class="evt-meta-item">📍 ${evt.lieu}</span>`:''}
+          </div>
+          ${evt.description?`<div class="evt-desc">${evt.description}</div>`:''}
+          <div class="evt-status-bar">
+            <div class="evt-stat"><span class="evt-stat-val">${partCount}</span> participant${partCount>1?'s':''}</div>
+            ${comments.length?`<div class="evt-stat"><span class="evt-stat-val">${comments.length}</span> 💬</div>`:''}
+            ${joined?'<span style="font-size:11px;color:rgba(255,255,255,.9);font-weight:700">✓ Je participe</span>':''}
+            ${window._evtIsAdmin?`<div style="display:flex;gap:6px;margin-left:auto">
+              <button onclick="event.stopPropagation();openEditEvtModal('${evt.id}')" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;cursor:pointer;font-weight:600">✏️ Modifier</button>
+              <button onclick="event.stopPropagation();deleteEvt('${evt.id}')" style="font-size:11px;padding:3px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.4);background:rgba(255,0,0,.25);color:#fff;cursor:pointer;font-weight:600">🗑</button>
+            </div>`:''}
+          </div>
+        </div>
+        <div class="evt-body" id="evtbody-${evt.id}">
+          <div class="evt-participants">
+            ${evt.type==='benevole'?(()=>{
+              // Cherche la course dont le nom ressemble à l'événement
+              const evtWords=evt.titre.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(w=>w.length>3);
+              const linkedRace=races.find(r=>{
+                const rName=r.nom.toLowerCase();
+                return evtWords.some(w=>rName.includes(w));
+              });
+              return `<div style="background:#F0F6FF;border:1.5px dashed #B0CFF5;border-radius:12px;padding:14px;text-align:center;margin-bottom:12px">
+                <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">🙌 Tu veux être bénévole ?</div>
+                <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5">L'inscription se fait depuis l'onglet <strong>Courses</strong> en cliquant sur la course et en choisissant le rôle <strong>Bénévole</strong>.</div>
+                <button onclick="goToCourse('${linkedRace?.id||''}')" style="width:100%;padding:11px;border-radius:var(--radius-md);border:none;background:#1A5FBF;color:#fff;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
+                  📅 ${linkedRace?`Voir "${linkedRace.nom}"` : 'Aller sur l\'onglet Courses'}
+                </button>
+              </div>`;
+            })():`
+            <div class="evt-part-title">👥 Participants (${partCount})</div>
+            <div class="evt-part-list" id="evtparts-${evt.id}">
+              ${(evt.participants||[]).map(uid=>{
+                const m=members.find(x=>x.id===uid);
+                const n=m?.nom||uid;
+                return `<div class="evt-part-chip"><div class="av-md" style="${avStyle(n,22,22,9)};border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:9px">${initials(n)}</div>${n.split('.')[0]||n}</div>`;
+              }).join('')}
+              ${!partCount?'<span style="font-size:12px;color:var(--text3);font-style:italic">Aucun participant pour l\'instant</span>':''}
+            </div>
+            <div class="evt-actions">
+              <button class="evt-join-btn ${joined?'joined':''}" id="evtjoin-${evt.id}" onclick="toggleJoinEvt('${evt.id}')">
+                ${joined?'✓ Je participe':'✋ Je participe'}
+              </button>
+            </div>`}
+          </div>
+          <div class="evt-comment-box">
+            <div class="evt-comment-title">💬 Commentaires</div>
+            <div id="evtcomments-${evt.id}">
+              ${comments.length?comments.map(c=>`
+                <div class="evt-comment-item">
+                  <div style="flex:1">
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+                      <span class="evt-comment-author">${c.author}</span>
+                      <span class="evt-comment-date">${c.date}</span>
+                    </div>
+                    <div class="evt-comment-text">${c.text}</div>
+                  </div>
+                </div>`).join('')
+              :'<div style="font-size:12px;color:var(--text3);font-style:italic;padding:4px 0">Aucun commentaire</div>'}
+            </div>
+            <div class="evt-comment-input-row">
+              <input class="evt-comment-input" id="evtci-${evt.id}" type="text" placeholder="Laisser un message…" onkeydown="if(event.key==='Enter')postEvtComment('${evt.id}')">
+              <button class="evt-comment-send" onclick="postEvtComment('${evt.id}')">↑</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    });
+  };
+
+  renderGroup(upcoming,'À venir');
+  renderGroup(past,'Passés');
+  container.innerHTML=html;
+}
+
+function goToCourse(raceId){
+  switchTab('courses');
+  if(raceId){
+    setTimeout(()=>{
+      const el=document.getElementById('rcard-'+raceId)||document.querySelector(`.race-card[data-id="${raceId}"]`);
+      if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
+    },150);
+  }
+}
+
+function toggleEvtCard(id){
+  const body=document.getElementById('evtbody-'+id);
+  if(body)body.classList.toggle('open');
+}
+
+function toggleJoinEvt(evtId){
+  const evt=clubEvents.find(e=>e.id===evtId);
+  if(!evt)return;
+  if(!evt.participants)evt.participants=[];
+  const idx=evt.participants.indexOf(currentUserId);
+  if(idx>-1){evt.participants.splice(idx,1);}
+  else{evt.participants.push(currentUserId);}
+  saveEvtToSupabase(evt);
+  renderEvts();
+  // Ré-ouvrir la carte
+  setTimeout(()=>{
+    const body=document.getElementById('evtbody-'+evtId);
+    if(body)body.classList.add('open');
+  },0);
+}
+
+function postEvtComment(evtId){
+  const input=document.getElementById('evtci-'+evtId);
+  if(!input||!input.value.trim())return;
+  const evt=clubEvents.find(e=>e.id===evtId);
+  if(!evt)return;
+  if(!evt.comments)evt.comments=[];
+  const now=new Date();
+  evt.comments.push({
+    author:currentName().split('.')[0]||currentName(),
+    text:input.value.trim(),
+    date:now.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})
+  });
+  input.value='';
+  saveEvtToSupabase(evt);
+  renderEvts();
+  setTimeout(()=>{
+    const body=document.getElementById('evtbody-'+evtId);
+    if(body)body.classList.add('open');
+  },0);
+}
+
+async function saveEvtToSupabase(evt){
+  try{
+    await sb.from('club_events').upsert({
+      id:evt.id,titre:evt.titre,type:evt.type,date:evt.date,
+      heure:evt.heure||null,lieu:evt.lieu||null,description:evt.description||null,
+      participants:evt.participants||[],comments:evt.comments||[]
+    });
+  }catch(e){console.warn('saveEvt',e);}
+}
+
+async function loadClubEvents(){
+  try{
+    const{data,error}=await sb.from('club_events').select('*').order('date',{ascending:true});
+    if(error)throw error;
+    clubEvents=data||[];
+  }catch(e){
+    console.warn('loadClubEvents',e);
+    clubEvents=[];
+  }
+  renderEvts();
+  // Afficher bouton Créer + actions admin si Bureau/Admin
+  const me=members.find(m=>m.id===currentUserId);
+  const isAdmin=me&&(me.role==='Bureau'||me.role==='Admin');
+  const btnAdd=document.getElementById('btn-add-evt');
+  if(btnAdd)btnAdd.style.display=isAdmin?'inline-flex':'none';
+  window._evtIsAdmin=isAdmin;
+}
+
+function openEditEvtModal(evtId){
+  const evt=clubEvents.find(e=>e.id===evtId);
+  if(!evt)return;
+  document.getElementById('nevt-titre').value=evt.titre||'';
+  document.getElementById('nevt-type').value=evt.type||'repas';
+  document.getElementById('nevt-date').value=evt.date||'';
+  document.getElementById('nevt-heure').value=evt.heure||'';
+  document.getElementById('nevt-lieu').value=evt.lieu||'';
+  document.getElementById('nevt-desc').value=evt.description||'';
+  document.getElementById('nevt-modal-title').textContent='✏️ Modifier l\'événement';
+  document.getElementById('nevt-submit-btn').textContent='💾 Enregistrer';
+  document.getElementById('modal-new-evt').dataset.editId=evtId;
+  document.getElementById('modal-new-evt').classList.add('open');
+}
+
+async function deleteEvt(evtId){
+  if(!confirm('Supprimer cet événement ?'))return;
+  try{
+    await sb.from('club_events').delete().eq('id',evtId);
+  }catch(e){console.warn('deleteEvt',e);}
+  clubEvents=clubEvents.filter(e=>e.id!==evtId);
+  renderEvts();
+}
+
+// Modal ajout événement (simple, admin only)
+function openEvtModal(){
+  document.getElementById('modal-new-evt').classList.add('open');
+}
+async function submitNewEvt(){
+  const titre=document.getElementById('nevt-titre').value.trim();
+  const type=document.getElementById('nevt-type').value;
+  const date=document.getElementById('nevt-date').value;
+  const heure=document.getElementById('nevt-heure').value;
+  const lieu=document.getElementById('nevt-lieu').value.trim();
+  const desc=document.getElementById('nevt-desc').value.trim();
+  if(!titre||!date){alert('Titre et date obligatoires');return;}
+  const modal=document.getElementById('modal-new-evt');
+  const editId=modal.dataset.editId;
+  if(editId){
+    // Modification
+    const evt=clubEvents.find(e=>e.id===editId);
+    if(evt){Object.assign(evt,{titre,type,date,heure:heure||null,lieu:lieu||null,description:desc||null});}
+    await saveEvtToSupabase(evt);
+    delete modal.dataset.editId;
+  } else {
+    // Création
+    const newEvt={id:'evt-'+Date.now(),titre,type,date,heure:heure||null,lieu:lieu||null,description:desc||null,participants:[],comments:[]};
+    clubEvents.push(newEvt);
+    await saveEvtToSupabase(newEvt);
+  }
+  // Reset modal
+  document.getElementById('nevt-modal-title').textContent='🎉 Nouvel événement';
+  document.getElementById('nevt-submit-btn').textContent='＋ Créer l\'événement';
+  closeModal('modal-new-evt');
+  renderEvts();
+}
+
 // ── Navigation ──────────────────────────────────────────────────────────────
 function switchTab(tab){
-  ['courses','historique','membres','ajouter'].forEach(t=>{document.getElementById('s-'+t).classList.toggle('active',t===tab);document.getElementById('nav-'+t).classList.toggle('active',t===tab);});
+  ['courses','historique','evenements','membres','ajouter'].forEach(t=>{
+    const s=document.getElementById('s-'+t);
+    const n=document.getElementById('nav-'+t);
+    if(s)s.classList.toggle('active',t===tab);
+    if(n)n.classList.toggle('active',t===tab);
+  });
   if(tab==='historique')renderHistory();
+  if(tab==='evenements'){loadClubEvents();}
 }
 function switchSub(sub){
   document.getElementById('sub-s-course').style.display=sub==='course'?'block':'none';
@@ -2591,6 +2968,18 @@ async function saveEditRace(){
 // ── SQL migration hint (à exécuter une fois dans Supabase) ──────────────────
 // ALTER TABLE courses ADD COLUMN IF NOT EXISTS distances text;
 // ALTER TABLE participations ADD COLUMN IF NOT EXISTS distance integer;
+// CREATE TABLE IF NOT EXISTS club_events (
+//   id text PRIMARY KEY,
+//   titre text NOT NULL,
+//   type text NOT NULL,  -- 'repas' | 'ag' | 'benevole'
+//   date date NOT NULL,
+//   heure text,
+//   lieu text,
+//   description text,
+//   participants jsonb DEFAULT '[]'::jsonb,
+//   comments jsonb DEFAULT '[]'::jsonb,
+//   created_at timestamptz DEFAULT now()
+// );
 
 loadAll();
 </script>
