@@ -104,7 +104,7 @@
     .nav-item i{font-size:22px}
     .nav-item.active{color:var(--text);font-weight:500}
     .section{display:none}.section.active{display:block}
-    .evt-sticky-head{position:sticky;top:0;z-index:9;background:var(--bg);padding:12px 0 10px;margin:-16px -16px 0;padding-left:16px;padding-right:16px;border-bottom:0.5px solid var(--border)}
+    .evt-sticky-head{position:sticky;top:0;z-index:9;background:var(--bg);padding:10px 0 8px;margin:-16px -16px 0;padding-left:16px;padding-right:16px;border-bottom:0.5px solid var(--border)}
     .evt-sticky-head .tab-sub{margin-bottom:0}
     .legend{display:flex;gap:14px;font-size:12px;color:var(--text2);margin-bottom:10px}
     .month-sep{display:flex;align-items:center;gap:10px;margin:16px 0 10px}
@@ -558,13 +558,13 @@
     </div>
 
     <!-- Col 2 : 3 boutons liens empilés au centre -->
-    <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 4px">
-      <a class="fb-link" href="https://www.facebook.com/p/La-Fraise-Athl%C3%A9tique-du-Taillan-100067896561321/?locale=fr_FR" target="_blank" rel="noopener" style="width:100%;max-width:130px;justify-content:center;padding:4px 6px;font-size:10px;gap:4px">
+    <div style="flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 2px">
+      <a class="fb-link" href="https://www.facebook.com/p/La-Fraise-Athl%C3%A9tique-du-Taillan-100067896561321/?locale=fr_FR" target="_blank" rel="noopener" style="width:105px;justify-content:center;padding:4px 6px;font-size:10px;gap:4px">
         <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073C24 5.404 18.627 0 12 0S0 5.404 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.514c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
         Suivez-nous
       </a>
-      <a class="trail-link" href="https://www.traildutaillan.com/trail-de-la-fraise" target="_blank" rel="noopener" style="width:100%;max-width:130px;justify-content:center;padding:4px 6px;font-size:10px">🍓 Trail du Taillan</a>
-      <button type="button" id="help-btn" onclick="openContextHelp()" class="trail-link" style="width:100%;max-width:130px;justify-content:center;border-color:#7C3AED;background:#EDE9FE;color:#7C3AED;cursor:pointer;font-family:inherit;font-size:10px;padding:4px 6px">💜 Aide</button>
+      <a class="trail-link" href="https://www.traildutaillan.com/trail-de-la-fraise" target="_blank" rel="noopener" style="width:105px;justify-content:center;padding:4px 6px;font-size:10px">🍓 Trail du Taillan</a>
+      <button type="button" id="help-btn" onclick="openContextHelp()" class="trail-link" style="width:105px;justify-content:center;border-color:#7C3AED;background:#EDE9FE;color:#7C3AED;cursor:pointer;font-family:inherit;font-size:10px;padding:4px 6px">💜 Aide</button>
     </div>
 
     <!-- Col 3 : bouton ajout + nom membre -->
@@ -596,7 +596,7 @@
   <div class="content">
 
     <!-- COURSES -->
-    <div id="s-courses" class="section active">      <div class="install-banner" id="install-banner">
+    <div id="s-courses" class="section">      <div class="install-banner" id="install-banner">
         <span style="font-size:20px;color:var(--text);flex-shrink:0">⬇</span>
         <div style="flex:1"><strong style="color:var(--text)">Installer l'app</strong> — Ajouter à l'écran d'accueil</div>
         <span onclick="dismissInstall()" style="cursor:pointer;color:var(--text3);font-size:18px;padding:4px">×</span>
@@ -795,7 +795,7 @@
   </div>
 
   <!-- ÉVÉNEMENTS CLUB -->
-  <div id="s-evenements" class="section">
+  <div id="s-evenements" class="section active">
     <div class="evt-sticky-head">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
         <div style="font-size:18px;font-weight:800;color:var(--text)">🎉 Événements Club</div>
@@ -817,8 +817,8 @@
   </div>
 
   <nav class="bottom-nav">
-    <button class="nav-item" id="nav-evenements" onclick="switchTab('evenements')"><span>🎉</span><span>Évènements</span></button>
-    <button class="nav-item active" id="nav-courses" onclick="switchTab('courses')"><span>📅</span><span>Courses</span></button>
+    <button class="nav-item active" id="nav-evenements" onclick="switchTab('evenements')"><span>🎉</span><span>Évènements</span></button>
+    <button class="nav-item" id="nav-courses" onclick="switchTab('courses')"><span>📅</span><span>Courses</span></button>
     <button class="nav-item" id="nav-historique" onclick="switchTab('historique')"><span>🏆</span><span>Historique</span></button>
     <button class="nav-item" id="nav-membres" onclick="switchTab('membres')"><span>👥</span><span>Membres</span></button>
     <button class="nav-item" id="nav-ajouter" onclick="switchTab('ajouter')"><span>＋</span><span>Ajouter</span></button>
@@ -3168,7 +3168,7 @@ async function saveEditRace(){
 //   created_at timestamptz DEFAULT now()
 // );
 
-loadAll();
+loadAll().then(()=>switchTab('evenements'));
 </script>
 </body>
 </html>
