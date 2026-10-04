@@ -1104,16 +1104,10 @@ function resetDistTags(){formDistances=[];renderDistTags();}
 function setUrl(u){document.getElementById('f-url').value=u;}
 function setUrlResults(u){document.getElementById('f-url-results').value=u;}
 function setFv4Type(type){
-  const colors={Trail:'#EBF7E6',Route:'#E8F0FD',Ultra:'#FDF0E8'};
-  const textColors={Trail:'#2A7A18',Route:'#1546A0',Ultra:'#B03A10'};
-  const head=document.getElementById('fv4-head');
-  head.style.background=colors[type];
-  const title=head.querySelector('.fv4-top-head-title');
-  if(title)title.style.color=textColors[type];
   document.getElementById('f-type').value=type;
   ['Trail','Route','Ultra'].forEach(t=>{
     const btn=document.getElementById('fv4-'+t.toLowerCase());
-    btn.className='fv4-type-btn'+(type===t?' sel-'+t.toLowerCase():'');
+    if(btn)btn.className='fv4-type-btn'+(type===t?' sel-'+t.toLowerCase():'');
   });
 }
 
