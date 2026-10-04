@@ -399,6 +399,16 @@
     .tab-sub-btn{font-size:13px;font-weight:600;padding:8px 18px;border-radius:99px;border:1.5px solid var(--border2);cursor:pointer;background:var(--bg2);color:var(--text2);display:inline-flex;align-items:center;gap:6px;transition:all .15s}
     .tab-sub-btn.active{background:var(--text);color:var(--bg);border-color:transparent}
     .member-preview-box{display:none}
+    /* Alerte doublon */
+    .dupli-alert{display:none;align-items:center;gap:8px;background:#FFF3CD;border:1.5px solid #F5C842;border-radius:10px;padding:10px 13px;margin-top:8px;font-size:13px;color:#7A5800;font-weight:500}
+    .dupli-alert.show{display:flex}
+    /* Bandeau alphabet */
+    .alpha-bar{display:flex;flex-wrap:wrap;gap:3px;padding:8px 0 6px;margin-bottom:4px}
+    .alpha-btn{width:26px;height:26px;border-radius:6px;border:none;background:var(--bg2);color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+    .alpha-btn.has{background:#E8F0FD;color:#1546A0}
+    .alpha-btn:active{opacity:.6}
+    /* Groupe lettre dans la liste */
+    .alpha-group-label{font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:10px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px}
     /* Design B — formulaire membre */
     .fb-card{border-radius:16px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.1);margin-bottom:14px;background:var(--bg)}
     .fb-top{padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;transition:background .3s;background:linear-gradient(135deg,#185FA5,#0d2a4a)}
@@ -701,6 +711,7 @@
             </div>
             <input type="hidden" id="m-role" value="Coureur">
             <button class="fb-submit" id="btn-add-member" onclick="addMember()">＋ Ajouter au club</button>
+            <div class="dupli-alert" id="dupli-alert">⚠️ <span id="dupli-msg"></span></div>
           </div>
         </div>
         <div id="member-list-preview"></div>
@@ -1899,8 +1910,32 @@ function goToRace(raceId){
 
 function renderMemberListPreview(){
   const sorted=[...members].sort((a,b)=>a.nom.localeCompare(b.nom,'fr'));
-  let html=`<div style="font-size:12px;color:var(--text2);margin-bottom:8px">${members.length} membre${members.length>1?'s':''} dans le club</div>`;
-  sorted.forEach(m=>{html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)"><div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div><span style="font-size:13px;color:var(--text);flex:1">${m.nom}</span><span style="font-size:11px;color:var(--text3)">${m.role||'Coureur'}</span></div>`;});
+  // Grouper par première lettre du nom
+  const groups={};
+  sorted.forEach(m=>{
+    const letter=(m.nom||'?')[0].toUpperCase();
+    if(!groups[letter])groups[letter]=[];
+    groups[letter].push(m);
+  });
+  const letters=Object.keys(groups).sort((a,b)=>a.localeCompare(b,'fr'));
+  const allLetters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  // Bandeau alphabet
+  let alpha=`<div class="alpha-bar">`;
+  allLetters.forEach(l=>{
+    const has=groups[l]?'has':'';
+    const onclick=groups[l]?`onclick="document.getElementById('alph-${l}').scrollIntoView({behavior:'smooth',block:'start'})"` :'';
+    alpha+=`<button class="alpha-btn ${has}" ${onclick} type="button">${l}</button>`;
+  });
+  alpha+=`</div>`;
+  // Liste groupée
+  let html=`<div style="font-size:12px;color:var(--text2);margin-bottom:6px">${members.length} membre${members.length>1?'s':''} dans le club</div>`;
+  html+=alpha;
+  letters.forEach(letter=>{
+    html+=`<div id="alph-${letter}" class="alpha-group-label">${letter}</div>`;
+    groups[letter].forEach(m=>{
+      html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)"><div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div><span style="font-size:13px;color:var(--text);flex:1">${m.nom}</span><span style="font-size:11px;color:var(--text3)">${m.role||'Coureur'}</span></div>`;
+    });
+  });
   document.getElementById('member-list-preview').innerHTML=html;
 }
 
@@ -2194,6 +2229,29 @@ function updatePreview(){
     } else {
       avEl.textContent='👤';
       avEl.style.cssText='width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#fff;';
+    }
+  }
+  // Détection doublon — dès que prénom ET début de nom sont saisis
+  const alertEl=document.getElementById('dupli-alert');
+  const msgEl=document.getElementById('dupli-msg');
+  if(alertEl&&msgEl){
+    const pLow=p.toLowerCase();
+    const nLow=n.toLowerCase();
+    if(p.length>=2&&n.length>=2){
+      const match=members.find(m=>{
+        const parts=(m.nom||'').toLowerCase().split('.');
+        const mp=parts[0]||'';
+        const mn=parts[1]||'';
+        return mp.startsWith(pLow)&&mn.startsWith(nLow);
+      });
+      if(match){
+        msgEl.textContent=`Un membre similaire existe déjà : ${match.nom} (${match.role||'Coureur'}). Vérifie avant d'ajouter.`;
+        alertEl.classList.add('show');
+      } else {
+        alertEl.classList.remove('show');
+      }
+    } else {
+      alertEl.classList.remove('show');
     }
   }
 }
