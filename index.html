@@ -274,8 +274,10 @@
     /* ── Événements Club ── */
     .evt-card{border-radius:12px;overflow:hidden;margin-bottom:8px;box-shadow:0 1px 6px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.05);background:#fff;border-top:3px solid #888}
     /* ── Scroll horizontal événements à venir ── */
-    .evt-hscroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 0 10px;margin:0 -2px}
-    .evt-hscroll::-webkit-scrollbar{display:none}
+    .evt-hscroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;padding:0 0 8px;margin:0 -2px}
+    .evt-hscroll::-webkit-scrollbar{height:3px}
+    .evt-hscroll::-webkit-scrollbar-track{background:transparent}
+    .evt-hscroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
     .evt-hcard{flex-shrink:0;width:90px;border-radius:10px;background:var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.06);overflow:hidden;cursor:pointer;transition:transform .12s;-webkit-tap-highlight-color:transparent}
     .evt-hcard:active{transform:scale(.96)}
     .evt-hcard.selected{box-shadow:0 0 0 2.5px var(--hcard-accent),0 3px 12px rgba(0,0,0,.15)}
