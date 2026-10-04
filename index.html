@@ -258,6 +258,18 @@
     .top3-bar-fill{height:100%;border-radius:99px;transition:width .5s ease}
     .top3-count{font-size:12px;font-weight:600;min-width:28px;text-align:right}
     .top3-sub{font-size:9px;color:var(--text3);text-align:right}
+    /* ── Bandeau partenaires ── */
+    .partners-strip{overflow:hidden;margin-bottom:12px;border-radius:12px;border:0.5px solid var(--border);background:var(--bg2)}
+    .partners-strip-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;padding:6px 12px 2px;opacity:.8}
+    .partners-track-wrap{overflow:hidden;padding:6px 0 8px}
+    .partners-track{display:flex;gap:12px;will-change:transform;width:max-content}
+    .partners-track.no-anim{animation:none!important}
+    @keyframes scroll-partners{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .partner-chip{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;user-select:none;padding:0 6px}
+    .partner-chip:active{opacity:.7}
+    .partner-logo{width:52px;height:52px;border-radius:10px;object-fit:contain;background:#fff;border:0.5px solid var(--border);padding:4px}
+    .partner-logo-placeholder{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,var(--bg),var(--bg2));border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--text3);text-align:center;padding:4px;line-height:1.2}
+    .partner-name{font-size:9px;color:var(--text3);max-width:58px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     /* Membres cards B */
     .member-card{background:var(--bg);border-radius:14px;margin-bottom:8px;overflow:hidden;border:0.5px solid var(--border);cursor:pointer}
     .member-card.me{border-color:#185FA5;border-width:1.5px}
@@ -530,6 +542,7 @@
       <div style="display:flex;justify-content:flex-end;margin-bottom:6px">
         <button type="button" onclick="document.getElementById('modal-help-membres').classList.add('open')" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text3);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit">?</button>
       </div>
+      <div id="partners-strip-wrap"></div>
       <div class="stats-grid" id="stats-grid"></div>
       <div style="display:flex;gap:0;position:relative">
         <div id="runner-list" style="flex:1;min-width:0"></div>
@@ -1089,16 +1102,60 @@ function setFv4Type(type){
   });
 }
 
+// ── Bandeau partenaires ────────────────────────────────────────────────────
+let partners=[];
+function renderPartnersStrip(){
+  const wrap=document.getElementById('partners-strip-wrap');
+  if(!wrap)return;
+  const active=partners.filter(p=>p.actif!==false);
+  if(!active.length){wrap.innerHTML='';return;}
+  const makeChip=p=>{
+    const logo=p.logo_url
+      ?`<img class="partner-logo" src="${p.logo_url}" alt="${p.nom}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      :'';
+    const ph=`<div class="partner-logo-placeholder" ${p.logo_url?'style="display:none"':''}>${p.nom}</div>`;
+    return `<div class="partner-chip" onclick="window.open('${p.lien_url||'#'}','_blank')" title="${p.nom}">${logo}${ph}<span class="partner-name">${p.nom}</span></div>`;
+  };
+  // Duplique la liste pour le défilement sans-fin
+  const chips=active.map(makeChip).join('');
+  const needScroll=active.length>3;
+  wrap.innerHTML=`<div class="partners-strip">
+    <div class="partners-strip-label">🤝 Nos partenaires</div>
+    <div class="partners-track-wrap">
+      <div class="partners-track${needScroll?'':' no-anim'}" id="partners-track">
+        ${chips}${needScroll?chips:''}
+      </div>
+    </div>
+  </div>`;
+  if(needScroll){
+    const track=document.getElementById('partners-track');
+    // Calcule la largeur de la moitié (originale) pour l'animation
+    requestAnimationFrame(()=>{
+      const half=track.scrollWidth/2;
+      track.style.animation=`scroll-partners ${active.length*3}s linear infinite`;
+      track.style.setProperty('--half',half+'px');
+      // Réécrit l'animation avec la vraie largeur
+      track.style.animation='none';
+      const style=document.createElement('style');
+      style.textContent=`@keyframes scroll-partners-dyn{0%{transform:translateX(0)}100%{transform:translateX(-${half}px)}}`;
+      document.head.appendChild(style);
+      track.style.animation=`scroll-partners-dyn ${active.length*3}s linear infinite`;
+    });
+  }
+}
+
 // ── Chargement ─────────────────────────────────────────────────────────────
 async function loadAll(){
   setSyncing('syncing');
   try{
-    const[{data:m},{data:r},{data:p}]=await Promise.all([
+    const[{data:m},{data:r},{data:p},{data:pt}]=await Promise.all([
       db.from('membres').select('*').order('created_at'),
       db.from('courses').select('*').order('date_course'),
       db.from('participations').select('*'),
+      db.from('partenaires').select('*').order('nom'),
     ]);
-    members=m||[];races=r||[];participations=p||[];
+    members=m||[];races=r||[];participations=p||[];partners=pt||[];
+    renderPartnersStrip();
         if(currentUserId&&!members.find(m=>m.id===currentUserId)){currentUserId=members[0]?.id||null;localStorage.setItem('cr_uid',currentUserId);}
     if(!currentUserId&&members.length>0){currentUserId=members[0].id;localStorage.setItem('cr_uid',currentUserId);}
     setSyncing('ok');
