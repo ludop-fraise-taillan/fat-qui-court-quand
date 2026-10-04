@@ -350,9 +350,9 @@
     .fv4-block-body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:14px}
     /* Nom de course */
     .fv4-name-lbl{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
-    .fv4-name-input{width:100%;font-size:18px;font-weight:700;border:none;border-bottom:2px solid var(--border2);background:transparent;color:var(--text);outline:none;padding:4px 0 8px}
-    .fv4-name-input::placeholder{color:var(--text3);font-weight:400;font-size:16px}
-    .fv4-name-input:focus{border-bottom-color:#3A8F2A}
+    .fv4-name-input{width:100%;font-size:17px;font-weight:700;border:2px dashed #B0CFF5;border-radius:12px;background:#F0F6FF;color:var(--text);outline:none;padding:14px 14px;box-sizing:border-box;transition:border-color .15s,background .15s}
+    .fv4-name-input::placeholder{color:#7AABDE;font-weight:500;font-size:15px}
+    .fv4-name-input:focus{border-color:#1A5FBF;border-style:solid;background:#fff}
     /* Boutons type — ligne horizontale */
     .fv4-type-row{display:flex;gap:8px}
     .fv4-type-btn{flex:1;padding:10px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent}
@@ -366,9 +366,11 @@
     .fv4-field input,.fv4-field select{width:100%;font-size:15px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);outline:none;-webkit-appearance:none}
     .fv4-field input:focus{border-color:#1A5FBF;background:#fff}
     /* Distances */
+    .fv4-dist-wrap{border:2px dashed #B0CFF5;border-radius:12px;background:#F0F6FF;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+    .fv4-dist-hint{font-size:12px;color:#5A8FC2;font-weight:500;line-height:1.4}
     .fv4-dist-row{display:flex;gap:8px}
-    .fv4-dist-row input{flex:1;font-size:15px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);outline:none}
-    .fv4-dist-row input:focus{border-color:#1A5FBF;background:#fff}
+    .fv4-dist-row input{flex:1;font-size:15px;padding:11px 13px;border-radius:10px;border:1.5px solid #B0CFF5;background:#fff;color:var(--text);outline:none}
+    .fv4-dist-row input:focus{border-color:#1A5FBF}
     .fv4-add-btn{font-size:15px;font-weight:700;padding:11px 16px;border-radius:10px;background:#1A5FBF;color:#fff;border:none;cursor:pointer;flex-shrink:0}
     /* Liens */
     .fv4-link-input{width:100%;font-size:14px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);outline:none;box-sizing:border-box}
@@ -584,8 +586,7 @@
             </div>
             <div class="fv4-block-body">
               <div>
-                <div class="fv4-name-lbl">Nom de la course *</div>
-                <input class="fv4-name-input" type="text" id="f-name" placeholder="ex. Trail des Landes" autocomplete="off">
+                <input class="fv4-name-input" type="text" id="f-name" placeholder="✏️  Nom de la course…" autocomplete="off">
               </div>
               <div>
                 <div class="fv4-name-lbl" style="margin-bottom:8px">Type</div>
@@ -607,12 +608,15 @@
             </div>
             <div class="fv4-block-body">
               <div>
-                <div class="fv4-name-lbl" style="margin-bottom:8px">Distances (km)</div>
-                <div class="fv4-dist-row">
-                  <input type="number" id="f-dist-input" placeholder="ex. 21" inputmode="numeric" onkeydown="if(event.key==='Enter'){event.preventDefault();addDistTag()}">
-                  <button class="fv4-add-btn" onclick="addDistTag()" type="button">＋</button>
+                <div class="fv4-name-lbl" style="margin-bottom:8px">📏 Distances proposées</div>
+                <div class="fv4-dist-wrap">
+                  <div class="fv4-dist-hint">Ajoute <strong>toutes les distances</strong> au programme (ex. 12 km, 21 km, 42 km). Une course peut en avoir plusieurs.</div>
+                  <div class="fv4-dist-row">
+                    <input type="number" id="f-dist-input" placeholder="Distance en km…" inputmode="numeric" onkeydown="if(event.key==='Enter'){event.preventDefault();addDistTag()}">
+                    <button class="fv4-add-btn" onclick="addDistTag()" type="button">＋</button>
+                  </div>
+                  <div class="dist-tags-list" id="f-dist-tags"></div>
                 </div>
-                <div class="dist-tags-list" id="f-dist-tags" style="margin-top:8px"></div>
               </div>
               <div class="fv4-field">
                 <label>📅 Date de la course *</label>
