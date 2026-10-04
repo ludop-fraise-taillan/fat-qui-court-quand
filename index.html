@@ -452,7 +452,7 @@
     .dist-tag-edit button:hover{color:var(--red-text)}
 
     .tab-sub{display:flex;gap:6px;margin-bottom:16px}
-    .tab-sub-btn{font-size:13px;font-weight:600;padding:8px 18px;border-radius:99px;border:1.5px solid var(--border2);cursor:pointer;background:var(--bg2);color:var(--text2);display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+    .tab-sub-btn{font-size:11px;font-weight:600;padding:5px 11px;border-radius:99px;border:1.5px solid var(--border2);cursor:pointer;background:var(--bg2);color:var(--text2);display:inline-flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap}
     .tab-sub-btn.active{background:var(--text);color:var(--bg);border-color:transparent}
     .member-preview-box{display:none}
     /* Alerte doublon */
@@ -804,9 +804,9 @@
       <!-- Filtres type -->
       <div class="tab-sub">
         <button class="tab-sub-btn active" id="evt-filter-all" onclick="filterEvts('all')">Tous</button>
-        <button class="tab-sub-btn" id="evt-filter-repas" onclick="filterEvts('repas')">🍽 Repas / Soirée</button>
-        <button class="tab-sub-btn" id="evt-filter-ag" onclick="filterEvts('ag')">📋 AG / Réunion</button>
-        <button class="tab-sub-btn" id="evt-filter-benevole" onclick="filterEvts('benevole')">🙌 Bénévolat</button>
+        <button class="tab-sub-btn" id="evt-filter-repas" onclick="filterEvts('repas')">🍽 Repas</button>
+        <button class="tab-sub-btn" id="evt-filter-ag" onclick="filterEvts('ag')">📋 AG</button>
+        <button class="tab-sub-btn" id="evt-filter-benevole" onclick="filterEvts('benevole')">🙌 Bénév.</button>
         <button class="tab-sub-btn" id="evt-filter-sortie" onclick="filterEvts('sortie')">🏃 Sorties</button>
       </div>
     </div>
