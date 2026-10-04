@@ -98,13 +98,13 @@
     .user-dropdown-letter{font-size:10px;font-weight:600;letter-spacing:0.08em;color:var(--text3);padding:6px 12px 2px;text-transform:uppercase}
     .user-dropdown-empty{font-size:13px;color:var(--text3);text-align:center;padding:20px 0}
     .av-xs{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0}
-    .content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 16px 90px}
+    .content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px 90px}
     .bottom-nav{display:flex;border-top:0.5px solid var(--border);background:var(--bg);position:sticky;bottom:0;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
     .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 8px;cursor:pointer;border:none;background:none;color:var(--text3);font-size:11px}
     .nav-item i{font-size:22px}
     .nav-item.active{color:var(--text);font-weight:500}
     .section{display:none}.section.active{display:block}
-    .evt-sticky-head{position:sticky;top:0;z-index:9;background:var(--bg);padding:6px 16px 6px;margin:-10px -16px 0;border-bottom:0.5px solid var(--border)}
+    .evt-sticky-head{position:sticky;top:0;z-index:9;background:var(--bg);padding:10px 16px 8px;margin:0 -16px;border-bottom:0.5px solid var(--border)}
     .evt-sticky-head .tab-sub{margin-bottom:0}
     .legend{display:flex;gap:14px;font-size:12px;color:var(--text2);margin-bottom:10px}
     .month-sep{display:flex;align-items:center;gap:10px;margin:16px 0 10px}
@@ -642,7 +642,7 @@
   <div class="content">
 
     <!-- COURSES -->
-    <div id="s-courses" class="section">      <div class="install-banner" id="install-banner">
+    <div id="s-courses" class="section" style="padding-top:10px">      <div class="install-banner" id="install-banner">
         <span style="font-size:20px;color:var(--text);flex-shrink:0">⬇</span>
         <div style="flex:1"><strong style="color:var(--text)">Installer l'app</strong> — Ajouter à l'écran d'accueil</div>
         <span onclick="dismissInstall()" style="cursor:pointer;color:var(--text3);font-size:18px;padding:4px">×</span>
@@ -662,7 +662,7 @@
     </div>
 
     <!-- HISTORIQUE -->
-    <div id="s-historique" class="section">
+    <div id="s-historique" class="section" style="padding-top:10px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <div class="legend" style="margin-bottom:0">
           <span><span class="legend-dot" style="background:#1D9E75"></span>Inscrit</span>
@@ -680,7 +680,7 @@
     </div>
 
     <!-- MEMBRES -->
-    <div id="s-membres" class="section">
+    <div id="s-membres" class="section" style="padding-top:10px">
       <div style="display:flex;justify-content:flex-end;margin-bottom:6px">
         <button type="button" onclick="document.getElementById('modal-help-membres').classList.add('open')" style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text3);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit">?</button>
       </div>
@@ -692,7 +692,7 @@
     </div>
 
     <!-- AJOUTER -->
-    <div id="s-ajouter" class="section">
+    <div id="s-ajouter" class="section" style="padding-top:10px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0">
         <div class="tab-sub" style="margin-bottom:0;flex:1">
           <button class="tab-sub-btn active" id="sub-course" onclick="switchSub('course')"><span style="font-size:13px">⚑</span>Course</button>
