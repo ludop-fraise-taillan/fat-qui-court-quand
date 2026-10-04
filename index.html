@@ -500,6 +500,16 @@
     .tab-sub{display:flex;gap:6px;margin-bottom:16px}
     .tab-sub-btn{font-size:11px;font-weight:600;padding:5px 11px;border-radius:99px;border:1.5px solid var(--border2);cursor:pointer;background:var(--bg2);color:var(--text2);display:inline-flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap}
     .tab-sub-btn.active{background:var(--text);color:var(--bg);border-color:transparent}
+    /* Pills colorées Événements */
+    .evt-pill-all.active{background:var(--text);color:var(--bg);border-color:transparent}
+    .evt-pill-repas{border-color:rgba(232,93,4,.25);color:#C24C00}
+    .evt-pill-repas.active{background:#E85D04;color:#fff;border-color:#E85D04}
+    .evt-pill-ag{border-color:rgba(58,123,213,.25);color:#2558A8}
+    .evt-pill-ag.active{background:#3A7BD5;color:#fff;border-color:#3A7BD5}
+    .evt-pill-benevole{border-color:rgba(26,158,117,.25);color:#127A58}
+    .evt-pill-benevole.active{background:#1A9E75;color:#fff;border-color:#1A9E75}
+    .evt-pill-sortie{border-color:rgba(124,58,237,.25);color:#6025C8}
+    .evt-pill-sortie.active{background:#7C3AED;color:#fff;border-color:#7C3AED}
     .member-preview-box{display:none}
     /* Alerte doublon */
     .dupli-alert{display:none;align-items:center;gap:6px;background:#FFF3CD;border:1.5px solid #F5C842;border-radius:9px;padding:7px 10px;margin-top:6px;font-size:11px;color:#7A5800;font-weight:500}
@@ -849,11 +859,11 @@
       </div>
       <!-- Filtres type -->
       <div class="tab-sub" style="margin-bottom:0">
-        <button class="tab-sub-btn active" id="evt-filter-all" onclick="filterEvts('all')">Tous</button>
-        <button class="tab-sub-btn" id="evt-filter-repas" onclick="filterEvts('repas')">🍽 Repas</button>
-        <button class="tab-sub-btn" id="evt-filter-ag" onclick="filterEvts('ag')">📋 AG</button>
-        <button class="tab-sub-btn" id="evt-filter-benevole" onclick="filterEvts('benevole')">🙌 Bénév.</button>
-        <button class="tab-sub-btn" id="evt-filter-sortie" onclick="filterEvts('sortie')">🏃 Sorties</button>
+        <button class="tab-sub-btn evt-pill-all active" id="evt-filter-all" onclick="filterEvts('all')">Tous</button>
+        <button class="tab-sub-btn evt-pill-repas" id="evt-filter-repas" onclick="filterEvts('repas')">🍽 Repas</button>
+        <button class="tab-sub-btn evt-pill-ag" id="evt-filter-ag" onclick="filterEvts('ag')">📋 AG</button>
+        <button class="tab-sub-btn evt-pill-benevole" id="evt-filter-benevole" onclick="filterEvts('benevole')">🙌 Bénév.</button>
+        <button class="tab-sub-btn evt-pill-sortie" id="evt-filter-sortie" onclick="filterEvts('sortie')">🏃 Sorties</button>
       </div>
     </div>
     <div style="margin-top:2px">
