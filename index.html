@@ -2158,7 +2158,18 @@ function renderMemberListPreview(filterLetter, filterPrenom){
   letters.forEach(letter=>{
     html+=`<div id="alph-${letter}" class="alpha-group-label">${letter}</div>`;
     groups[letter].forEach(m=>{
-      html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)"><div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div><span style="font-size:13px;color:var(--text);flex:1">${m.nom}</span><span style="font-size:11px;color:var(--text3)">${m.role||'Coureur'}</span></div>`;
+      const isMe=m.id===currentUserId;
+      const showCestMoi=filterPrenom&&filterPrenom.length>=1;
+      html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)">
+        <div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div>
+        <span style="font-size:13px;color:var(--text);flex:1">${m.nom}</span>
+        ${isMe
+          ? `<span style="font-size:10px;font-weight:700;color:var(--green-text,#1A9E75);background:rgba(26,158,117,.1);padding:3px 8px;border-radius:99px">✓ C'est vous</span>`
+          : showCestMoi
+            ? `<button onclick="selectMeFromList('${m.id}')" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;white-space:nowrap;font-family:inherit">👋 C'est moi</button>`
+            : `<span style="font-size:11px;color:var(--text3)">${m.role||'Coureur'}</span>`
+        }
+      </div>`;
     });
   });
   document.getElementById('member-list-preview').innerHTML=html;
@@ -3068,6 +3079,28 @@ function updatePreview(){
       const btn=document.getElementById('btn-add-member');if(btn){btn.disabled=false;btn.style.opacity='';btn.style.cursor='';}
     }
   }
+}
+
+function selectMeFromList(id){
+  currentUserId=id;
+  localStorage.setItem('cr_uid',id);
+  // Feedback visuel dans la preview
+  const me=members.find(m=>m.id===id);
+  if(me){
+    const nameEl=document.getElementById('prev-name');
+    const roleEl=document.getElementById('prev-role');
+    const avEl=document.getElementById('prev-av');
+    if(nameEl) nameEl.textContent=me.nom;
+    if(roleEl) roleEl.textContent='✓ Profil sélectionné';
+    if(avEl){
+      avEl.textContent=initials(me.nom);
+      avEl.style.cssText=avStyle(me.nom)+'width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;border:3px solid rgba(255,255,255,.7);box-shadow:0 0 0 3px rgba(255,255,255,.25);';
+    }
+  }
+  renderAll();
+  // Re-render la liste avec le prénom pour afficher "C'est vous"
+  const p=document.getElementById('m-prenom').value.trim();
+  renderMemberListPreview(null, p||null);
 }
 
 // ── Bilan ────────────────────────────────────────────────────────────────────
