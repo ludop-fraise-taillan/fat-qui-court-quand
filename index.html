@@ -844,21 +844,21 @@
         <button class="btn btn-primary" onclick="openEvtModal()" id="btn-add-evt" style="display:none"><span style="font-size:15px">＋</span> Créer</button>
       </div>
       <!-- Filtres type -->
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
-        <div class="tab-sub" style="margin-bottom:0;flex:1">
-          <button class="tab-sub-btn active" id="evt-filter-all" onclick="filterEvts('all')">Tous</button>
-          <button class="tab-sub-btn" id="evt-filter-repas" onclick="filterEvts('repas')">🍽 Repas</button>
-          <button class="tab-sub-btn" id="evt-filter-ag" onclick="filterEvts('ag')">📋 AG</button>
-          <button class="tab-sub-btn" id="evt-filter-benevole" onclick="filterEvts('benevole')">🙌 Bénév.</button>
-          <button class="tab-sub-btn" id="evt-filter-sortie" onclick="filterEvts('sortie')">🏃 Sorties</button>
-        </div>
-        <button id="evt-show-past-btn" onclick="toggleShowPastEvts()" style="flex-shrink:0;font-size:10px;font-weight:600;color:var(--text3);background:var(--bg2);border:1px solid var(--border2);border-radius:99px;padding:4px 9px;cursor:pointer;white-space:nowrap">📁 Passés</button>
+      <div class="tab-sub" style="margin-bottom:0">
+        <button class="tab-sub-btn active" id="evt-filter-all" onclick="filterEvts('all')">Tous</button>
+        <button class="tab-sub-btn" id="evt-filter-repas" onclick="filterEvts('repas')">🍽 Repas</button>
+        <button class="tab-sub-btn" id="evt-filter-ag" onclick="filterEvts('ag')">📋 AG</button>
+        <button class="tab-sub-btn" id="evt-filter-benevole" onclick="filterEvts('benevole')">🙌 Bénév.</button>
+        <button class="tab-sub-btn" id="evt-filter-sortie" onclick="filterEvts('sortie')">🏃 Sorties</button>
       </div>
     </div>
     <div style="margin-top:2px">
       <!-- Scroll horizontal événements à venir -->
       <div id="evt-hscroll-wrap" style="display:none">
-        <div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.03em;margin-bottom:5px" id="evt-upcoming-label"></div>
+        <div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.03em;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between">
+          <span id="evt-upcoming-label"></span>
+          <button id="evt-show-past-btn" onclick="toggleShowPastEvts()" style="font-size:10px;font-weight:600;color:var(--text3);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline">📁 Passés</button>
+        </div>
         <div class="evt-hscroll" id="evt-hscroll"></div>
         <!-- Panneau détail de l'événement sélectionné -->
         <div id="evt-detail-panel"></div>
