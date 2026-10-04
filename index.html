@@ -974,18 +974,21 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Confirmer votre identité</div>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">
+    <div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">
       Vous allez indiquer une participation au nom de :
     </div>
-    <div id="confirm-identity-member" style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg2);border-radius:var(--radius-md);border:0.5px solid var(--border);margin-bottom:20px"></div>
-    <div style="display:flex;gap:8px;">
-      <button class="btn" style="flex:1;justify-content:center" onclick="openUserModal();closeModal('modal-confirm-identity')">
-        <span style="font-size:13px">✏</span>Modifier le membre
-      </button>
-      <button class="btn btn-primary" style="flex:1;justify-content:center" id="btn-confirm-identity" onclick="confirmIdentityAndProceed()">
-        <span style="font-size:13px">✓</span>C'est bien moi
-      </button>
+    <div id="confirm-identity-member" style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg2);border-radius:var(--radius-md);border:0.5px solid var(--border);margin-bottom:10px"></div>
+    <!-- Sélecteur de membre alternatif -->
+    <div id="confirm-identity-picker" style="display:none;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Choisir un autre membre</div>
+      <div id="confirm-identity-list" style="max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:4px"></div>
     </div>
+    <button onclick="toggleIdentityPicker()" id="btn-toggle-picker" style="width:100%;margin-bottom:10px;padding:8px;border-radius:var(--radius-md);border:1px dashed var(--border2);background:none;color:var(--text3);font-size:12px;font-weight:600;cursor:pointer">
+      ↕ Changer de membre
+    </button>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" id="btn-confirm-identity" onclick="confirmIdentityAndProceed()">
+      <span style="font-size:13px">✓</span>C'est bien moi
+    </button>
   </div>
 </div>
 
@@ -2692,6 +2695,53 @@ function toggleSoldOut(){
 
 let pendingRaceId=null;
 
+function refreshConfirmIdentityCard(){
+  const me=currentMember();
+  if(!me) return;
+  const race=races.find(r=>r.id===pendingRaceId);
+  document.getElementById('confirm-identity-member').innerHTML=`
+    <div class="av-md" style="${avStyle(me.nom)}">${initials(me.nom)}</div>
+    <div>
+      <div style="font-size:15px;font-weight:600;color:var(--text)">${me.nom}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:2px">${me.role||'Coureur'} · ${race?.nom||''}</div>
+    </div>
+  `;
+}
+
+function toggleIdentityPicker(){
+  const picker=document.getElementById('confirm-identity-picker');
+  const btn=document.getElementById('btn-toggle-picker');
+  const isOpen=picker.style.display!=='none';
+  if(isOpen){
+    picker.style.display='none';
+    btn.textContent='↕ Changer de membre';
+  } else {
+    // Remplir la liste des membres
+    const listEl=document.getElementById('confirm-identity-list');
+    listEl.innerHTML=members.map(m=>{
+      const isActive=m.id===currentUserId;
+      return `<div onclick="selectIdentityMember('${m.id}')" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;background:${isActive?'var(--bg2)':'transparent'};border:1.5px solid ${isActive?'var(--border2)':'transparent'}">
+        <div class="av-md" style="${avStyle(m.nom,28,28,10)}">${initials(m.nom)}</div>
+        <div style="font-size:13px;font-weight:${isActive?700:500};color:var(--text);flex:1">${m.nom}</div>
+        ${isActive?'<span style="font-size:10px;color:var(--text3)">✓</span>':''}
+      </div>`;
+    }).join('');
+    picker.style.display='block';
+    btn.textContent='✕ Fermer';
+  }
+}
+
+function selectIdentityMember(id){
+  currentUserId=id;
+  localStorage.setItem('cr_uid',id);
+  refreshConfirmIdentityCard();
+  // Fermer le picker
+  document.getElementById('confirm-identity-picker').style.display='none';
+  document.getElementById('btn-toggle-picker').textContent='↕ Changer de membre';
+  // Re-render le header
+  renderAll();
+}
+
 function openModal(raceId){
   // Afficher la confirmation d'identité avant d'ouvrir la modale de participation
   pendingRaceId=raceId;
@@ -2701,14 +2751,10 @@ function openModal(raceId){
   // Si déjà une participation, ouvrir directement (correction d'erreur)
   if(existing){ _openParticipationModal(raceId); return; }
   // Sinon afficher la confirmation
-  const race=races.find(r=>r.id===raceId);
-  document.getElementById('confirm-identity-member').innerHTML=`
-    <div class="av-md" style="${avStyle(me.nom)}">${initials(me.nom)}</div>
-    <div>
-      <div style="font-size:15px;font-weight:600;color:var(--text)">${me.nom}</div>
-      <div style="font-size:12px;color:var(--text2);margin-top:2px">${me.role||'Coureur'} · ${race.nom}</div>
-    </div>
-  `;
+  refreshConfirmIdentityCard();
+  // Reset picker state
+  document.getElementById('confirm-identity-picker').style.display='none';
+  document.getElementById('btn-toggle-picker').textContent='↕ Changer de membre';
   document.getElementById('modal-confirm-identity').classList.add('open');
 }
 
