@@ -275,7 +275,9 @@
     .partner-bar-chip:active{opacity:.7}
     .partner-bar-logo{width:24px;height:24px;border-radius:5px;object-fit:contain;background:#fff;border:0.5px solid var(--border);flex-shrink:0}
     .partner-bar-placeholder{width:24px;height:24px;border-radius:5px;background:var(--bg);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:var(--text3);flex-shrink:0}
-    .partner-bar-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;padding:0 14px;white-space:nowrap;border-right:0.5px solid var(--border);height:38px;display:flex;align-items:center;background:var(--bg2);flex-shrink:0}
+    .partner-bar-label{font-size:9px;padding:0 14px;white-space:nowrap;border-right:0.5px solid var(--border);height:38px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;background:var(--bg2);flex-shrink:0}
+    .partner-bar-label strong{font-weight:800;color:var(--text);font-size:9px;text-transform:uppercase;letter-spacing:.06em;line-height:1.2}
+    .partner-bar-label span{font-weight:500;color:var(--text3);font-size:9px;line-height:1.2}
     .partner-bar-name{font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap}
     /* Membres cards B */
     .member-card{background:var(--bg);border-radius:14px;margin-bottom:8px;overflow:hidden;border:0.5px solid var(--border);cursor:pointer}
@@ -1145,7 +1147,7 @@ function renderPartnersStrip(){
     const ph=`<div class="partner-bar-placeholder" ${p.logo_url?'style="display:none"':''}>${p.nom.slice(0,2)}</div>`;
     return `<div class="partner-bar-chip" onclick="window.open('${p.lien_url||'#'}','_blank')" title="${p.nom}">${logo}${ph}<span class="partner-bar-name">${p.nom}</span></div>`;
   };
-  const label=`<div class="partner-bar-label">🤝 Partenaires</div>`;
+  const label=`<div class="partner-bar-label"><strong>🤝 Ils font confiance à la Fraise</strong><span>Offres spéciales adhérents FAT</span></div>`;
   const chips=active.map(makeChip).join('');
   // Toujours dupliquer pour un défilement continu sans-fin
   track.innerHTML=label+chips+label+chips;
