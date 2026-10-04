@@ -393,7 +393,7 @@
     .fv4-card::before{content:'';display:block;height:4px}
     .fv4-card.fc-type::before{background:linear-gradient(90deg,#3A8F2A,#5CB648)}
     .fv4-card.fc-dates::before{background:linear-gradient(90deg,#1A5FBF,#3B82F6)}
-    .fv4-card.fc-links::before{background:linear-gradient(90deg,#C04A1A,#E8703A)}
+    .fv4-card.fc-links::before{background:linear-gradient(90deg,#1A5FBF,#3B82F6)}
     /* Header de bloc — léger, lisible */
     .fv4-block-head{padding:12px 16px 0;display:flex;align-items:center;gap:7px}
     .fv4-block-icon{font-size:17px;line-height:1}
@@ -417,6 +417,8 @@
     .fv4-field label{font-size:12px;font-weight:600;color:var(--text2)}
     .fv4-field input,.fv4-field select{width:100%;font-size:15px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);outline:none;-webkit-appearance:none}
     .fv4-field input:focus{border-color:#1A5FBF;background:#fff}
+    .fv4-field input[type="date"]{border-color:#B0CFF5;background:#EFF6FF;color:#1A5FBF}
+    .fv4-field input[type="date"]:focus{border-color:#1A5FBF;background:#E0ECFF;color:var(--text)}
     /* Distances */
     .fv4-dist-wrap{border:2px dashed #B0CFF5;border-radius:12px;background:#F0F6FF;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
     .fv4-dist-hint{font-size:12px;color:#5A8FC2;font-weight:500;line-height:1.4}
@@ -425,9 +427,10 @@
     .fv4-dist-row input:focus{border-color:#1A5FBF}
     .fv4-add-btn{font-size:15px;font-weight:700;padding:11px 16px;border-radius:10px;background:#1A5FBF;color:#fff;border:none;cursor:pointer;flex-shrink:0}
     /* Liens */
-    .fv4-link-input{width:100%;font-size:14px;padding:11px 13px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);outline:none;box-sizing:border-box}
-    .fv4-link-input:focus{border-color:#C04A1A;background:#fff}
-    .fv4-link-input.results:focus{border-color:#0A7A50}
+    .fv4-link-input{width:100%;font-size:14px;padding:11px 13px;border-radius:10px;border:1.5px solid #B0CFF5;background:#EFF6FF;color:#1A5FBF;outline:none;box-sizing:border-box}
+    .fv4-link-input:focus{border-color:#1A5FBF;background:#E0ECFF;color:var(--text)}
+    .fv4-link-input.results{border-color:#B0CFF5;background:#EFF6FF;color:#1A5FBF}
+    .fv4-link-input.results:focus{border-color:#1A5FBF;background:#E0ECFF;color:var(--text)}
     .fv4-sect-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;display:block}
     /* Séparateur entre Inscription et Résultats */
     .fv4-links-sep{height:0.5px;background:var(--border);margin:2px 0}
