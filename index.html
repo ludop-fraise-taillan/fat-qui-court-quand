@@ -2210,7 +2210,7 @@ function renderEvts(){
           </div>
           ${evt.description?`<div class="evt-desc">${evt.description}</div>`:''}
           <div class="evt-status-bar">
-            <div class="evt-stat"><span class="evt-stat-val">${partCount}</span> bénévole${partCount>1?'s':''}</div>
+            <div class="evt-stat"><span class="evt-stat-val">${partCount}</span> ${evt.type==='benevole'?`bénévole${partCount>1?'s':''}`:`participant${partCount>1?'s':''}`}</div>
             ${comments.length?`<div class="evt-stat"><span class="evt-stat-val">${comments.length}</span> 💬</div>`:''}
             ${amIBenevole?'<span style="font-size:11px;color:rgba(255,255,255,.9);font-weight:700">🙌 Je suis bénévole</span>':joined?'<span style="font-size:11px;color:rgba(255,255,255,.9);font-weight:700">✓ Je participe</span>':''}
             ${window._evtIsAdmin?`<div style="display:flex;gap:6px;margin-left:auto">
