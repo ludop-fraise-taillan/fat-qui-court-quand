@@ -335,6 +335,27 @@
     /* Piste 4 — mini-calendrier amélioré */
     .month-sb-item{font-size:10px;font-weight:700;padding:6px 5px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;text-align:center;line-height:1.2;white-space:nowrap;min-width:40px;-webkit-tap-highlight-color:transparent;user-select:none;transition:all .15s}
     /* Historique */
+    /* History compact rows */
+    .hrow{border-bottom:1px solid var(--border);background:var(--bg2)}
+    .hrow:first-child{border-radius:12px 12px 0 0;overflow:hidden}
+    .hrow:last-child{border-radius:0 0 12px 12px;overflow:hidden;border-bottom:none}
+    .hrow-open .hrow-main{background:var(--bg3,var(--bg))}
+    .hrow-main{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s}
+    .hrow-main:active{background:var(--bg3,rgba(0,0,0,.04))}
+    .hrow-date{display:flex;flex-direction:column;align-items:center;min-width:28px}
+    .hrow-dd{font-size:15px;font-weight:800;color:var(--text);line-height:1}
+    .hrow-mmyy{font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;line-height:1;margin-top:1px}
+    .hrow-info{flex:1;min-width:0}
+    .hrow-name{font-size:13px;font-weight:700;color:var(--text);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+    .hrow-meta{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:2px}
+    .hrow-type{font-size:10px;font-weight:700;letter-spacing:.02em}
+    .hrow-sep{font-size:10px;color:var(--text3)}
+    .hrow-dists{font-size:10px;color:var(--text2);font-weight:500}
+    .hrow-inscrits{font-size:10px;color:var(--text3)}
+    .hrow-mychrono{font-size:10px;color:#185FA5;font-weight:600}
+    .hrow-chev{font-size:16px;color:var(--text3);transition:transform .18s;flex-shrink:0;line-height:1}
+    .hrow-expand{background:var(--bg);border-top:1px solid var(--border)}
+    #history-list{background:var(--bg2);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.05)}
     .hcard{border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.08),0  0 0 1px rgba(0,0,0,.05);background:#fff}
     .hcard-expand{background:var(--bg);display:none}
     .hcard-expand.open{display:block}
@@ -2199,53 +2220,37 @@ function renderHistory(){
     if(!chronoHtml) chronoHtml='<div style="font-size:11px;color:var(--text3);font-style:italic;padding:8px 0">Aucun participant enregistré</div>';
 
     const cardId='hcard-'+r.id;
-    html+=`<div class="hcard race-card ${tc.toLowerCase()}">
-      <div class="card-head" onclick="toggleCard('${cardId}')">
-        <div class="card-head-inner">
-          <div class="date-col">
-            <span class="dc-day">${dcDay}</span>
-            <span class="dc-dd">${dcDD}</span>
-            <span class="dc-mm">${dcMM}</span>
-            <span class="dc-yy">${dcYY}</span>
-          </div>
-          <div class="date-col-sep"></div>
-          <div class="head-info">
-            <div class="head-top">
-              <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0">
-                <span class="race-name">${r.nom}</span>
-                ${(r.ville||r.departement)?`<span class="race-location">📍 ${[r.ville,r.departement].filter(Boolean).join(' · ')}</span>`:''}
-              </div>
-              <div class="head-right">
-                <span class="race-type">${r.type}</span>
-                <span class="past-pill">Passée</span>
-              </div>
-            </div>
-            <div class="head-bottom">
-              <div class="head-dists">${distTags}</div>
-            </div>
-          </div>
-          <div class="head-chev" id="chev-${cardId}">▾</div>
+    const typeColor=tc==='trail'?'#5B9BF5':tc==='ultra'?'#A78BFA':'#F97316';
+    html+=`<div class="hrow" id="hrow-${r.id}">
+      <div class="hrow-main" onclick="toggleHrow('${r.id}')">
+        <div class="hrow-date">
+          <span class="hrow-dd">${dcDD}</span>
+          <span class="hrow-mmyy">${dcMM} ${dcYY}</span>
         </div>
-        <div class="stats-bar">
-          <div class="sb-item"><span class="sb-val green">${conf.length}</span> inscrit${conf.length>1?'s':''}</div>
-          <div class="sb-item"><span class="sb-val blue">${allChronos.length}</span> chrono${allChronos.length>1?'s':''}</div>
-          ${myChronoBar}
+        <div class="hrow-info">
+          <span class="hrow-name">${r.nom}</span>
+          <div class="hrow-meta">
+            <span class="hrow-type" style="color:${typeColor}">${r.type}</span>
+            ${dists.length>0?'<span class="hrow-sep">·</span><span class="hrow-dists">'+dists.join(' / ')+' km</span>':''}
+            ${conf.length>0?'<span class="hrow-sep">·</span><span class="hrow-inscrits">'+conf.length+' inscrit'+(conf.length>1?'s':'')+'</span>':''}
+            ${myPart?.chrono?'<span class="hrow-sep">·</span><span class="hrow-mychrono">⏱ '+myPart.chrono+'</span>':''}
+          </div>
         </div>
+        <span class="hrow-chev" id="hchev-${r.id}">›</span>
       </div>
-      <div class="hcard-expand" id="${cardId}">
-        <div class="chron-section">${chronoHtml}</div>
-        <div class="hcard-actions">
+      <div class="hrow-expand" id="${cardId}" style="display:none">
+        ${allChronos.length>0?'<div class="chron-section">'+chronoHtml+'</div>':''}
+        <div class="hcard-actions" style="padding:8px 14px 10px">
           ${r.url?('<a href="'+r.url+'" target="_blank" rel="noopener" class="btn-site">↗ '+(plat?plat.label:'Site')+'</a>'):'<span></span>'}
-          ${r.url_results?('<a href="'+r.url_results+'" target="_blank" rel="noopener" class="btn-results">🏅 Résultats officiels</a>'):''}
+          ${r.url_results?('<a href="'+r.url_results+'" target="_blank" rel="noopener" class="btn-results">🏅 Résultats</a>'):''}
         </div>
-        ${!myPart?`<div style="padding:0 14px 12px">
-          <button onclick="openModal('${r.id}')" style="width:100%;padding:11px;border-radius:var(--radius-md);border:1.5px dashed var(--border2);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
-            <span style="font-size:15px">🏅</span> J'ai participé à cette course
+        ${!myPart?`<div style="padding:0 14px 10px">
+          <button onclick="openModal('${r.id}')" style="width:100%;padding:9px;border-radius:var(--radius-md);border:1.5px dashed var(--border2);background:none;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px">
+            <span>🏅</span> J'ai participé à cette course
           </button>
-        </div>`
-        :myPart&&!myPart.chrono?`<div style="padding:0 14px 12px">
-          <button onclick="openParticipantsModal('${r.id}')" style="width:100%;padding:11px;border-radius:var(--radius-md);border:1.5px dashed #B5D4F4;background:#E6F1FB;color:#185FA5;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
-            <span style="font-size:15px">⏱</span> Ajouter mon chrono
+        </div>`:myPart&&!myPart.chrono?`<div style="padding:0 14px 10px">
+          <button onclick="openParticipantsModal('${r.id}')" style="width:100%;padding:9px;border-radius:var(--radius-md);border:1.5px dashed #B5D4F4;background:#E6F1FB;color:#185FA5;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px">
+            <span>⏱</span> Ajouter mon chrono
           </button>
         </div>`:''}
       </div>
@@ -2254,6 +2259,17 @@ function renderHistory(){
 
   if(!html) html='<div class="empty-state"><span>🏆</span>Aucune course passée pour l\'instant.</div>';
   document.getElementById('history-list').innerHTML=html;
+}
+
+function toggleHrow(id){
+  const exp=document.getElementById('hcard-'+id);
+  const chev=document.getElementById('hchev-'+id);
+  const row=document.getElementById('hrow-'+id);
+  if(!exp) return;
+  const open=exp.style.display==='block';
+  exp.style.display=open?'none':'block';
+  if(chev) chev.style.transform=open?'':'rotate(90deg)';
+  if(row) row.classList.toggle('hrow-open',!open);
 }
 
 // ── Rendu membres ───────────────────────────────────────────────────────────
