@@ -38,11 +38,11 @@
     .ti-info-circle::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cline x1='12' y1='8' x2='12' y2='12'/%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'/%3E%3C/svg%3E")}
     .ti-world::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18'/%3E%3C/svg%3E")}
   </style>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍓</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎃</text></svg>">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
   <script>
     const manifestData = {
-      name:"La Fraise Athlétique du Taillan",short_name:"La Fraise",start_url:".",display:"standalone",
+      name:"La Fraise Athlétique du Taillan",short_name:"🎃 La Fraise",start_url:".",display:"standalone",
       background_color:"#ffffff",theme_color:"#ffffff",
       icons:[{src:"https://api.dicebear.com/7.x/shapes/svg?seed=running&size=192",sizes:"192x192",type:"image/svg+xml"},
              {src:"https://api.dicebear.com/7.x/shapes/svg?seed=running&size=512",sizes:"512x512",type:"image/svg+xml"}]
@@ -228,6 +228,31 @@
     /* Urgence : course dans moins de 7 jours */
     .urgency-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;white-space:nowrap}
     .urgency-pill.today{background:#FEE2E2;color:#991B1B;border-color:#FCA5A5}
+    /* Halloween — 25–31 oct */
+    .urgency-pill.halloween{background:linear-gradient(135deg,#3B1F5E,#6B2D0F);color:#FF9D3A;border-color:#FF6B1A;box-shadow:0 0 6px rgba(255,107,26,.35)}
+    .urgency-pill.halloween-today{background:linear-gradient(135deg,#5C1F1F,#7A2E00);color:#FFD700;border-color:#FF4500;box-shadow:0 0 8px rgba(255,69,0,.5)}
+    /* Bats animation */
+    @keyframes bat-fly{
+      0%{transform:translateX(-80px) translateY(0) scaleX(1)}
+      20%{transform:translateX(calc(20vw)) translateY(-18px) scaleX(1)}
+      40%{transform:translateX(calc(40vw)) translateY(6px) scaleX(1)}
+      60%{transform:translateX(calc(60vw)) translateY(-12px) scaleX(1)}
+      80%{transform:translateX(calc(80vw)) translateY(4px) scaleX(1)}
+      100%{transform:translateX(calc(100vw + 80px)) translateY(-8px) scaleX(1)}
+    }
+    @keyframes bat-fly2{
+      0%{transform:translateX(-80px) translateY(0) scaleX(-1)}
+      25%{transform:translateX(calc(25vw)) translateY(10px) scaleX(-1)}
+      50%{transform:translateX(calc(50vw)) translateY(-8px) scaleX(-1)}
+      75%{transform:translateX(calc(75vw)) translateY(14px) scaleX(-1)}
+      100%{transform:translateX(calc(100vw + 80px)) translateY(-4px) scaleX(-1)}
+    }
+    .bat{position:fixed;pointer-events:none;z-index:999;font-size:22px;opacity:.7;will-change:transform}
+    .bat.b1{top:12%;animation:bat-fly 9s linear infinite;animation-delay:0s}
+    .bat.b2{top:28%;animation:bat-fly2 13s linear infinite;animation-delay:-4s;font-size:16px;opacity:.55}
+    .bat.b3{top:60%;animation:bat-fly 17s linear infinite;animation-delay:-9s;font-size:14px;opacity:.45}
+    /* Halloween header tint */
+    .halloween-banner{display:flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(90deg,#1E0A2E,#3B1206,#1E0A2E);color:#FF9D3A;font-size:11px;font-weight:700;padding:5px 12px;letter-spacing:.04em;border-bottom:1px solid #6B2D0F;flex-shrink:0}
     /* Piste 4 — mini-calendrier amélioré */
     .month-sb-item{font-size:10px;font-weight:700;padding:6px 5px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;text-align:center;line-height:1.2;white-space:nowrap;min-width:40px;-webkit-tap-highlight-color:transparent;user-select:none;transition:all .15s}
     /* Historique */
@@ -620,6 +645,21 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- Halloween bats (visible 25–31 oct) -->
+<script>
+(function(){
+  const n=new Date();
+  if(n.getMonth()===9&&n.getDate()>=25&&n.getDate()<=31){
+    ['b1','b2','b3'].forEach(function(c){
+      var d=document.createElement('div');
+      d.className='bat '+c;
+      d.textContent='🦇';
+      document.body.appendChild(d);
+    });
+  }
+})();
+</script>
+
 <div class="app-shell">
   <div class="header">
     <!-- Col 1 : logo -->
@@ -660,6 +700,20 @@
       </div>
     </div>
   </div>
+
+  <!-- Bannière Halloween (visible 25–31 oct) -->
+  <div id="halloween-banner" style="display:none" class="halloween-banner">
+    🎃 &nbsp;Semaine Halloween — Bonne course à tous les coureurs masqués !&nbsp; 🦇
+  </div>
+  <script>
+  (function(){
+    const n=new Date();
+    if(n.getMonth()===9&&n.getDate()>=25&&n.getDate()<=31){
+      var b=document.getElementById('halloween-banner');
+      if(b) b.style.display='flex';
+    }
+  })();
+  </script>
 
   <!-- Bandeau partenaires global -->
   <div class="partners-bar" id="partners-bar">
@@ -1490,8 +1544,11 @@ function renderRaces(){
 
     // Urgence
     const daysToRace=dc?Math.round((dc-today)/(1000*60*60*24)):null;
+    const isHalloweenWeek=(()=>{const n=new Date();return n.getMonth()===9&&n.getDate()>=25&&n.getDate()<=31})();
     const urgencyPill=daysToRace!==null&&daysToRace>=0&&daysToRace<=6
-      ? `<span class="urgency-pill${daysToRace===0?' today':''}">${daysToRace===0?'🔥 Aujourd\'hui !':daysToRace===1?'🔥 Demain !':'🔥 Dans '+daysToRace+' jours'}</span>`
+      ? isHalloweenWeek
+        ? `<span class="urgency-pill halloween${daysToRace===0?' halloween-today':''}">${daysToRace===0?'🎃 C\'est ce soir !':daysToRace===1?'🎃 Demain — Édition Halloween !':'🎃 Édition Halloween — J-'+daysToRace}</span>`
+        : `<span class="urgency-pill${daysToRace===0?' today':''}">${daysToRace===0?'🔥 Aujourd\'hui !':daysToRace===1?'🔥 Demain !':'🔥 Dans '+daysToRace+' jours'}</span>`
       : '';
 
     // Zone médiane
