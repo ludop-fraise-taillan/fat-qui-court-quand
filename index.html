@@ -134,14 +134,16 @@
     .rrow-date{display:flex;flex-direction:column;align-items:center;min-width:38px;flex-shrink:0}
     .rrow-dd{font-size:22px;font-weight:800;color:var(--text);line-height:1}
     .rrow-mmyy{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.03em;line-height:1.4;text-align:center;margin-top:2px}
-    .rrow-info{flex:1;min-width:0}
-    .rrow-top{display:flex;align-items:baseline;gap:6px;flex-wrap:nowrap}
+    .rrow-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+    .rrow-line1{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
     .rrow-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
     .rrow-type{font-size:10px;font-weight:700;letter-spacing:.02em;white-space:nowrap;flex-shrink:0}
-    .rrow-meta{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:2px}
+    .rrow-line2{display:flex;align-items:center}
+    .rrow-meta-left{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
     .rrow-dists{font-size:10px;color:var(--text2);font-weight:500}
     .rrow-loc{font-size:10px;color:var(--text3)}
-    .rrow-people{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:3px}
+    .rrow-line3{display:flex;align-items:center;justify-content:space-between;gap:6px}
+    .rrow-people-left{display:flex;align-items:center;gap:4px;flex-wrap:wrap;flex:1;min-width:0}
     .rrow-conf{font-size:10px;color:#1a7a4a;font-weight:600}
     .rrow-inter{font-size:10px;color:#8a6200;font-weight:500}
     .rrow-benev{font-size:10px;color:#6d28d9;font-weight:500}
@@ -1901,21 +1903,25 @@ function renderRaces(){
           <span class="rrow-mmyy">${dcMM}<br>${dcYY}</span>
         </div>
         <div class="rrow-info">
-          <div class="rrow-top">
+          <div class="rrow-line1">
             <span class="rrow-name">${r.nom}</span>
             <span class="rrow-type" style="color:${typeColor}">${r.type}</span>
           </div>
-          <div class="rrow-meta">
-            ${dists.length>0?`<span class="rrow-dists">${dists.join(' / ')} km</span>`:''}
-            ${(r.ville||r.departement)?`<span class="hrow-sep">·</span><span class="rrow-loc">📍 ${[r.ville,r.departement].filter(Boolean).join(' · ')}</span>`:''}
-            ${urgencyPill?'<span class="hrow-sep" style="color:transparent">·</span>'+urgencyPill:''}
+          <div class="rrow-line2">
+            <span class="rrow-meta-left">
+              ${dists.length>0?`<span class="rrow-dists">${dists.join(' / ')} km</span>`:''}
+              ${(r.ville||r.departement)?`<span class="hrow-sep">·</span><span class="rrow-loc">📍 ${[r.ville,r.departement].filter(Boolean).join(' · ')}</span>`:''}
+              ${urgencyPill?'<span class="hrow-sep" style="color:transparent">·</span>'+urgencyPill:''}
+            </span>
           </div>
-          <div class="rrow-people">
-            ${myDot}
-            ${partSummary||'<span style="font-size:10px;color:var(--text3);font-style:italic">Aucun inscrit</span>'}
+          <div class="rrow-line3">
+            <span class="rrow-people-left">
+              ${myDot}
+              ${partSummary||'<span style="font-size:10px;color:var(--text3);font-style:italic">Aucun inscrit</span>'}
+            </span>
+            <button class="rrow-join ${statusClass}" onclick="event.stopPropagation();openModal('${r.id}')">${statusBtnTxt}</button>
           </div>
         </div>
-        <button class="rrow-join ${statusClass}" onclick="event.stopPropagation();openModal('${r.id}')">${statusBtnTxt}</button>
         <span class="hrow-chev" id="chev-${cardId}">›</span>
       </div>
       ${isSoldOut?'<div class="sold-out-stamp"></div>':''}
