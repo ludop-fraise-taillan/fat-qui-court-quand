@@ -120,6 +120,41 @@
     .legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
 
     /* ── Cartes course — design V4 smartphone-first ── */
+    /* Compact race rows (courses à venir) */
+    .rrow{background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+    .rrow:first-child{border-radius:12px 12px 0 0}
+    .rrow:last-child{border-radius:0 0 12px 12px;border-bottom:none}
+    .rrow::before{content:'';display:block;position:absolute;left:0;top:0;bottom:0;width:3px}
+    .rrow.trail::before{background:linear-gradient(180deg,#3A8F2A,#5CB648)}
+    .rrow.route::before{background:linear-gradient(180deg,#1A5FBF,#3B82F6)}
+    .rrow.ultra::before{background:linear-gradient(180deg,#C04A1A,#E8703A)}
+    .rrow.sold-out::before{background:linear-gradient(180deg,#900f0f,#C0392B)!important}
+    .rrow-main{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s}
+    .rrow-main:active{background:var(--bg3,rgba(0,0,0,.04))}
+    .rrow-date{display:flex;flex-direction:column;align-items:center;min-width:30px;flex-shrink:0}
+    .rrow-dd{font-size:16px;font-weight:800;color:var(--text);line-height:1}
+    .rrow-mmyy{font-size:8.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;line-height:1.3;text-align:center;margin-top:1px}
+    .rrow-info{flex:1;min-width:0}
+    .rrow-top{display:flex;align-items:baseline;gap:6px;flex-wrap:nowrap}
+    .rrow-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+    .rrow-type{font-size:10px;font-weight:700;letter-spacing:.02em;white-space:nowrap;flex-shrink:0}
+    .rrow-meta{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:2px}
+    .rrow-dists{font-size:10px;color:var(--text2);font-weight:500}
+    .rrow-loc{font-size:10px;color:var(--text3)}
+    .rrow-people{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:3px}
+    .rrow-conf{font-size:10px;color:#1a7a4a;font-weight:600}
+    .rrow-inter{font-size:10px;color:#8a6200;font-weight:500}
+    .rrow-benev{font-size:10px;color:#6d28d9;font-weight:500}
+    .rrow-mydot{display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .rrow-mydot-c{background:#34C988}
+    .rrow-mydot-i{background:#FAC775}
+    .rrow-mydot-b{background:#A78BFA}
+    .rrow-join{font-size:11px;font-weight:700;padding:5px 11px;border-radius:99px;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;letter-spacing:.01em;flex-shrink:0}
+    .rrow-join.none{background:var(--green-bg,#E6F7F0);color:var(--green-text,#1a7a4a);border:1px solid var(--green-border,#9FE1CB)}
+    .rrow-join.c{background:rgba(52,201,136,.15);color:#34C988;border:1px solid rgba(52,201,136,.35)}
+    .rrow-join.i{background:rgba(250,199,117,.15);color:#c48a00;border:1px solid rgba(250,199,117,.4)}
+    .rrow-expand{background:var(--bg);border-top:1px solid var(--border)}
+    #race-list{background:var(--bg2);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.05)}
     .race-card{border-radius:16px;overflow:hidden;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.05);position:relative;background:#fff}
     /* Barre colorée en haut de chaque carte (4px) */
     .race-card::before{content:'';display:block;height:4px;width:100%}
@@ -245,6 +280,9 @@
     body.halloween-mode .bottom-nav{background:rgba(13,10,20,.97);border-top-color:rgba(255,107,0,.25)}
     body.halloween-mode .race-card{background:#130D1E;box-shadow:0 2px 16px rgba(150,0,255,.15),0 0 0 1px rgba(180,120,255,.12)}
     body.halloween-mode .card-head{background:#130D1E!important}
+    body.halloween-mode #race-list,body.halloween-mode #history-list{background:#130D1E;box-shadow:0 2px 16px rgba(150,0,255,.15),0 0 0 1px rgba(180,120,255,.12)}
+    body.halloween-mode .rrow,body.halloween-mode .hrow{background:#130D1E;border-bottom-color:rgba(180,120,255,.15)}
+    body.halloween-mode .rrow-expand,body.halloween-mode .hrow-expand{background:#0D0A14;border-top-color:rgba(180,120,255,.12)}
     body.halloween-mode .status-bar.none{background:#1E1430}
     body.halloween-mode .status-bar.c{background:#0C2B1E}
     body.halloween-mode .status-bar.i{background:#2A1500}
@@ -1777,6 +1815,9 @@ function renderRaces(){
     const statusClass=myS==='confirmed'?'c':myS==='interested'?'i':'none';
     const statusTxt=myS==='confirmed'?`✓ Inscrit${myPart?.distance?' — '+myPart.distance+' km':''}`:myS==='interested'?'★ Intéressé':isPastRace?'+ Ma participation':'Participer ?';
     const statusBtnTxt=myS==='confirmed'?'✓ Inscrit':myS==='interested'?'★ Intéressé':isPastRace?'+ Participer':'＋ Je participe';
+    const myConf=myS==='confirmed';
+    const myInter=myS==='interested';
+    const myBenev=myPart&&(myPart.role_course==='benevole'||myPart.role_course==='les_deux');
 
     // Avatars inscrits (max 4 visible)
     const confParts=conf.slice(0,4);
@@ -1844,49 +1885,41 @@ function renderRaces(){
     if(!inscritsList) inscritsList='<div style="font-size:11px;color:var(--text3);font-style:italic;padding:4px 0">Aucune participation pour l\'instant</div>';
 
     const cardId='card-'+r.id;
-    html+=`<div class="race-card ${tc.toLowerCase()}${isSoldOut?' sold-out':''}" data-id="${r.id}" id="rcard-${r.id}">
-      <div class="card-head" onclick="toggleCard('${cardId}')">
-        <div class="card-head-inner">
-          <div class="date-col">
-            <span class="dc-day">${dcDay}</span>
-            <span class="dc-dd">${dcDD}</span>
-            <span class="dc-mm">${dcMM}</span>
-            <span class="dc-yy">${dcYY}</span>
-          </div>
-          <div class="date-col-sep"></div>
-          <div class="head-info">
-            <div class="head-top">
-              <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0">
-                <span class="race-name">${r.nom}</span>
-                ${urgencyPill}
-                ${(r.ville||r.departement)?`<span class="race-location">📍 ${[r.ville,r.departement].filter(Boolean).join(' · ')}</span>`:''}
-              </div>
-              <div class="head-right">
-                <span class="race-type">${r.type}</span>
-                ${isPastRace?'<span class="past-pill">Passée</span>':''}
-              </div>
-            </div>
-            <div class="head-bottom">
-              <div class="head-dists">${distTags}</div>
-            </div>
-          </div>
-          <div class="head-chev" id="chev-${cardId}">▾</div>
+    const typeColor=tc==='trail'?'#5B9BF5':tc==='ultra'?'#A78BFA':'#F97316';
+    // Participants summary
+    const partSummary=[
+      conf.length>0?`<span class="rrow-conf">${conf.length} inscrit${conf.length>1?'s':''}</span>`:'',
+      inter.length>0?`<span class="rrow-inter">${inter.length} int.</span>`:'',
+      benev.length>0?`<span class="rrow-benev">${benev.length} bénév.</span>`:'',
+    ].filter(Boolean).join('<span class="hrow-sep">·</span>');
+    // My status dot
+    const myDot=myConf?'<span class="rrow-mydot rrow-mydot-c" title="Inscrit"></span>':myInter?'<span class="rrow-mydot rrow-mydot-i" title="Intéressé"></span>':myBenev?'<span class="rrow-mydot rrow-mydot-b" title="Bénévole"></span>':'';
+    html+=`<div class="rrow race-card ${tc.toLowerCase()}${isSoldOut?' sold-out':''}" data-id="${r.id}" id="rcard-${r.id}">
+      <div class="rrow-main" onclick="toggleCard('${cardId}')">
+        <div class="rrow-date">
+          <span class="rrow-dd">${dcDD}</span>
+          <span class="rrow-mmyy">${dcMM}<br>${dcYY}</span>
         </div>
-        ${isSoldOut?'<div class="sold-out-stamp"></div>':''}
-        <div class="status-bar ${statusClass}" onclick="event.stopPropagation()">
-          <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
-            <span class="status-bar-txt ${statusClass}">${statusTxt}</span>
-            <div style="display:flex;align-items:center;gap:6px">
-              ${conf.length>0?`<div class="sbc-avatars">${avatarHtml}${moreHtml}</div>`:''}
-              ${noConfHtml}
-              ${inter.length>0?`<span style="font-size:10px;color:rgba(255,255,255,.55)">· ${inter.length} int.</span>`:''}
-              ${benev.length>0?`<span style="font-size:10px;color:rgba(124,58,237,.7)">· ${benev.length} bénév.</span>`:''}
-            </div>
+        <div class="rrow-info">
+          <div class="rrow-top">
+            <span class="rrow-name">${r.nom}</span>
+            <span class="rrow-type" style="color:${typeColor}">${r.type}</span>
           </div>
-          <button class="btn-join-bar ${statusClass}" onclick="openModal('${r.id}')">${statusBtnTxt}</button>
+          <div class="rrow-meta">
+            ${dists.length>0?`<span class="rrow-dists">${dists.join(' / ')} km</span>`:''}
+            ${(r.ville||r.departement)?`<span class="hrow-sep">·</span><span class="rrow-loc">📍 ${[r.ville,r.departement].filter(Boolean).join(' · ')}</span>`:''}
+            ${urgencyPill?'<span class="hrow-sep" style="color:transparent">·</span>'+urgencyPill:''}
+          </div>
+          <div class="rrow-people">
+            ${myDot}
+            ${partSummary||'<span style="font-size:10px;color:var(--text3);font-style:italic">Aucun inscrit</span>'}
+          </div>
         </div>
+        <button class="rrow-join ${statusClass}" onclick="event.stopPropagation();openModal('${r.id}')">${statusBtnTxt}</button>
+        <span class="hrow-chev" id="chev-${cardId}">›</span>
       </div>
-      <div class="card-expand" id="${cardId}">
+      ${isSoldOut?'<div class="sold-out-stamp"></div>':''}
+      <div class="card-expand rrow-expand" id="${cardId}" style="display:none">
         <div class="card-mid">
           <div class="mid-row">
             <div class="mid-left">${limiteLeft}</div>
@@ -1942,9 +1975,16 @@ function toggleCard(cardId){
   const exp=document.getElementById(cardId);
   const chev=document.getElementById('chev-'+cardId);
   if(!exp)return;
-  const open=exp.classList.contains('open');
-  exp.classList.toggle('open',!open);
-  if(chev)chev.classList.toggle('open',!open);
+  // Support both old CSS class toggle and new inline display
+  if(exp.classList.contains('rrow-expand')||exp.classList.contains('hrow-expand')){
+    const open=exp.style.display==='block';
+    exp.style.display=open?'none':'block';
+    if(chev)chev.style.transform=open?'':'rotate(90deg)';
+  } else {
+    const open=exp.classList.contains('open');
+    exp.classList.toggle('open',!open);
+    if(chev)chev.classList.toggle('open',!open);
+  }
 }
 
 function toggleInscritsList(listId,arrId){
