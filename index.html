@@ -298,23 +298,134 @@
     /* ── Chauves-souris ── */
     @keyframes bat-fly{
       0%{transform:translateX(-80px) translateY(0) scaleX(1)}
-      20%{transform:translateX(calc(20vw)) translateY(-18px) scaleX(1)}
-      40%{transform:translateX(calc(40vw)) translateY(6px) scaleX(1)}
-      60%{transform:translateX(calc(60vw)) translateY(-12px) scaleX(1)}
-      80%{transform:translateX(calc(80vw)) translateY(4px) scaleX(1)}
-      100%{transform:translateX(calc(100vw + 80px)) translateY(-8px) scaleX(1)}
+      20%{transform:translateX(calc(20vw)) translateY(-22px) scaleX(1)}
+      40%{transform:translateX(calc(40vw)) translateY(8px) scaleX(1)}
+      60%{transform:translateX(calc(60vw)) translateY(-16px) scaleX(1)}
+      80%{transform:translateX(calc(80vw)) translateY(6px) scaleX(1)}
+      100%{transform:translateX(calc(100vw + 80px)) translateY(-10px) scaleX(1)}
     }
     @keyframes bat-fly2{
       0%{transform:translateX(-80px) translateY(0) scaleX(-1)}
-      25%{transform:translateX(calc(25vw)) translateY(10px) scaleX(-1)}
-      50%{transform:translateX(calc(50vw)) translateY(-8px) scaleX(-1)}
-      75%{transform:translateX(calc(75vw)) translateY(14px) scaleX(-1)}
-      100%{transform:translateX(calc(100vw + 80px)) translateY(-4px) scaleX(-1)}
+      25%{transform:translateX(calc(25vw)) translateY(14px) scaleX(-1)}
+      50%{transform:translateX(calc(50vw)) translateY(-10px) scaleX(-1)}
+      75%{transform:translateX(calc(75vw)) translateY(18px) scaleX(-1)}
+      100%{transform:translateX(calc(100vw + 80px)) translateY(-6px) scaleX(-1)}
     }
-    .bat{position:fixed;pointer-events:none;z-index:999;font-size:22px;opacity:.7;will-change:transform}
-    .bat.b1{top:12%;animation:bat-fly 9s linear infinite;animation-delay:0s}
-    .bat.b2{top:28%;animation:bat-fly2 13s linear infinite;animation-delay:-4s;font-size:16px;opacity:.55}
-    .bat.b3{top:60%;animation:bat-fly 17s linear infinite;animation-delay:-9s;font-size:14px;opacity:.45}
+    .bat{position:fixed;pointer-events:none;z-index:999;font-size:42px;opacity:.85;will-change:transform}
+    .bat.b1{top:10%;animation:bat-fly 9s linear infinite;animation-delay:0s}
+    .bat.b2{top:30%;animation:bat-fly2 13s linear infinite;animation-delay:-4s;font-size:32px;opacity:.75}
+    .bat.b3{top:55%;animation:bat-fly 17s linear infinite;animation-delay:-9s;font-size:28px;opacity:.65}
+
+    /* ── Citrouilles volantes ── */
+    @keyframes pumpkin-fly{
+      0%{transform:translateX(-100px) translateY(0) rotate(-5deg)}
+      25%{transform:translateX(calc(25vw)) translateY(-30px) rotate(8deg)}
+      50%{transform:translateX(calc(50vw)) translateY(10px) rotate(-6deg)}
+      75%{transform:translateX(calc(75vw)) translateY(-20px) rotate(10deg)}
+      100%{transform:translateX(calc(100vw + 100px)) translateY(5px) rotate(-4deg)}
+    }
+    @keyframes pumpkin-fly2{
+      0%{transform:translateX(calc(100vw + 100px)) translateY(0) rotate(5deg)}
+      30%{transform:translateX(calc(70vw)) translateY(-25px) rotate(-8deg)}
+      60%{transform:translateX(calc(40vw)) translateY(15px) rotate(6deg)}
+      100%{transform:translateX(-100px) translateY(-10px) rotate(-5deg)}
+    }
+    .pumpkin{position:fixed;pointer-events:none;z-index:998;font-size:36px;opacity:.85;will-change:transform;filter:drop-shadow(0 0 8px rgba(255,140,0,.6))}
+    .pumpkin.p1{top:22%;animation:pumpkin-fly 19s linear infinite;animation-delay:-3s}
+    .pumpkin.p2{top:48%;animation:pumpkin-fly2 25s linear infinite;animation-delay:-11s;font-size:28px;opacity:.7}
+    .pumpkin.p3{top:70%;animation:pumpkin-fly 31s linear infinite;animation-delay:-18s;font-size:22px;opacity:.6}
+
+    /* ── Fantômes ── */
+    @keyframes ghost-float{
+      0%{transform:translateY(0) translateX(0) scale(1)}
+      25%{transform:translateY(-25px) translateX(12px) scale(1.05)}
+      50%{transform:translateY(-10px) translateX(0) scale(.97)}
+      75%{transform:translateY(-30px) translateX(-10px) scale(1.03)}
+      100%{transform:translateY(0) translateX(0) scale(1)}
+    }
+    @keyframes ghost-fade{
+      0%,100%{opacity:.7}
+      50%{opacity:.3}
+    }
+    @keyframes ghost-drift{
+      0%{left:-80px}
+      100%{left:calc(100vw + 80px)}
+    }
+    @keyframes ghost-drift2{
+      0%{left:calc(100vw + 80px)}
+      100%{left:-80px}
+    }
+    .ghost{position:fixed;pointer-events:none;z-index:997;font-size:44px;
+      animation:ghost-float 5s ease-in-out infinite, ghost-fade 5s ease-in-out infinite;
+      filter:drop-shadow(0 0 12px rgba(255,255,255,.5));
+      will-change:transform;}
+    .ghost.g1{top:35%;left:-80px;animation:ghost-float 5s ease-in-out infinite, ghost-fade 5s ease-in-out infinite, ghost-drift 35s linear infinite;animation-delay:0s,-2s,-5s}
+    .ghost.g2{top:15%;left:calc(100vw + 80px);animation:ghost-float 6s ease-in-out infinite, ghost-fade 6s ease-in-out infinite, ghost-drift2 42s linear infinite;animation-delay:-2s,-1s,-20s;font-size:34px;opacity:.6}
+    .ghost.g3{top:62%;left:-80px;animation:ghost-float 4s ease-in-out infinite, ghost-fade 4s ease-in-out infinite, ghost-drift 50s linear infinite;animation-delay:-1s,-3s,-35s;font-size:28px;opacity:.5}
+
+    /* ── Sorcières volantes ── */
+    @keyframes witch-fly{
+      0%{transform:translateX(calc(100vw + 100px)) translateY(0) rotate(-8deg)}
+      20%{transform:translateX(calc(80vw)) translateY(-20px) rotate(-5deg)}
+      40%{transform:translateX(calc(60vw)) translateY(10px) rotate(-10deg)}
+      60%{transform:translateX(calc(40vw)) translateY(-15px) rotate(-6deg)}
+      80%{transform:translateX(calc(20vw)) translateY(8px) rotate(-9deg)}
+      100%{transform:translateX(-120px) translateY(-12px) rotate(-7deg)}
+    }
+    @keyframes witch-fly2{
+      0%{transform:translateX(-120px) translateY(0) scaleX(-1) rotate(8deg)}
+      30%{transform:translateX(calc(30vw)) translateY(-18px) scaleX(-1) rotate(5deg)}
+      60%{transform:translateX(calc(60vw)) translateY(12px) scaleX(-1) rotate(9deg)}
+      100%{transform:translateX(calc(100vw + 120px)) translateY(-8px) scaleX(-1) rotate(6deg)}
+    }
+    .witch{position:fixed;pointer-events:none;z-index:998;font-size:40px;opacity:.8;will-change:transform;filter:drop-shadow(0 0 6px rgba(200,100,255,.5))}
+    .witch.w1{top:18%;animation:witch-fly 22s linear infinite;animation-delay:-6s}
+    .witch.w2{top:45%;animation:witch-fly2 28s linear infinite;animation-delay:-14s;font-size:32px;opacity:.65}
+
+    /* ── Manoir hanté ── */
+    .haunted-manor{
+      position:fixed;bottom:0;right:0;z-index:990;
+      pointer-events:none;
+      width:min(260px,38vw);
+      opacity:.85;
+    }
+    .haunted-manor svg{width:100%;height:auto;display:block}
+    @keyframes win-flicker{
+      0%,100%{opacity:1;filter:brightness(1)}
+      15%{opacity:.6;filter:brightness(.7)}
+      30%{opacity:1;filter:brightness(1.2)}
+      50%{opacity:.8;filter:brightness(.9)}
+      70%{opacity:1;filter:brightness(1.1)}
+      85%{opacity:.7;filter:brightness(.8)}
+    }
+    @keyframes win-glow-pulse{
+      0%,100%{opacity:.9}
+      50%{opacity:.5}
+    }
+    .manor-win{animation:win-flicker 4s ease-in-out infinite}
+    .manor-win.w2{animation-delay:-1.3s}
+    .manor-win.w3{animation-delay:-2.7s}
+    .manor-win.w4{animation-delay:-.8s}
+    .manor-win.w5{animation-delay:-3.1s}
+
+    /* ── Toile d'araignée ── */
+    .spiderweb{
+      position:fixed;top:0;left:0;z-index:997;
+      pointer-events:none;
+      width:min(180px,28vw);
+      opacity:.55;
+      filter:drop-shadow(0 0 4px rgba(200,180,255,.4));
+    }
+    @keyframes spider-dangle{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(6px)}
+    }
+    .spider-emoji{
+      position:fixed;top:min(155px,22vw);left:min(88px,14vw);
+      font-size:18px;z-index:997;pointer-events:none;opacity:.75;
+      animation:spider-dangle 3s ease-in-out infinite;
+      filter:drop-shadow(0 0 3px rgba(0,0,0,.8));
+    }
 
     /* ── Monstre idle ── */
     @keyframes monster-peek{
@@ -351,14 +462,28 @@
 
     /* ── Éclair de foudre ── */
     @keyframes lightning-flash{
-      0%{opacity:0}5%{opacity:.18}8%{opacity:0}10%{opacity:.12}13%{opacity:0}100%{opacity:0}
+      0%{opacity:0}
+      3%{opacity:.55}5%{opacity:.1}
+      7%{opacity:.7}10%{opacity:.05}
+      12%{opacity:.4}15%{opacity:0}
+      100%{opacity:0}
+    }
+    @keyframes bolt-flash{
+      0%{opacity:0}3%{opacity:1}5%{opacity:.3}7%{opacity:1}10%{opacity:.2}12%{opacity:.8}15%{opacity:0}100%{opacity:0}
     }
     .lightning-overlay{
       position:fixed;inset:0;z-index:9997;
-      background:linear-gradient(160deg,rgba(200,180,255,.25),rgba(255,255,255,.08));
+      background:linear-gradient(160deg,rgba(220,200,255,.55),rgba(255,255,255,.18));
       pointer-events:none;opacity:0;
     }
     .lightning-overlay.flash{animation:lightning-flash 1.8s ease-out forwards}
+    .lightning-bolt{
+      position:fixed;top:0;z-index:9998;pointer-events:none;
+      width:4px;opacity:0;
+      filter:blur(1px) drop-shadow(0 0 6px #fff) drop-shadow(0 0 20px #c8b4ff);
+    }
+    .lightning-bolt.flash{animation:bolt-flash 1.8s ease-out forwards}
+    .lightning-bolt svg{width:100%;height:100%}
 
     /* ── Bannière Halloween ── */
     .halloween-banner{display:flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(90deg,#1E0A2E,#3B1206,#1E0A2E);color:#FF9D3A;font-size:11px;font-weight:700;padding:5px 12px;letter-spacing:.04em;border-bottom:1px solid #6B2D0F;flex-shrink:0}
@@ -789,6 +914,96 @@
      HALLOWEEN MODE — Option B  25–31 oct
 ═══════════════════════════════════════ -->
 <div class="lightning-overlay" id="hw-lightning"></div>
+<!-- Toile d'araignée coin haut gauche -->
+<div class="spiderweb" id="hw-spiderweb" style="display:none">
+<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="rgba(220,210,255,0.7)" stroke-width="0.8" fill="none">
+    <!-- Fils radiaux depuis le coin (0,0) -->
+    <line x1="0" y1="0" x2="180" y2="0"/>
+    <line x1="0" y1="0" x2="180" y2="40"/>
+    <line x1="0" y1="0" x2="180" y2="90"/>
+    <line x1="0" y1="0" x2="160" y2="140"/>
+    <line x1="0" y1="0" x2="120" y2="170"/>
+    <line x1="0" y1="0" x2="60" y2="180"/>
+    <line x1="0" y1="0" x2="0" y2="180"/>
+    <!-- Arcs concentriques (toile) -->
+    <!-- Arc 1 (petit) -->
+    <path d="M 30 0 Q 20 12 18 20 Q 12 26 0 30"/>
+    <!-- Arc 2 -->
+    <path d="M 65 0 Q 52 20 44 38 Q 30 52 18 58 Q 8 60 0 65"/>
+    <!-- Arc 3 -->
+    <path d="M 105 0 Q 90 30 76 58 Q 58 80 40 90 Q 22 96 12 98 Q 4 100 0 105"/>
+    <!-- Arc 4 -->
+    <path d="M 148 0 Q 140 18 128 40 Q 108 66 82 88 Q 60 106 44 116 Q 26 124 14 126 Q 4 128 0 148"/>
+    <!-- Arc 5 (grand) -->
+    <path d="M 180 18 Q 162 30 144 52 Q 122 76 98 98 Q 76 118 56 130 Q 36 140 20 144 Q 8 148 0 180"/>
+    <!-- Fil de suspension de l'araignée -->
+    <line x1="88" y1="0" x2="88" y2="155" stroke="rgba(220,210,255,0.5)" stroke-width="0.6"/>
+  </g>
+</svg>
+</div>
+<div class="spider-emoji" id="hw-spider" style="display:none">🕷</div>
+<div class="lightning-bolt" id="hw-bolt"><svg viewBox="0 0 20 200" xmlns="http://www.w3.org/2000/svg"><polyline points="12,0 4,80 11,80 2,200 18,90 10,90 20,0" fill="white" opacity=".95"/></svg></div>
+<div class="haunted-manor" id="hw-manor" style="display:none">
+<svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+  <!-- Ciel -->
+  <defs>
+    <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe8a0" stop-opacity=".9"/>
+      <stop offset="60%" stop-color="#ffd060" stop-opacity=".4"/>
+      <stop offset="100%" stop-color="#ffd060" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <!-- Lune -->
+  <circle cx="210" cy="25" r="18" fill="url(#moonGlow)" filter="url(#glow)"/>
+  <circle cx="210" cy="25" r="14" fill="#ffe8a0"/>
+  <!-- Corps principal du manoir -->
+  <rect x="60" y="100" width="140" height="100" fill="#1a0d2e"/>
+  <!-- Tour gauche -->
+  <rect x="40" y="80" width="50" height="120" fill="#140a25"/>
+  <!-- Tour droite -->
+  <rect x="170" y="80" width="50" height="120" fill="#140a25"/>
+  <!-- Toit tour gauche (pointe) -->
+  <polygon points="40,80 65,40 90,80" fill="#0d0818"/>
+  <!-- Toit tour droite -->
+  <polygon points="170,80 195,40 220,80" fill="#0d0818"/>
+  <!-- Toit central -->
+  <polygon points="60,100 130,65 200,100" fill="#110920"/>
+  <!-- Petite tourelle centrale -->
+  <rect x="115" y="68" width="30" height="35" fill="#0d0818"/>
+  <polygon points="115,68 130,45 145,68" fill="#080614"/>
+  <!-- Fenêtres orangées tour gauche -->
+  <rect class="manor-win" x="50" y="95" width="14" height="18" rx="6" fill="#ff8c00"/>
+  <rect class="manor-win w2" x="50" y="125" width="14" height="18" rx="6" fill="#ff8c00"/>
+  <!-- Fenêtres tour droite -->
+  <rect class="manor-win w3" x="176" y="95" width="14" height="18" rx="6" fill="#ff8c00"/>
+  <rect class="manor-win w4" x="176" y="125" width="14" height="18" rx="6" fill="#ff8c00"/>
+  <!-- Fenêtres corps central -->
+  <rect class="manor-win w5" x="90" y="115" width="18" height="22" rx="4" fill="#ff8c00"/>
+  <rect class="manor-win" x="152" y="115" width="18" height="22" rx="4" fill="#ff8c00"/>
+  <!-- Grande porte -->
+  <rect x="120" y="155" width="20" height="45" rx="8" fill="#0a0614"/>
+  <!-- Croix fenêtres -->
+  <line x1="57" y1="95" x2="57" y2="113" stroke="#0d0818" stroke-width="1.5"/>
+  <line x1="50" y1="104" x2="64" y2="104" stroke="#0d0818" stroke-width="1.5"/>
+  <line x1="183" y1="95" x2="183" y2="113" stroke="#0d0818" stroke-width="1.5"/>
+  <line x1="176" y1="104" x2="190" y2="104" stroke="#0d0818" stroke-width="1.5"/>
+  <!-- Grille de la porte -->
+  <line x1="130" y1="155" x2="130" y2="200" stroke="#1a0d2e" stroke-width="1.5"/>
+  <line x1="120" y1="170" x2="140" y2="170" stroke="#1a0d2e" stroke-width="1.5"/>
+  <!-- Arbres morts -->
+  <line x1="20" y1="200" x2="20" y2="140" stroke="#0d0818" stroke-width="4"/>
+  <line x1="20" y1="155" x2="5" y2="140" stroke="#0d0818" stroke-width="2.5"/>
+  <line x1="20" y1="165" x2="35" y2="148" stroke="#0d0818" stroke-width="2.5"/>
+  <line x1="20" y1="148" x2="10" y2="132" stroke="#0d0818" stroke-width="2"/>
+  <line x1="240" y1="200" x2="240" y2="145" stroke="#0d0818" stroke-width="4"/>
+  <line x1="240" y1="158" x2="252" y2="143" stroke="#0d0818" stroke-width="2.5"/>
+  <line x1="240" y1="168" x2="228" y2="153" stroke="#0d0818" stroke-width="2.5"/>
+  <!-- Sol / brume -->
+  <rect x="0" y="195" width="260" height="5" fill="#1a0d2e" opacity=".8"/>
+</svg>
+</div>
 <script>
 (function(){
   const n=new Date();
@@ -804,6 +1019,37 @@
     d.className='bat '+c; d.textContent='🦇';
     document.body.appendChild(d);
   });
+
+  /* ── 2b. Sorcières volantes ── */
+  ['w1','w2'].forEach(function(c){
+    var d=document.createElement('div');
+    d.className='witch '+c; d.textContent='🧙';
+    document.body.appendChild(d);
+  });
+
+  /* ── 2e. Citrouilles volantes ── */
+  ['p1','p2','p3'].forEach(function(c){
+    var d=document.createElement('div');
+    d.className='pumpkin '+c; d.textContent='🎃';
+    document.body.appendChild(d);
+  });
+
+  /* ── 2f. Fantômes ── */
+  ['g1','g2','g3'].forEach(function(c){
+    var d=document.createElement('div');
+    d.className='ghost '+c; d.textContent='👻';
+    document.body.appendChild(d);
+  });
+
+  /* ── 2c. Manoir hanté (visible uniquement en halloween-mode) ── */
+  var manor=document.getElementById('hw-manor');
+  if(manor) manor.style.display='block';
+
+  /* ── 2d. Toile d'araignée ── */
+  var web=document.getElementById('hw-spiderweb');
+  var spider=document.getElementById('hw-spider');
+  if(web) web.style.display='block';
+  if(spider) spider.style.display='block';
 
   /* ── 3. Monstre idle ── */
   var monster=document.createElement('div');
@@ -830,17 +1076,35 @@
   }
   setTimeout(scheduleMonster, 8000); // première fois après 8s
 
-  /* ── 4. Éclairs de foudre ── */
+  /* ── 4. Éclairs de foudre dramatiques ── */
   var lightning=document.getElementById('hw-lightning');
+  var boltEl=document.getElementById('hw-bolt');
   function doLightning(){
+    // Positionnement aléatoire du bolt
+    if(boltEl){
+      var boltX=Math.random()*90+5; // 5–95% de la largeur
+      var boltH=Math.floor(Math.random()*120+80); // hauteur 80–200px
+      boltEl.style.left=boltX+'vw';
+      boltEl.style.height=boltH+'px';
+      boltEl.classList.remove('flash');
+    }
     lightning.classList.remove('flash');
-    void lightning.offsetWidth;
+    void lightning.offsetWidth; // reflow
     lightning.classList.add('flash');
+    if(boltEl){void boltEl.offsetWidth; boltEl.classList.add('flash');}
     if(hwSoundOn) playSound('thunder');
-    var delay=40000+Math.random()*50000; // toutes les 40–90s
+    // Parfois un double éclair 300ms après
+    if(Math.random()<0.4){
+      setTimeout(function(){
+        lightning.classList.remove('flash');
+        void lightning.offsetWidth;
+        lightning.classList.add('flash');
+      },320);
+    }
+    var delay=30000+Math.random()*40000; // toutes les 30–70s
     setTimeout(doLightning, delay);
   }
-  setTimeout(doLightning, 15000);
+  setTimeout(doLightning, 12000);
 
   /* ── 5. Sons ── */
   var hwSoundOn=false;
@@ -976,7 +1240,10 @@
     document.body.classList.remove('halloween-mode');
     var b=document.getElementById('halloween-banner'); if(b) b.style.display='none';
     var sb=document.getElementById('hw-sound-btn'); if(sb) sb.style.display='none';
-    document.querySelectorAll('.bat,.halloween-monster').forEach(function(el){el.style.display='none';});
+    document.querySelectorAll('.bat,.witch,.pumpkin,.ghost,.halloween-monster').forEach(function(el){el.style.display='none';});
+    var m=document.getElementById('hw-manor'); if(m) m.style.display='none';
+    var w=document.getElementById('hw-spiderweb'); if(w) w.style.display='none';
+    var sp=document.getElementById('hw-spider'); if(sp) sp.style.display='none';
   }
   </script>
 
