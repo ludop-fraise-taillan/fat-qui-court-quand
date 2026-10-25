@@ -1558,6 +1558,17 @@
       <button class="btn btn-sm" onclick="closeModal('modal-edit-race')">Annuler</button>
       <button class="btn btn-primary btn-sm" id="btn-save-edit-race" onclick="saveEditRace()">💾 Enregistrer</button>
     </div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      <button id="btn-delete-race" onclick="confirmDeleteRace()" style="width:100%;padding:9px;border-radius:var(--radius-md);border:1.5px solid rgba(220,50,50,.35);background:rgba(220,50,50,.07);color:#c0392b;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.01em">🗑 Supprimer cette course</button>
+      <div id="delete-confirm-zone" style="display:none;margin-top:8px;background:rgba(220,50,50,.1);border:1.5px solid rgba(220,50,50,.4);border-radius:var(--radius-md);padding:10px 12px">
+        <div style="font-size:12px;color:#c0392b;font-weight:700;margin-bottom:8px">⚠️ Supprimer définitivement cette course ?</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:10px">Cette action supprime aussi toutes les participations associées. Elle est irréversible.</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="cancelDeleteRace()" style="flex:1;padding:8px;border-radius:var(--radius-md);border:1.5px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Annuler</button>
+          <button id="btn-delete-confirm" onclick="deleteRace()" style="flex:1;padding:8px;border-radius:var(--radius-md);border:none;background:#c0392b;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Oui, supprimer</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -3707,6 +3718,8 @@ function openEditRace(id){
   document.getElementById('edit-dept').value=r.departement||'';
   setEditType(r.type||'Trail');
   renderEditDistTags();
+  document.getElementById('delete-confirm-zone').style.display='none';
+  document.getElementById('btn-delete-race').style.display='block';
   document.getElementById('modal-edit-race').classList.add('open');
 }
 
@@ -3760,6 +3773,27 @@ async function saveEditRace(){
   if(error){showToast('Erreur : '+error.message);setSyncing('error');}
   else{showToast('Course mise à jour ✓');await loadAll();closeModal('modal-edit-race');}
   btn.disabled=false;
+}
+
+function confirmDeleteRace(){
+  document.getElementById('delete-confirm-zone').style.display='block';
+  document.getElementById('btn-delete-race').style.display='none';
+}
+function cancelDeleteRace(){
+  document.getElementById('delete-confirm-zone').style.display='none';
+  document.getElementById('btn-delete-race').style.display='block';
+}
+async function deleteRace(){
+  const btn=document.getElementById('btn-delete-confirm');
+  btn.disabled=true; btn.textContent='Suppression…';
+  setSyncing('syncing');
+  // Delete participations first, then the race
+  await db.from('participations').delete().eq('course_id',editRaceId);
+  const {error}=await db.from('courses').delete().eq('id',editRaceId);
+  if(error){showToast('Erreur : '+error.message);setSyncing('error');btn.disabled=false;btn.textContent='Oui, supprimer';return;}
+  showToast('Course supprimée');
+  await loadAll();
+  closeModal('modal-edit-race');
 }
 
 // ── SQL migration hint (à exécuter une fois dans Supabase) ──────────────────
