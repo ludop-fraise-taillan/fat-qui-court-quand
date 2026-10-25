@@ -147,6 +147,7 @@
     .head-info{flex:1;padding:10px 10px 10px 12px;display:flex;flex-direction:column;justify-content:center;gap:5px}
     .head-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
     .race-name{font-size:15px;font-weight:800;color:#111;line-height:1.2;flex:1;letter-spacing:-.01em}
+    .race-location{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .head-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
     .race-type{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
     .race-card.trail .race-type{background:#DCF2D5;color:#2A7A18}
@@ -1515,6 +1516,18 @@
       <div id="edit-dist-tags" style="display:flex;gap:5px;flex-wrap:wrap;min-height:24px"></div>
     </div>
 
+    <!-- Localisation -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:4px">📍 Ville</label>
+        <input type="text" id="edit-ville" placeholder="ex. Bordeaux" style="width:100%;padding:8px 10px;border-radius:var(--radius-md);border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);font-size:13px;outline:none">
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:4px">Département</label>
+        <input type="text" id="edit-dept" placeholder="ex. Gironde (33)" style="width:100%;padding:8px 10px;border-radius:var(--radius-md);border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);font-size:13px;outline:none">
+      </div>
+    </div>
+
     <!-- Dates -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div>
@@ -1814,6 +1827,7 @@ function renderRaces(){
               <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0">
                 <span class="race-name">${r.nom}</span>
                 ${urgencyPill}
+                ${(r.ville||r.departement)?`<span class="race-location">📍 ${[r.ville,r.departement].filter(Boolean).join(' · ')}</span>`:''}
               </div>
               <div class="head-right">
                 <span class="race-type">${r.type}</span>
@@ -2186,7 +2200,10 @@ function renderHistory(){
           <div class="date-col-sep"></div>
           <div class="head-info">
             <div class="head-top">
-              <span class="race-name">${r.nom}</span>
+              <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0">
+                <span class="race-name">${r.nom}</span>
+                ${(r.ville||r.departement)?`<span class="race-location">📍 ${[r.ville,r.departement].filter(Boolean).join(' · ')}</span>`:''}
+              </div>
               <div class="head-right">
                 <span class="race-type">${r.type}</span>
                 <span class="past-pill">Passée</span>
@@ -3686,6 +3703,8 @@ function openEditRace(id){
   document.getElementById('edit-open').value=r.date_ouverture||'';
   document.getElementById('edit-url').value=r.url||'';
   document.getElementById('edit-url-results').value=r.url_results||'';
+  document.getElementById('edit-ville').value=r.ville||'';
+  document.getElementById('edit-dept').value=r.departement||'';
   setEditType(r.type||'Trail');
   renderEditDistTags();
   document.getElementById('modal-edit-race').classList.add('open');
@@ -3732,6 +3751,8 @@ async function saveEditRace(){
     date_ouverture:document.getElementById('edit-open').value||null,
     url:document.getElementById('edit-url').value.trim()||null,
     url_results:document.getElementById('edit-url-results').value.trim()||null,
+    ville:document.getElementById('edit-ville').value.trim()||null,
+    departement:document.getElementById('edit-dept').value.trim()||null,
   };
   // remove undefined keys
   Object.keys(payload).forEach(k=>payload[k]===undefined&&delete payload[k]);
@@ -3743,6 +3764,8 @@ async function saveEditRace(){
 
 // ── SQL migration hint (à exécuter une fois dans Supabase) ──────────────────
 // ALTER TABLE courses ADD COLUMN IF NOT EXISTS distances text;
+// ALTER TABLE courses ADD COLUMN IF NOT EXISTS ville text;
+// ALTER TABLE courses ADD COLUMN IF NOT EXISTS departement text;
 // ALTER TABLE participations ADD COLUMN IF NOT EXISTS distance integer;
 // CREATE TABLE IF NOT EXISTS club_events (
 //   id text PRIMARY KEY,
