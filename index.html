@@ -228,10 +228,33 @@
     /* Urgence : course dans moins de 7 jours */
     .urgency-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;white-space:nowrap}
     .urgency-pill.today{background:#FEE2E2;color:#991B1B;border-color:#FCA5A5}
-    /* Halloween — 25–31 oct */
+    /* ══════════════════════════════════════
+       HALLOWEEN THEME — actif 25–31 oct
+    ══════════════════════════════════════ */
+    body.halloween-mode{
+      --bg:#0D0A14;--bg2:#160F22;--bg3:#1E1430;
+      --text:#F0E6FF;--text2:#B89FD8;--text3:#7A618F;
+      --border:rgba(180,120,255,0.15);--border2:rgba(180,120,255,0.28);
+      --green-bg:#0A2A1F;--green-text:#7DFFC4;--green-border:#1A6B4A;
+      --amber-bg:#2A1500;--amber-text:#FFB347;--amber-border:#8B4500;
+      --red-text:#FF8080;--orange-text:#FFB347;
+    }
+    body.halloween-mode .app-shell{background:var(--bg)}
+    body.halloween-mode .header{background:rgba(13,10,20,.95);border-bottom-color:rgba(255,107,0,.3)}
+    body.halloween-mode .bottom-nav{background:rgba(13,10,20,.97);border-top-color:rgba(255,107,0,.25)}
+    body.halloween-mode .race-card{background:#130D1E;box-shadow:0 2px 16px rgba(150,0,255,.15),0 0 0 1px rgba(180,120,255,.12)}
+    body.halloween-mode .card-head{background:#130D1E!important}
+    body.halloween-mode .status-bar.none{background:#1E1430}
+    body.halloween-mode .status-bar.c{background:#0C2B1E}
+    body.halloween-mode .status-bar.i{background:#2A1500}
+    body.halloween-mode .evt-sticky-head{background:rgba(13,10,20,.97)}
+    body.halloween-mode .partners-bar{background:rgba(22,15,34,.95)}
+
+    /* Urgence pills Halloween */
     .urgency-pill.halloween{background:linear-gradient(135deg,#3B1F5E,#6B2D0F);color:#FF9D3A;border-color:#FF6B1A;box-shadow:0 0 6px rgba(255,107,26,.35)}
     .urgency-pill.halloween-today{background:linear-gradient(135deg,#5C1F1F,#7A2E00);color:#FFD700;border-color:#FF4500;box-shadow:0 0 8px rgba(255,69,0,.5)}
-    /* Bats animation */
+
+    /* ── Chauves-souris ── */
     @keyframes bat-fly{
       0%{transform:translateX(-80px) translateY(0) scaleX(1)}
       20%{transform:translateX(calc(20vw)) translateY(-18px) scaleX(1)}
@@ -251,8 +274,63 @@
     .bat.b1{top:12%;animation:bat-fly 9s linear infinite;animation-delay:0s}
     .bat.b2{top:28%;animation:bat-fly2 13s linear infinite;animation-delay:-4s;font-size:16px;opacity:.55}
     .bat.b3{top:60%;animation:bat-fly 17s linear infinite;animation-delay:-9s;font-size:14px;opacity:.45}
-    /* Halloween header tint */
+
+    /* ── Monstre idle ── */
+    @keyframes monster-peek{
+      0%{transform:translateY(100%)}
+      8%{transform:translateY(10%)}
+      15%{transform:translateY(20%)}
+      18%{transform:translateY(10%)}
+      85%{transform:translateY(10%)}
+      100%{transform:translateY(100%)}
+    }
+    @keyframes monster-wobble{
+      0%,100%{transform:translateY(10%) rotate(-3deg)}
+      50%{transform:translateY(10%) rotate(3deg)}
+    }
+    @keyframes monster-eyes{
+      0%,90%,100%{opacity:1}
+      92%,98%{opacity:0}
+    }
+    .halloween-monster{
+      position:fixed;bottom:52px;right:12px;z-index:998;
+      font-size:52px;line-height:1;
+      transform:translateY(100%);
+      pointer-events:none;
+      filter:drop-shadow(0 0 8px rgba(255,100,0,.6));
+    }
+    .halloween-monster.peeking{
+      animation:monster-peek 6s ease-in-out forwards, monster-wobble 1.2s ease-in-out 0.5s 5;
+    }
+    .halloween-monster span.eyes{
+      position:absolute;top:30%;left:50%;transform:translateX(-50%);
+      font-size:18px;
+      animation:monster-eyes 3s ease-in-out infinite 1s;
+    }
+
+    /* ── Éclair de foudre ── */
+    @keyframes lightning-flash{
+      0%{opacity:0}5%{opacity:.18}8%{opacity:0}10%{opacity:.12}13%{opacity:0}100%{opacity:0}
+    }
+    .lightning-overlay{
+      position:fixed;inset:0;z-index:9997;
+      background:linear-gradient(160deg,rgba(200,180,255,.25),rgba(255,255,255,.08));
+      pointer-events:none;opacity:0;
+    }
+    .lightning-overlay.flash{animation:lightning-flash 1.8s ease-out forwards}
+
+    /* ── Bannière Halloween ── */
     .halloween-banner{display:flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(90deg,#1E0A2E,#3B1206,#1E0A2E);color:#FF9D3A;font-size:11px;font-weight:700;padding:5px 12px;letter-spacing:.04em;border-bottom:1px solid #6B2D0F;flex-shrink:0}
+
+    /* ── Toggle son ── */
+    .hw-sound-btn{
+      position:fixed;bottom:66px;left:12px;z-index:998;
+      background:rgba(30,10,50,.85);border:1.5px solid rgba(180,120,255,.35);
+      border-radius:99px;padding:5px 10px;font-size:12px;cursor:pointer;
+      color:#D4A8FF;font-family:inherit;font-weight:700;
+      box-shadow:0 0 8px rgba(150,0,255,.2);
+      display:none;
+    }
     /* Piste 4 — mini-calendrier amélioré */
     .month-sb-item{font-size:10px;font-weight:700;padding:6px 5px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;text-align:center;line-height:1.2;white-space:nowrap;min-width:40px;-webkit-tap-highlight-color:transparent;user-select:none;transition:all .15s}
     /* Historique */
@@ -645,18 +723,136 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- Halloween bats (visible 25–31 oct) -->
+<!-- ═══════════════════════════════════════
+     HALLOWEEN MODE — Option B  25–31 oct
+═══════════════════════════════════════ -->
+<div class="lightning-overlay" id="hw-lightning"></div>
 <script>
 (function(){
   const n=new Date();
-  if(n.getMonth()===9&&n.getDate()>=25&&n.getDate()<=31){
-    ['b1','b2','b3'].forEach(function(c){
-      var d=document.createElement('div');
-      d.className='bat '+c;
-      d.textContent='🦇';
-      document.body.appendChild(d);
-    });
+  const isHW=(n.getMonth()===9&&n.getDate()>=25&&n.getDate()<=31);
+  if(!isHW) return;
+
+  /* ── 1. Thème sombre ── */
+  document.body.classList.add('halloween-mode');
+
+  /* ── 2. Chauves-souris ── */
+  ['b1','b2','b3'].forEach(function(c){
+    var d=document.createElement('div');
+    d.className='bat '+c; d.textContent='🦇';
+    document.body.appendChild(d);
+  });
+
+  /* ── 3. Monstre idle ── */
+  var monster=document.createElement('div');
+  monster.className='halloween-monster';
+  monster.id='hw-monster';
+  // Choix aléatoire parmi 3 monstres
+  var monsters=['👹','🧟','👻'];
+  monster.textContent=monsters[Math.floor(Math.random()*monsters.length)];
+  document.body.appendChild(monster);
+
+  function showMonster(){
+    monster.classList.remove('peeking');
+    void monster.offsetWidth; // reflow
+    monster.classList.add('peeking');
+    // Son si activé
+    if(hwSoundOn) playSound('monster');
+    setTimeout(function(){monster.classList.remove('peeking');},6200);
   }
+
+  // Apparition toutes les 25–45 secondes
+  function scheduleMonster(){
+    var delay=25000+Math.random()*20000;
+    setTimeout(function(){ showMonster(); scheduleMonster(); },delay);
+  }
+  setTimeout(scheduleMonster, 8000); // première fois après 8s
+
+  /* ── 4. Éclairs de foudre ── */
+  var lightning=document.getElementById('hw-lightning');
+  function doLightning(){
+    lightning.classList.remove('flash');
+    void lightning.offsetWidth;
+    lightning.classList.add('flash');
+    if(hwSoundOn) playSound('thunder');
+    var delay=40000+Math.random()*50000; // toutes les 40–90s
+    setTimeout(doLightning, delay);
+  }
+  setTimeout(doLightning, 15000);
+
+  /* ── 5. Sons ── */
+  var hwSoundOn=false;
+
+  // Sons synthétiques via Web Audio API (pas de fichiers externes)
+  var audioCtx=null;
+  function getCtx(){
+    if(!audioCtx){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+    return audioCtx;
+  }
+
+  function playSound(type){
+    var ctx=getCtx(); if(!ctx) return;
+    if(ctx.state==='suspended') ctx.resume();
+    var t=ctx.currentTime;
+    if(type==='tap'){
+      // Petit "bouh" court
+      var o=ctx.createOscillator(), g=ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.setValueAtTime(180,t); o.frequency.exponentialRampToValueAtTime(80,t+0.18);
+      g.gain.setValueAtTime(0.18,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.22);
+      o.start(t); o.stop(t+0.22);
+    } else if(type==='monster'){
+      // Grognement grave
+      var o=ctx.createOscillator(), g=ctx.createGain();
+      var dist=ctx.createWaveShaper();
+      var curve=new Float32Array(256);
+      for(var i=0;i<256;i++){var x=i*2/256-1; curve[i]=x*(1+8*Math.abs(x))/(1+8*Math.abs(x)*0.5);}
+      dist.curve=curve;
+      o.connect(dist); dist.connect(g); g.connect(ctx.destination);
+      o.type='sawtooth';
+      o.frequency.setValueAtTime(60,t); o.frequency.setValueAtTime(45,t+0.3); o.frequency.setValueAtTime(55,t+0.7);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.22,t+0.1);
+      g.gain.setValueAtTime(0.22,t+0.6); g.gain.exponentialRampToValueAtTime(0.001,t+1.1);
+      o.start(t); o.stop(t+1.2);
+    } else if(type==='thunder'){
+      // Tonnerre grave (bruit blanc filtré)
+      var buf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);
+      var data=buf.getChannelData(0);
+      for(var i=0;i<data.length;i++) data[i]=(Math.random()*2-1);
+      var src=ctx.createBufferSource(), flt=ctx.createBiquadFilter(), g=ctx.createGain();
+      flt.type='lowpass'; flt.frequency.value=120;
+      src.buffer=buf; src.connect(flt); flt.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.35,t+0.08);
+      g.gain.setValueAtTime(0.35,t+0.12); g.gain.exponentialRampToValueAtTime(0.001,t+1.8);
+      src.start(t); src.stop(t+2);
+    }
+  }
+
+  // Sons au tap sur les cards de courses
+  document.addEventListener('click', function(e){
+    if(!hwSoundOn) return;
+    if(e.target.closest('.race-card')||e.target.closest('.btn-join-bar')){
+      playSound('tap');
+    }
+  }, true);
+
+  /* ── 6. Bouton toggle son ── */
+  var sBtn=document.createElement('button');
+  sBtn.className='hw-sound-btn'; sBtn.id='hw-sound-btn';
+  sBtn.textContent='🔇 Sons OFF';
+  sBtn.style.display='flex';
+  sBtn.onclick=function(){
+    hwSoundOn=!hwSoundOn;
+    sBtn.textContent=hwSoundOn?'🔊 Sons ON':'🔇 Sons OFF';
+    if(hwSoundOn){
+      // Débloquer l'AudioContext au premier clic utilisateur
+      var ctx=getCtx();
+      if(ctx&&ctx.state==='suspended') ctx.resume();
+      playSound('tap');
+    }
+  };
+  document.body.appendChild(sBtn);
+
 })();
 </script>
 
@@ -703,7 +899,8 @@
 
   <!-- Bannière Halloween (visible 25–31 oct) -->
   <div id="halloween-banner" style="display:none" class="halloween-banner">
-    🎃 &nbsp;Semaine Halloween — Bonne course à tous les coureurs masqués !&nbsp; 🦇
+    <span>🎃 &nbsp;Semaine Halloween — Bonne course à tous les coureurs masqués !&nbsp; 🦇</span>
+    <button onclick="disableHalloween()" style="margin-left:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,150,50,.4);color:#FFB870;font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;cursor:pointer;font-family:inherit;white-space:nowrap">✕ Mode normal</button>
   </div>
   <script>
   (function(){
@@ -713,6 +910,12 @@
       if(b) b.style.display='flex';
     }
   })();
+  function disableHalloween(){
+    document.body.classList.remove('halloween-mode');
+    var b=document.getElementById('halloween-banner'); if(b) b.style.display='none';
+    var sb=document.getElementById('hw-sound-btn'); if(sb) sb.style.display='none';
+    document.querySelectorAll('.bat,.halloween-monster').forEach(function(el){el.style.display='none';});
+  }
   </script>
 
   <!-- Bandeau partenaires global -->
