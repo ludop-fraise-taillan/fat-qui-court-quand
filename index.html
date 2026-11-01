@@ -917,6 +917,146 @@
     .sync-dot.syncing{background:#EF9F27;animation:pulse 1s ease-in-out infinite}
     .sync-dot.error{background:var(--red-text)}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+    /* ════════════════════════════════════════════════════
+       MOVEMBER — actif 1–16 nov
+    ════════════════════════════════════════════════════ */
+    body.movember-mode{--bg:#E8F4FF;--bg2:#D0E8FA;--bg3:#BCD8F0;--text:#0A2A4A;--text2:#1B4A72;--text3:#4A7FA0;--border:#90C0E0;--border2:#5A9FC0}
+    body.movember-mode .app-shell{background:var(--bg)}
+    body.movember-mode .header{background:rgba(10,42,74,.92);border-bottom-color:rgba(90,159,192,.4)}
+    body.movember-mode .header .header-title-wrap *{color:#E8F4FF}
+    body.movember-mode .bottom-nav{background:rgba(10,42,74,.95);border-top-color:rgba(90,159,192,.3)}
+    body.movember-mode .race-card{background:#D0E8FA;box-shadow:0 2px 16px rgba(30,100,180,.1),0 0 0 1px rgba(90,159,192,.15)}
+    body.movember-mode .card-head{background:#D0E8FA!important}
+    body.movember-mode #race-list,body.movember-mode #history-list{background:#D0E8FA;box-shadow:0 2px 16px rgba(30,100,180,.1),0 0 0 1px rgba(90,159,192,.15)}
+    body.movember-mode .rrow,body.movember-mode .hrow{background:#D0E8FA;border-bottom-color:rgba(90,159,192,.2)}
+
+    @keyframes moustache-fly{
+      0%{transform:translateX(-120px) translateY(0) scaleX(1)}
+      20%{transform:translateX(20vw) translateY(-18px) scaleX(1)}
+      40%{transform:translateX(40vw) translateY(5px) scaleX(1)}
+      60%{transform:translateX(60vw) translateY(-12px) scaleX(1)}
+      80%{transform:translateX(80vw) translateY(8px) scaleX(1)}
+      100%{transform:translateX(calc(100vw + 120px)) translateY(-5px) scaleX(1)}
+    }
+    @keyframes moustache-fly2{
+      0%{transform:translateX(calc(100vw + 120px)) translateY(0) scaleX(-1)}
+      25%{transform:translateX(75vw) translateY(15px) scaleX(-1)}
+      50%{transform:translateX(50vw) translateY(-8px) scaleX(-1)}
+      75%{transform:translateX(25vw) translateY(10px) scaleX(-1)}
+      100%{transform:translateX(-120px) translateY(-5px) scaleX(-1)}
+    }
+    .movember-moustache{position:fixed;pointer-events:none;z-index:999;font-size:38px;opacity:.85;will-change:transform;filter:drop-shadow(0 2px 6px rgba(10,60,120,.3))}
+    .movember-moustache.m1{top:12%;animation:moustache-fly 16s linear infinite;animation-delay:0s}
+    .movember-moustache.m2{top:38%;animation:moustache-fly2 22s linear infinite;animation-delay:-8s;font-size:28px;opacity:.7}
+    .movember-moustache.m3{top:62%;animation:moustache-fly 28s linear infinite;animation-delay:-15s;font-size:20px;opacity:.6}
+    .movember-moustache.m4{top:25%;animation:moustache-fly2 19s linear infinite;animation-delay:-4s;font-size:24px;opacity:.65}
+    .movember-banner{display:flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(90deg,#0A2A4A,#1B5FA0,#0A2A4A);color:#E8F4FF;font-size:11px;font-weight:700;padding:5px 12px;letter-spacing:.04em;border-bottom:1px solid #3A80C0;flex-shrink:0}
+
+    /* ════════════════════════════════════════════════════
+       NOËL — thème 10–24 déc, spécial 25 déc
+    ════════════════════════════════════════════════════ */
+    body.noel-mode{--bg:#FFF5F5;--bg2:#FFE8E8;--bg3:#FFD5D5;--text:#3A0A0A;--text2:#6A1A1A;--text3:#9A3A3A;--border:#F0A0A0;--border2:#D06060}
+    body.noel-mode .app-shell{background:var(--bg)}
+    body.noel-mode .header{background:rgba(80,10,10,.93);border-bottom-color:rgba(200,60,60,.4)}
+    body.noel-mode .header .header-title-wrap *{color:#FFF5F5}
+    body.noel-mode .bottom-nav{background:rgba(80,10,10,.96);border-top-color:rgba(200,60,60,.3)}
+    body.noel-mode .race-card{background:#FFE8E8;box-shadow:0 2px 16px rgba(180,30,30,.1),0 0 0 1px rgba(200,80,80,.12)}
+    body.noel-mode .card-head{background:#FFE8E8!important}
+    body.noel-mode #race-list,body.noel-mode #history-list{background:#FFE8E8;box-shadow:0 2px 16px rgba(180,30,30,.1),0 0 0 1px rgba(200,80,80,.12)}
+    body.noel-mode .rrow,body.noel-mode .hrow{background:#FFE8E8;border-bottom-color:rgba(200,80,80,.15)}
+
+    @keyframes noel-fly{
+      0%{transform:translateX(calc(100vw + 120px)) translateY(0)}
+      25%{transform:translateX(75vw) translateY(-20px)}
+      50%{transform:translateX(50vw) translateY(8px)}
+      75%{transform:translateX(25vw) translateY(-15px)}
+      100%{transform:translateX(-120px) translateY(5px)}
+    }
+    @keyframes noel-fly2{
+      0%{transform:translateX(-120px) translateY(0)}
+      30%{transform:translateX(30vw) translateY(18px)}
+      60%{transform:translateX(60vw) translateY(-10px)}
+      100%{transform:translateX(calc(100vw + 120px)) translateY(6px)}
+    }
+    @keyframes snow-fall{
+      0%{transform:translateY(-20px) rotate(0deg);opacity:0}
+      10%{opacity:1}
+      90%{opacity:.7}
+      100%{transform:translateY(100vh) rotate(360deg);opacity:0}
+    }
+    @keyframes traineau-cross{
+      0%{transform:translateX(calc(100vw + 200px)) translateY(0)}
+      100%{transform:translateX(-200px) translateY(-30px)}
+    }
+    .noel-character{position:fixed;pointer-events:none;z-index:999;will-change:transform;filter:drop-shadow(0 2px 8px rgba(180,30,30,.25))}
+    .noel-character.renne1{top:10%;font-size:36px;opacity:.85;animation:noel-fly 20s linear infinite;animation-delay:0s}
+    .noel-character.renne2{top:50%;font-size:26px;opacity:.7;animation:noel-fly2 26s linear infinite;animation-delay:-10s}
+    .noel-character.pere1{top:28%;font-size:38px;opacity:.8;animation:noel-fly 24s linear infinite;animation-delay:-6s}
+    .noel-character.lutin1{top:68%;font-size:30px;opacity:.75;animation:noel-fly2 18s linear infinite;animation-delay:-3s}
+    .noel-character.lutin2{top:15%;font-size:24px;opacity:.65;animation:noel-fly 32s linear infinite;animation-delay:-14s}
+    .snow-flake{position:fixed;pointer-events:none;z-index:997;font-size:14px;opacity:0;animation:snow-fall linear infinite;will-change:transform}
+    .traineau{position:fixed;top:8%;z-index:1000;font-size:54px;pointer-events:none;will-change:transform;filter:drop-shadow(0 4px 12px rgba(180,30,30,.3));animation:traineau-cross 8s linear forwards}
+    .noel-banner{display:flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(90deg,#5A0A0A,#B01515,#5A0A0A);color:#FFF5F5;font-size:11px;font-weight:700;padding:5px 12px;letter-spacing:.04em;border-bottom:1px solid #901010;flex-shrink:0}
+
+    /* ════════════════════════════════════════════════════
+       NOUVEL AN — compte à rebours 29–31 déc, feux 1–5 jan
+    ════════════════════════════════════════════════════ */
+    body.newyear-mode{--bg:#0A0A1E;--bg2:#10102E;--text:#F0F0FF;--text2:#C0C0F0;--text3:#8080C0;--border:#3030A0;--border2:#5050D0}
+    body.newyear-mode .app-shell{background:var(--bg)}
+    body.newyear-mode .header{background:rgba(5,5,25,.95);border-bottom-color:rgba(100,80,220,.4)}
+    body.newyear-mode .header .header-title-wrap *{color:#F0F0FF}
+    body.newyear-mode .bottom-nav{background:rgba(5,5,25,.97);border-top-color:rgba(100,80,220,.3)}
+    body.newyear-mode .race-card{background:#10102E;box-shadow:0 2px 16px rgba(100,80,220,.12),0 0 0 1px rgba(100,80,220,.15)}
+    body.newyear-mode .card-head{background:#10102E!important}
+    body.newyear-mode #race-list,body.newyear-mode #history-list{background:#10102E;box-shadow:0 2px 16px rgba(100,80,220,.12),0 0 0 1px rgba(100,80,220,.15)}
+    body.newyear-mode .rrow,body.newyear-mode .hrow{background:#10102E;border-bottom-color:rgba(100,80,220,.2)}
+
+    .ny-countdown-bar{
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      background:linear-gradient(90deg,#050514,#1A1060,#050514);
+      color:#F0D060;font-size:13px;font-weight:800;padding:7px 12px;
+      letter-spacing:.06em;border-bottom:1px solid rgba(200,160,50,.4);
+      flex-shrink:0;font-family:monospace;
+    }
+    .ny-countdown-bar .ny-label{font-size:10px;font-weight:600;color:#A090D0;letter-spacing:.08em;font-family:inherit}
+    .ny-countdown-bar .ny-digits{color:#F8E060;font-size:15px;letter-spacing:.1em}
+
+    /* Pop-up Bonne Année */
+    .ny-popup{
+      position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,10,.75);backdrop-filter:blur(4px);
+    }
+    .ny-popup-inner{
+      background:linear-gradient(135deg,#050520,#1A0A40,#050520);
+      border:2px solid rgba(200,160,50,.5);border-radius:24px;
+      padding:32px 28px 24px;text-align:center;max-width:340px;width:90%;
+      box-shadow:0 0 60px rgba(200,160,50,.2),0 0 0 1px rgba(200,160,50,.15);
+      position:relative;
+    }
+    .ny-popup-title{font-size:28px;font-weight:900;color:#F8E060;letter-spacing:.04em;line-height:1.2;margin-bottom:8px}
+    .ny-popup-sub{font-size:14px;color:#C0B0E0;margin-bottom:20px}
+    .ny-popup-close{
+      background:rgba(200,160,50,.2);border:1.5px solid rgba(200,160,50,.45);
+      color:#F8E060;font-size:13px;font-weight:700;padding:10px 24px;
+      border-radius:99px;cursor:pointer;font-family:inherit;letter-spacing:.04em;
+      transition:background .15s;
+    }
+    .ny-popup-close:hover{background:rgba(200,160,50,.35)}
+
+    /* Feux d'artifice */
+    @keyframes firework-burst{
+      0%{transform:scale(0) translate(-50%,-50%);opacity:1}
+      60%{opacity:.9}
+      100%{transform:scale(1) translate(-50%,-50%);opacity:0}
+    }
+    @keyframes firework-star{
+      0%{transform:translate(0,0) scale(1);opacity:1}
+      100%{transform:translate(var(--dx),var(--dy)) scale(.3);opacity:0}
+    }
+    .firework-container{position:fixed;inset:0;z-index:9998;pointer-events:none;overflow:hidden}
+    .fw-star{position:absolute;width:6px;height:6px;border-radius:50%;animation:firework-star 1.2s ease-out forwards;will-change:transform,opacity}
+
   </style>
 </head>
 <body>
@@ -1198,6 +1338,215 @@
 
 })();
 </script>
+
+<script>
+/* ════════════════════════════════════════════════════
+   MODULE MOVEMBER — 1–16 novembre
+════════════════════════════════════════════════════ */
+(function(){
+  var n=new Date();
+  var isMov=(n.getMonth()===10&&n.getDate()>=1&&n.getDate()<=16);
+  if(!isMov) return;
+
+  document.body.classList.add('movember-mode');
+
+  /* Bannière */
+  var banner=document.createElement('div');
+  banner.className='movember-banner';
+  banner.innerHTML='👨 <strong>MOVEMBER</strong> — La FAT soutient la santé des hommes ! Laissez pousser la moustache 👨';
+  var appShell=document.querySelector('.app-shell');
+  if(appShell) appShell.insertBefore(banner, appShell.firstChild);
+
+  /* Moustaches volantes */
+  var items=[
+    {cls:'m1',emoji:'👨'},{cls:'m2',emoji:'🧔'},{cls:'m3',emoji:'👨'},
+    {cls:'m4',emoji:'🧔‍♂️'}
+  ];
+  items.forEach(function(item){
+    var d=document.createElement('div');
+    d.className='movember-moustache '+item.cls;
+    d.textContent=item.emoji;
+    document.body.appendChild(d);
+  });
+})();
+
+/* ════════════════════════════════════════════════════
+   MODULE NOËL — thème 10–24 déc, traineau 25 déc
+════════════════════════════════════════════════════ */
+(function(){
+  var n=new Date();
+  var m=n.getMonth(), d=n.getDate();
+  var isNoel=(m===11&&d>=10&&d<=25);
+  var isJourJ=(m===11&&d===25);
+  if(!isNoel) return;
+
+  document.body.classList.add('noel-mode');
+
+  /* Bannière */
+  var banner=document.createElement('div');
+  banner.className='noel-banner';
+  banner.innerHTML= isJourJ
+    ? '🎄 <strong>JOYEUX NOËL !</strong> Bonne course à tous 🎅🛷'
+    : '🎄 <strong>NOËL</strong> approche — Encore '+(25-d)+' jour'+(25-d>1?'s':'')+' ! 🎅';
+  var appShell=document.querySelector('.app-shell');
+  if(appShell) appShell.insertBefore(banner, appShell.firstChild);
+
+  if(!isJourJ){
+    /* Personnages volants 10–24 */
+    var chars=[
+      {cls:'renne1',emoji:'🦌'},{cls:'renne2',emoji:'🦌'},
+      {cls:'pere1',emoji:'🎅'},{cls:'lutin1',emoji:'🧝'},{cls:'lutin2',emoji:'🧝‍♀️'}
+    ];
+    chars.forEach(function(c){
+      var el=document.createElement('div');
+      el.className='noel-character '+c.cls;
+      el.textContent=c.emoji;
+      document.body.appendChild(el);
+    });
+
+    /* Flocons de neige */
+    for(var i=0;i<18;i++){
+      (function(){
+        var flake=document.createElement('div');
+        flake.className='snow-flake';
+        flake.textContent=['❄','❅','❆'][Math.floor(Math.random()*3)];
+        flake.style.left=Math.random()*100+'vw';
+        flake.style.animationDuration=(6+Math.random()*10)+'s';
+        flake.style.animationDelay=-(Math.random()*16)+'s';
+        flake.style.fontSize=(10+Math.random()*12)+'px';
+        document.body.appendChild(flake);
+      })();
+    }
+  } else {
+    /* Jour J : traineau + musique */
+    var traineau=document.createElement('div');
+    traineau.className='traineau';
+    traineau.textContent='🛷';
+    document.body.appendChild(traineau);
+
+    /* Musique de Noël synthétique via Web Audio */
+    try {
+      var AudioCtx=window.AudioContext||window.webkitAudioContext;
+      if(AudioCtx){
+        var ctx=new AudioCtx();
+        /* Jingle Bells simplifié — notes en Hz */
+        var notes=[
+          392,392,392,0,392,392,392,0,
+          392,523,330,349,392,0,
+          440,440,440,440,440,392,392,392,
+          392,349,349,392,349,0,523
+        ];
+        var dur=0.22, t=ctx.currentTime+0.3;
+        notes.forEach(function(freq){
+          if(freq>0){
+            var osc=ctx.createOscillator();
+            var gain=ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.frequency.value=freq;
+            osc.type='triangle';
+            gain.gain.setValueAtTime(0,t);
+            gain.gain.linearRampToValueAtTime(0.18,t+0.02);
+            gain.gain.linearRampToValueAtTime(0,t+dur-0.04);
+            osc.start(t); osc.stop(t+dur);
+          }
+          t+=dur;
+        });
+      }
+    } catch(e){}
+  }
+})();
+
+/* ════════════════════════════════════════════════════
+   MODULE NOUVEL AN — compte à rebours 29–31 déc, feux 1–5 jan
+════════════════════════════════════════════════════ */
+(function(){
+  var n=new Date();
+  var m=n.getMonth(), d=n.getDate();
+  var isCountdown=(m===11&&d>=29);
+  var isFetes=(m===0&&d>=1&&d<=5);
+  if(!isCountdown&&!isFetes) return;
+
+  document.body.classList.add('newyear-mode');
+
+  if(isCountdown){
+    /* Barre de compte à rebours */
+    var bar=document.createElement('div');
+    bar.className='ny-countdown-bar';
+    bar.innerHTML='<span class="ny-label">🎆 NOUVEL AN DANS</span> <span class="ny-digits" id="ny-cd">--:--:--:--</span>';
+    var appShell=document.querySelector('.app-shell');
+    if(appShell) appShell.insertBefore(bar, appShell.firstChild);
+
+    function updateCD(){
+      var now=new Date();
+      var target=new Date(now.getFullYear()+1, 0, 1, 0, 0, 0);
+      var diff=Math.max(0, target-now);
+      var days=Math.floor(diff/86400000);
+      var hrs=Math.floor((diff%86400000)/3600000);
+      var mins=Math.floor((diff%3600000)/60000);
+      var secs=Math.floor((diff%60000)/1000);
+      var el=document.getElementById('ny-cd');
+      if(el) el.textContent=
+        String(days).padStart(2,'0')+':'+
+        String(hrs).padStart(2,'0')+':'+
+        String(mins).padStart(2,'0')+':'+
+        String(secs).padStart(2,'0');
+    }
+    updateCD();
+    setInterval(updateCD, 1000);
+  }
+
+  if(isFetes){
+    /* Pop-up Bonne Année */
+    var popup=document.createElement('div');
+    popup.className='ny-popup';
+    popup.id='ny-popup';
+    popup.innerHTML=
+      '<div class="ny-popup-inner">'+
+        '<div class="ny-popup-title">🎆 Bonne Année '+(n.getFullYear())+'! 🎆</div>'+
+        '<div class="ny-popup-sub">Toute l\'équipe FAT vous souhaite une excellente année pleine de belles courses !</div>'+
+        '<button class="ny-popup-close" onclick="document.getElementById(\'ny-popup\').remove();document.getElementById(\'fw-container\').style.display=\'none\'">🥂 Merci !</button>'+
+      '</div>';
+    document.body.appendChild(popup);
+
+    /* Feux d'artifice */
+    var fwContainer=document.createElement('div');
+    fwContainer.className='firework-container';
+    fwContainer.id='fw-container';
+    document.body.appendChild(fwContainer);
+
+    var colors=['#FF4060','#FFD700','#60CFFF','#FF80FF','#80FF80','#FF8C00','#00FFCC'];
+    function launchFirework(){
+      var x=10+Math.random()*80;
+      var y=10+Math.random()*60;
+      var color=colors[Math.floor(Math.random()*colors.length)];
+      for(var i=0;i<20;i++){
+        var angle=Math.random()*Math.PI*2;
+        var dist=60+Math.random()*80;
+        var star=document.createElement('div');
+        star.className='fw-star';
+        star.style.left=x+'vw';
+        star.style.top=y+'vh';
+        star.style.background=color;
+        star.style.setProperty('--dx',Math.cos(angle)*dist+'px');
+        star.style.setProperty('--dy',Math.sin(angle)*dist+'px');
+        star.style.animationDuration=(0.8+Math.random()*0.8)+'s';
+        star.style.animationDelay=(Math.random()*0.3)+'s';
+        fwContainer.appendChild(star);
+        star.addEventListener('animationend',function(){this.remove()});
+      }
+    }
+    /* Salves de feux */
+    launchFirework();
+    setTimeout(launchFirework,400);
+    setTimeout(launchFirework,900);
+    setInterval(function(){
+      launchFirework();
+      setTimeout(launchFirework,300+Math.random()*400);
+    }, 2200);
+  }
+})();
+</script>
+
 
 <div class="app-shell">
   <div class="header">
