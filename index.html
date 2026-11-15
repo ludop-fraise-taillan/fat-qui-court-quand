@@ -199,6 +199,8 @@
     .race-card.ultra .race-type{background:#FCE8DC;color:#B03A10}
     .race-card.sold-out .race-type{background:#FCDCDC;color:#900f0f}
     .complet-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;background:#FCDCDC;color:#900f0f;white-space:nowrap}
+    .new-badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:800;padding:3px 10px;border-radius:99px;background:linear-gradient(135deg,#FFD700,#FFA500);color:#5A3200;white-space:nowrap;box-shadow:0 1px 4px rgba(200,120,0,.25);letter-spacing:.01em}
+    .new-creator{font-size:10px;color:var(--text3);font-style:italic;margin-top:2px}
     .head-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
     .head-dists{display:flex;gap:5px;flex-wrap:wrap}
     .dist-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px}
@@ -2543,6 +2545,12 @@ function renderRaces(){
     ].filter(Boolean).join('<span class="hrow-sep">·</span>');
     // My status dot
     const myDot=myConf?'<span class="rrow-mydot rrow-mydot-c" title="Inscrit"></span>':myInter?'<span class="rrow-mydot rrow-mydot-i" title="Intéressé"></span>':myBenev?'<span class="rrow-mydot rrow-mydot-b" title="Bénévole"></span>':'';
+    // Badge Nouveau (créé dans les 7 derniers jours)
+    const isNew=r.created_at&&((new Date()-new Date(r.created_at))/(1000*3600*24))<7;
+    const creatorMember=r.created_by?members.find(m=>m.id===r.created_by):null;
+    const creatorName=creatorMember?creatorMember.nom:'';
+    const newBadge=isNew?`<span class="new-badge">⭐ Nouveau</span>`:'';
+    const creatorLine=isNew&&creatorName?`<div class="new-creator">Ajouté par ${creatorName}</div>`:'';
     html+=`<div class="rrow race-card ${tc.toLowerCase()}${isSoldOut?' sold-out':''}" data-id="${r.id}" id="rcard-${r.id}">
       <div class="rrow-main" onclick="toggleCard('${cardId}')">
         <div class="rrow-date">
@@ -2552,8 +2560,9 @@ function renderRaces(){
         <div class="rrow-info">
           <div class="rrow-line1">
             <span class="rrow-name">${r.nom}</span>
-            <span class="rrow-type" style="color:${typeColor}">${r.type}</span>
+            <span style="display:flex;align-items:center;gap:5px;flex-shrink:0">${newBadge}<span class="rrow-type" style="color:${typeColor}">${r.type}</span></span>
           </div>
+          ${creatorLine}
           <div class="rrow-line2">
             <span class="rrow-meta-left">
               ${dists.length>0?`<span class="rrow-dists">${dists.join(' / ')} km</span>`:''}
@@ -2590,7 +2599,10 @@ function renderRaces(){
           </div>
           <div class="bot-actions">
             ${r.url?`<a href="${r.url}" target="_blank" rel="noopener" class="btn-site">↗ ${plat?plat.label:'Site'}</a>`:'<span></span>'}
-            <button class="btn btn-sm" style="padding:6px 10px;font-size:12px" onclick="event.stopPropagation();openEditRace('${r.id}')" title="Modifier la course">✏️ Modifier</button>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-sm" style="padding:6px 10px;font-size:12px;background:#25D366;border-color:#25D366;color:#fff" onclick="event.stopPropagation();shareRace('${r.id}')" title="Partager sur WhatsApp">📲</button>
+              <button class="btn btn-sm" style="padding:6px 10px;font-size:12px" onclick="event.stopPropagation();openEditRace('${r.id}')" title="Modifier la course">✏️ Modifier</button>
+            </div>
           </div>
         </div>
       </div>
@@ -4017,7 +4029,7 @@ async function addRace(){
   if(!nom||!date_course){alert('Merci de renseigner le nom et la date.');return;}
   if(formDistances.length===0){alert('Merci d\'ajouter au moins une distance.');return;}
   document.getElementById('btn-add-race').disabled=true;setSyncing('syncing');
-  const{error}=await db.from('courses').insert({nom,type,distances:JSON.stringify(formDistances),date_course,date_limite,date_ouverture,url,url_results});
+  const{error}=await db.from('courses').insert({nom,type,distances:JSON.stringify(formDistances),date_course,date_limite,date_ouverture,url,url_results,created_by:currentUserId||null});
   document.getElementById('btn-add-race').disabled=false;
   if(error){setSyncing('error');showToast('⚠️ Erreur : '+error.message);return;}
   ['f-name','f-date','f-limit','f-open','f-url'].forEach(id=>document.getElementById(id).value='');
@@ -4028,6 +4040,17 @@ async function addRace(){
   const distsStr=formDistances.map(d=>d+' km').join(', ');
   const msgWA=encodeURIComponent(`🏁 Nouvelle course sur la FAT App !\n*${nom}* — ${dateFormatted}\n📍 ${type} · ${distsStr}\n👉 https://app.club-fat.fr`);
   showWAShare(msgWA,'Course ajoutée ✓');
+}
+
+function shareRace(raceId){
+  const r=races.find(x=>x.id===raceId);
+  if(!r)return;
+  const dateFormatted=r.date_course?new Date(r.date_course).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'';
+  const dists=parseDists(r.distances||r.distance);
+  const distsStr=dists.map(d=>d+' km').join(', ');
+  const loc=r.ville?` · 📍 ${r.ville}`:'';
+  const msg=encodeURIComponent(`🏁 Course sur la FAT App !\n*${r.nom}* — ${dateFormatted}${loc}\n📍 ${r.type} · ${distsStr}\n👉 https://app.club-fat.fr`);
+  showWAShare(msg,`Partager "${r.nom}"`);
 }
 
 function showWAShare(encodedMsg,title){
