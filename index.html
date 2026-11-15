@@ -2563,8 +2563,8 @@ function renderRaces(){
     ].filter(Boolean).join('<span class="hrow-sep">·</span>');
     // My status dot
     const myDot=myConf?'<span class="rrow-mydot rrow-mydot-c" title="Inscrit"></span>':myInter?'<span class="rrow-mydot rrow-mydot-i" title="Intéressé"></span>':myBenev?'<span class="rrow-mydot rrow-mydot-b" title="Bénévole"></span>':'';
-    // Badge Nouveau (créé dans les 7 derniers jours) — pas dans la copie "mois normal"
-    const isNew=!r._inNormal&&r.created_at&&((new Date()-new Date(r.created_at))/(1000*3600*24))<7;
+    // Badge Nouveau (créé dans les 7 derniers jours)
+    const isNew=r.created_at&&((new Date()-new Date(r.created_at))/(1000*3600*24))<7;
     const creatorMember=r.created_by?members.find(m=>m.id===r.created_by):null;
     const creatorName=creatorMember?creatorMember.nom:'';
     const newBadge=isNew?`<span class="new-badge">⭐ Nouveau</span>`:'';
@@ -2638,7 +2638,7 @@ function renderRaces(){
   const sidebar=document.getElementById('month-sidebar');
   if(sidebar){
     sidebar.style.width='44px';
-    const newBtn=recentlyAdded.length>0?`<div class="month-sb-item" id="msb-new" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="background:linear-gradient(135deg,#FFD700,#FFA500);border-color:#F5C800;color:#7A4800;font-weight:900;font-size:9px;padding:5px 3px">🆕<br>NEW</div>`:'';
+    const newBtn=recentlyAdded.length>0?`<div class="month-sb-item" id="msb-new" onclick="(function(){const el=document.getElementById('recent-races-inner');if(el){const wrap=el.closest('div[style]');if(wrap){wrap.scrollIntoView({behavior:'smooth',block:'start'});return;}}const rl=document.getElementById('race-list');if(rl)rl.scrollIntoView({behavior:'smooth',block:'start'});})()" style="background:linear-gradient(135deg,#FFD700,#FFA500);border-color:#F5C800;color:#7A4800;font-weight:900;font-size:9px;padding:5px 3px">🆕<br>NEW</div>`:'';
     sidebar.innerHTML=newBtn+monthsList.map(m=>{
       const parts=m.short.split('\n');
       const fullYear='20'+parts[1];
