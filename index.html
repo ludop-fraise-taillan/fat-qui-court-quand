@@ -106,9 +106,10 @@
     body.halloween-mode .content::-webkit-scrollbar-track{background:rgba(30,10,50,.4)}
     body.halloween-mode .content::-webkit-scrollbar-thumb{background:rgba(180,120,255,.7);box-shadow:0 0 4px rgba(180,120,255,.35)}
     .bottom-nav{display:flex;border-top:0.5px solid var(--border);background:var(--bg);position:sticky;bottom:0;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
-    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 8px;cursor:pointer;border:none;background:none;color:var(--text3);font-size:11px}
-    .nav-item i{font-size:22px}
-    .nav-item.active{color:var(--text);font-weight:500}
+    .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;cursor:pointer;border:none;background:none;color:var(--text3);font-size:13px}
+    .nav-item span:first-child{font-size:24px;line-height:1}
+    .nav-item i{font-size:24px}
+    .nav-item.active{color:var(--text);font-weight:600}
     .section{display:none}.section.active{display:block}
     .evt-sticky-head{background:var(--bg);padding:8px 16px 6px;border-bottom:0.5px solid var(--border);flex-shrink:0;display:none}
     .evt-sticky-head.visible{display:block}
@@ -2171,6 +2172,20 @@
 </div>
 
 <!-- ── Modale Édition Course ──────────────────────────────────── -->
+<!-- Modal WhatsApp share -->
+<div class="modal-overlay" id="modal-wa-share">
+  <div class="modal" style="text-align:center">
+    <div class="modal-handle"></div>
+    <div style="font-size:36px;margin-bottom:8px">📲</div>
+    <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px" id="wa-share-title">Course ajoutée ✓</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:20px">Partager la nouvelle course sur WhatsApp&nbsp;?</div>
+    <a id="wa-share-link" href="#" target="_blank" rel="noopener" class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;text-decoration:none;background:#25D366;border-color:#25D366">
+      <span style="font-size:18px">💬</span> Partager sur WhatsApp
+    </a>
+    <button class="btn" onclick="closeModal('modal-wa-share')" style="width:100%">Pas maintenant</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-edit-race">
   <div class="modal" style="max-height:90dvh;overflow-y:auto">
     <div class="modal-handle"></div>
@@ -3391,7 +3406,7 @@ function renderEvts(){
           html+=`<div class="evt-row" onclick="toggleEvtCard('${evt.id}')"><div class="evt-row-date">${MOIS_SHORT[d.getMonth()]}<br>${d.getDate()}</div><div class="evt-row-dot" style="background:${color}"></div><div class="evt-row-title">${evt.titre}</div><div class="evt-row-count">${partCount>0?partCount+' 👤':''}</div></div>`;
         });
       } else {
-        html+=`<div style="text-align:center;padding:6px 0;font-size:11px;color:var(--text3)">📁 ${past.length} événement${past.length>1?'s':''} passé${past.length>1?'s':''} — <button onclick="toggleShowPastEvts()" style="border:none;background:none;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline">voir</button></div>`;
+        html+=`<div style="text-align:center;padding:6px 0;font-size:13px;font-weight:700;color:var(--text)">📁 ${past.length} événement${past.length>1?'s':''} passé${past.length>1?'s':''} — <button onclick="toggleShowPastEvts()" style="border:none;background:none;color:#185FA5;font-size:13px;font-weight:700;cursor:pointer;text-decoration:underline">voir</button></div>`;
       }
     }
     container.innerHTML=html;
@@ -3494,7 +3509,7 @@ function renderEvtPast(past, wrap, EVT_COLORS, MOIS_SHORT, show){
     });
     wrap.innerHTML=h;
   } else {
-    wrap.innerHTML=`<div style="text-align:center;padding:4px 0 8px;font-size:11px;color:var(--text3)">📁 ${past.length} événement${past.length>1?'s':''} passé${past.length>1?'s':''} — <button onclick="toggleShowPastEvts()" style="border:none;background:none;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline">voir</button></div>`;
+    wrap.innerHTML=`<div style="text-align:center;padding:4px 0 8px;font-size:13px;font-weight:700;color:var(--text)">📁 ${past.length} événement${past.length>1?'s':''} passé${past.length>1?'s':''} — <button onclick="toggleShowPastEvts()" style="border:none;background:none;color:#185FA5;font-size:13px;font-weight:700;cursor:pointer;text-decoration:underline">voir</button></div>`;
   }
 }
 
@@ -3897,6 +3912,16 @@ function selectRole(r){
 
 async function saveStatus(){
   document.getElementById('btn-save-status').disabled=true;setSyncing('syncing');
+  // Validation : coureur inscrit doit sélectionner une distance si multi-distances
+  if(modalStatus==='confirmed'&&(modalRole==='coureur'||modalRole==='les_deux')){
+    const race=races.find(r=>r.id===modalRaceId);
+    const dists=parseDists(race?.distances||race?.distance);
+    if(dists.length>1&&!modalDistSelected){
+      document.getElementById('btn-save-status').disabled=false;
+      showToast('⚠️ Veuillez sélectionner une distance');
+      return;
+    }
+  }
   // Sauvegarde sold_out sur la course (toujours)
   const soldOut=document.getElementById('sold-out-toggle').checked;
   const race=races.find(r=>r.id===modalRaceId);
@@ -3997,8 +4022,18 @@ async function addRace(){
   if(error){setSyncing('error');showToast('⚠️ Erreur : '+error.message);return;}
   ['f-name','f-date','f-limit','f-open','f-url'].forEach(id=>document.getElementById(id).value='');
   ['f-name','f-date','f-limit','f-open','f-url','f-url-results'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
-  showToast('Course ajoutée ✓');
   await loadAll();switchTab('courses');
+  // Proposer partage WhatsApp
+  const dateFormatted=date_course?new Date(date_course).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'';
+  const distsStr=formDistances.map(d=>d+' km').join(', ');
+  const msgWA=encodeURIComponent(`🏁 Nouvelle course sur la FAT App !\n*${nom}* — ${dateFormatted}\n📍 ${type} · ${distsStr}\n👉 https://app.club-fat.fr`);
+  showWAShare(msgWA,'Course ajoutée ✓');
+}
+
+function showWAShare(encodedMsg,title){
+  document.getElementById('wa-share-title').textContent=title||'Course ajoutée ✓';
+  document.getElementById('wa-share-link').href='https://wa.me/?text='+encodedMsg;
+  document.getElementById('modal-wa-share').classList.add('open');
 }
 
 // ── Ajout membre ────────────────────────────────────────────────────────────
