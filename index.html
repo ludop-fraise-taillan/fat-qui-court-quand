@@ -2567,21 +2567,19 @@ function renderRaces(){
     const isNew=r.created_at&&((new Date()-new Date(r.created_at))/(1000*3600*24))<7;
     const creatorMember=r.created_by?members.find(m=>m.id===r.created_by):null;
     const creatorName=creatorMember?creatorMember.nom:'';
-    const newBadge=isNew?`<span class="new-badge">⭐ Nouveau</span>`:'';
-    const creatorLine=isNew&&creatorName?`<div class="new-creator">Ajouté par ${creatorName}</div>`:'';
+
     html+=`<div class="rrow race-card ${tc.toLowerCase()}${isSoldOut?' sold-out':''}" data-id="${r.id}" id="${r._inNormal?`rcard-normal-${r.id}`:`rcard-${r.id}`}">
       <div class="rrow-main" onclick="toggleCard('${cardId}')">
         <div class="rrow-date">
+          ${isNew?`<span style="font-size:9px;font-weight:900;background:linear-gradient(135deg,#FFD700,#FFA500);color:#7A4800;border-radius:6px;padding:2px 5px;text-align:center;margin-bottom:3px;display:block;line-height:1.3">⭐ NEW</span>`:''}
           <span class="rrow-dd">${dcDD}</span>
           <span class="rrow-mmyy">${dcMM}<br>${dcYY}</span>
         </div>
         <div class="rrow-info">
-          ${isNew?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px">${newBadge}<span class="rrow-type" style="color:${typeColor}">${r.type}</span></div>`:''}
           <div class="rrow-line1">
             <span class="rrow-name">${r.nom}</span>
-            ${!isNew?`<span class="rrow-type" style="color:${typeColor};flex-shrink:0">${r.type}</span>`:''}
           </div>
-          ${creatorLine}
+          ${isNew&&creatorName?`<div class="new-creator">${creatorName} · <span style="color:${typeColor};font-weight:700">${r.type}</span></div>`:`<div class="new-creator" style="font-style:normal"><span style="color:${typeColor};font-weight:700">${r.type}</span></div>`}
           <div class="rrow-line2">
             <span class="rrow-meta-left">
               ${dists.length>0?`<span class="rrow-dists">${dists.join(' / ')} km</span>`:''}
