@@ -2436,10 +2436,10 @@ function renderRaces(){
     // Séparateur section "Récemment ajoutées"
     if(recentlyAdded.length>0){
       if(idx===0){
-        html+=`<div style="display:flex;align-items:center;gap:8px;margin:0 0 10px"><span style="font-size:12px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap">🆕 Récemment ajoutées</span><div style="flex:1;height:1px;background:var(--border)"></div></div>`;
+        html+=`<div style="background:linear-gradient(135deg,#FFF3B0,#FFE066);border-radius:14px;padding:12px 12px 4px;margin-bottom:14px;border:1.5px solid #F5C800"><div style="display:flex;align-items:center;gap:7px;margin-bottom:10px"><span style="font-size:13px;font-weight:900;color:#7A4800;text-transform:uppercase;letter-spacing:.07em">🆕 Récemment ajoutées</span></div><div id="recent-races-inner">`;
         inRecentSection=true;
       } else if(!recentSectionClosed&&!recentIds.has(r.id)){
-        html+=`<div style="display:flex;align-items:center;gap:8px;margin:14px 0 10px"><span style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap">📅 Toutes les courses</span><div style="flex:1;height:1px;background:var(--border)"></div></div>`;
+        html+=`</div></div><div style="display:flex;align-items:center;gap:8px;margin:14px 0 10px"><span style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap">📅 Toutes les courses</span><div style="flex:1;height:1px;background:var(--border)"></div></div>`;
         recentSectionClosed=true;currentMonth=null;
       }
     }
@@ -2624,6 +2624,8 @@ function renderRaces(){
       </div>
     </div>`;
   });
+  // Fermer le bloc jaune si toutes les courses étaient "récentes" (pas de section "Toutes")
+  if(recentlyAdded.length>0&&!recentSectionClosed)html+=`</div></div>`;
   if(!html)html=selectedMonth!=='all'
     ?`<div class="empty-state"><span>📅</span>Aucune course ce mois-là.</div>`
     :'<div class="empty-state"><span>📅</span>Aucune course. Ajoutez-en une !</div>';
