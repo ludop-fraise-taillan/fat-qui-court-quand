@@ -2574,9 +2574,10 @@ function renderRaces(){
           <span class="rrow-mmyy">${dcMM}<br>${dcYY}</span>
         </div>
         <div class="rrow-info">
+          ${isNew?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px">${newBadge}<span class="rrow-type" style="color:${typeColor}">${r.type}</span></div>`:''}
           <div class="rrow-line1">
             <span class="rrow-name">${r.nom}</span>
-            <span style="display:flex;align-items:center;gap:5px;flex-shrink:0">${newBadge}<span class="rrow-type" style="color:${typeColor}">${r.type}</span></span>
+            ${!isNew?`<span class="rrow-type" style="color:${typeColor};flex-shrink:0">${r.type}</span>`:''}
           </div>
           ${creatorLine}
           <div class="rrow-line2">
