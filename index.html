@@ -2418,18 +2418,33 @@ function renderRaces(){
   _renderingRaces=true;
   const today=new Date(new Date().toDateString());
   const upcoming=[...races].filter(r=>!r.date_course||new Date(r.date_course)>=today).sort((a,b)=>new Date(a.date_course)-new Date(b.date_course));
-  const filtered=[...upcoming];
+  // Top 3 courses les plus récemment ajoutées (created_at desc), parmi les à venir
+  const recentlyAdded=[...upcoming].filter(r=>r.created_at).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,3);
+  const recentIds=new Set(recentlyAdded.map(r=>r.id));
+  const filtered=[...recentlyAdded,...upcoming.filter(r=>!recentIds.has(r.id))];
   const mnames=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   const MOIS_SHORT=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
   let currentMonth=null;
   let html='';
   const monthsList=[];
-  filtered.forEach(r=>{
+  let inRecentSection=false;
+  let recentSectionClosed=false;
+  filtered.forEach((r,idx)=>{
     const d=r.date_course?new Date(r.date_course):null;
     const isP=d&&d<today;
-    // Séparateur de mois
-    if(r.date_course){
+    // Séparateur section "Récemment ajoutées"
+    if(recentlyAdded.length>0){
+      if(idx===0){
+        html+=`<div style="display:flex;align-items:center;gap:8px;margin:0 0 10px"><span style="font-size:12px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap">🆕 Récemment ajoutées</span><div style="flex:1;height:1px;background:var(--border)"></div></div>`;
+        inRecentSection=true;
+      } else if(!recentSectionClosed&&!recentIds.has(r.id)){
+        html+=`<div style="display:flex;align-items:center;gap:8px;margin:14px 0 10px"><span style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap">📅 Toutes les courses</span><div style="flex:1;height:1px;background:var(--border)"></div></div>`;
+        recentSectionClosed=true;currentMonth=null;
+      }
+    }
+    // Séparateur de mois (hors section récente)
+    if(r.date_course&&(recentSectionClosed||recentlyAdded.length===0)){
       const monthKey=`${MOIS[d.getMonth()]} ${d.getFullYear()}`;
       const monthId='month-'+d.getFullYear()+'-'+d.getMonth();
       if(monthKey!==currentMonth){
