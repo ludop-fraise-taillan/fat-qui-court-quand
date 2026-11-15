@@ -2421,7 +2421,9 @@ function renderRaces(){
   // Top 3 courses les plus récemment ajoutées (created_at desc), parmi les à venir
   const recentlyAdded=[...upcoming].filter(r=>r.created_at).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,3);
   const recentIds=new Set(recentlyAdded.map(r=>r.id));
-  const filtered=[...recentlyAdded,...upcoming.filter(r=>!recentIds.has(r.id))];
+  // Les récentes apparaissent en tête ET à leur place chronologique (marquées _inNormal)
+  const upcomingWithRecent=upcoming.map(r=>recentIds.has(r.id)?{...r,_inNormal:true}:r);
+  const filtered=[...recentlyAdded,...upcomingWithRecent];
   const mnames=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   const MOIS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   const MOIS_SHORT=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
@@ -2438,13 +2440,13 @@ function renderRaces(){
       if(idx===0){
         html+=`<div style="background:linear-gradient(135deg,#FFF3B0,#FFE066);border-radius:14px;padding:12px 12px 4px;margin-bottom:14px;border:1.5px solid #F5C800"><div style="display:flex;align-items:center;gap:7px;margin-bottom:10px"><span style="font-size:13px;font-weight:900;color:#7A4800;text-transform:uppercase;letter-spacing:.07em">🆕 Récemment ajoutées</span></div><div id="recent-races-inner">`;
         inRecentSection=true;
-      } else if(!recentSectionClosed&&!recentIds.has(r.id)){
+      } else if(!recentSectionClosed&&(!recentIds.has(r.id)||r._inNormal)){
         html+=`</div></div><div style="display:flex;align-items:center;gap:8px;margin:14px 0 10px"><span style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap">📅 Toutes les courses</span><div style="flex:1;height:1px;background:var(--border)"></div></div>`;
         recentSectionClosed=true;currentMonth=null;
       }
     }
-    // Séparateur de mois (hors section récente)
-    if(r.date_course&&(recentSectionClosed||recentlyAdded.length===0)){
+    // Séparateur de mois (hors section récente, ou pour les _inNormal dans la section normale)
+    if(r.date_course&&(recentSectionClosed||recentlyAdded.length===0||r._inNormal)){
       const monthKey=`${MOIS[d.getMonth()]} ${d.getFullYear()}`;
       const monthId='month-'+d.getFullYear()+'-'+d.getMonth();
       if(monthKey!==currentMonth){
@@ -2551,7 +2553,7 @@ function renderRaces(){
     }
     if(!inscritsList) inscritsList='<div style="font-size:11px;color:var(--text3);font-style:italic;padding:4px 0">Aucune participation pour l\'instant</div>';
 
-    const cardId='card-'+r.id;
+    const cardId=r._inNormal?'card-normal-'+r.id:'card-'+r.id;
     const typeColor=tc==='trail'?'#5B9BF5':tc==='ultra'?'#A78BFA':'#F97316';
     // Participants summary
     const partSummary=[
@@ -2561,13 +2563,13 @@ function renderRaces(){
     ].filter(Boolean).join('<span class="hrow-sep">·</span>');
     // My status dot
     const myDot=myConf?'<span class="rrow-mydot rrow-mydot-c" title="Inscrit"></span>':myInter?'<span class="rrow-mydot rrow-mydot-i" title="Intéressé"></span>':myBenev?'<span class="rrow-mydot rrow-mydot-b" title="Bénévole"></span>':'';
-    // Badge Nouveau (créé dans les 7 derniers jours)
-    const isNew=r.created_at&&((new Date()-new Date(r.created_at))/(1000*3600*24))<7;
+    // Badge Nouveau (créé dans les 7 derniers jours) — pas dans la copie "mois normal"
+    const isNew=!r._inNormal&&r.created_at&&((new Date()-new Date(r.created_at))/(1000*3600*24))<7;
     const creatorMember=r.created_by?members.find(m=>m.id===r.created_by):null;
     const creatorName=creatorMember?creatorMember.nom:'';
     const newBadge=isNew?`<span class="new-badge">⭐ Nouveau</span>`:'';
     const creatorLine=isNew&&creatorName?`<div class="new-creator">Ajouté par ${creatorName}</div>`:'';
-    html+=`<div class="rrow race-card ${tc.toLowerCase()}${isSoldOut?' sold-out':''}" data-id="${r.id}" id="rcard-${r.id}">
+    html+=`<div class="rrow race-card ${tc.toLowerCase()}${isSoldOut?' sold-out':''}" data-id="${r.id}" id="${r._inNormal?`rcard-normal-${r.id}`:`rcard-${r.id}`}">
       <div class="rrow-main" onclick="toggleCard('${cardId}')">
         <div class="rrow-date">
           <span class="rrow-dd">${dcDD}</span>
@@ -2636,7 +2638,8 @@ function renderRaces(){
   const sidebar=document.getElementById('month-sidebar');
   if(sidebar){
     sidebar.style.width='44px';
-    sidebar.innerHTML=monthsList.map(m=>{
+    const newBtn=recentlyAdded.length>0?`<div class="month-sb-item" id="msb-new" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="background:linear-gradient(135deg,#FFD700,#FFA500);border-color:#F5C800;color:#7A4800;font-weight:900;font-size:9px;padding:5px 3px">🆕<br>NEW</div>`:'';
+    sidebar.innerHTML=newBtn+monthsList.map(m=>{
       const parts=m.short.split('\n');
       const fullYear='20'+parts[1];
       return `<div class="month-sb-item" id="msb-${m.id}" onclick="scrollToMonth('${m.id}')"><span class="msb-month">${parts[0]}</span><span class="msb-year">${fullYear}</span></div>`;
